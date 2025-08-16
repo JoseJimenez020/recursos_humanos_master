@@ -30,6 +30,7 @@
   <!-- Nucleo Icons -->
   <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/calendario.css">
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- Material Icons -->
@@ -257,7 +258,8 @@
               </div>
               <div class="row">
                 <div class="row">
-                  <h6 class="mb-0" id="fechaCompleta">¡Sé bienvenid@!</h6>
+                  <h6 class="mb-0 " >¡Sé bienvenid@!</h6>
+                  <h6 class="mb-0" id="fechaCompleta"></h6>
                   <!--<h6 class="mb-0 text-sm" id="fechaCompleta"></h6>-->
                 </div>
               </div>
@@ -371,154 +373,27 @@
                 </div>
                 <div class="col-md-6 d-flex justify-content-start justify-content-md-end align-items-center">
                   <i class="material-symbols-rounded me-2 text-lg">cake</i>
-                  <small>Del mes de&nbsp; </small> <small id="mes"></small>
+                  <small id="month-year"></small>
                 </div>
               </div>
             </div>
-            <div class="card-body px-0 pb-2 timeline timeline-one-side scrollable-timeline">
-              <div class="table-responsive">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                        Departamento
-                      </th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        Fecha
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm me-3"
-                              alt="foto de perfil">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Nombre_Usuario</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">Departamento</h6>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold "> 26 de julio </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm me-3"
-                              alt="foto de perfil">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Nombre_Usuario</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">Departamento</h6>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> 4 de julio </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm me-3"
-                              alt="foto de perfil">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Nombre_Usuario</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">Departamento</h6>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> 31 de julio </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm me-3"
-                              alt="foto de perfil">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Nombre_Usuario</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">Departamento</h6>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> 1 de julio </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm me-3"
-                              alt="foto de perfil">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Nombre_Usuario</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">Departamento</h6>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> 15 de julio </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm me-3"
-                              alt="foto de perfil">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Nombre_Usuario</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">Departamento</h6>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> 29 de julio </span>
-                      </td>
-                    </tr>
-
-                  </tbody>
-                </table>
+            <div class="card-body px-0 pb-2">
+              <div class="calendar">
+                <!--<div class="header">
+                  <div id="prev" class="btn"><i class="material-symbols-rounded opacity-5">arrow_back</i></div>
+                  
+                  <div id="next" class="btn"><i class="material-symbols-rounded opacity-5">arrow_forward</i></div>
+                </div>-->
+                <div class="weekdays">
+                  <div>Dom</div>
+                  <div>Lun</div>
+                  <div>Mar</div>
+                  <div>Mie</div>
+                  <div>Jue</div>
+                  <div>Vie</div>
+                  <div>Sab</div>
+                </div>
+                <div class="days mb-0 font-weight-normal text-sm" id="days"></div>
               </div>
             </div>
           </div>
@@ -1155,9 +1030,10 @@
 
     // Mostrar en HTML
     const mesActual = obtenerMesActual();
-    document.getElementById("mes").textContent = `${mesActual.nombre}`;//${mesActual.numero} - para cuando se mande a pedir por php
+   // document.getElementById("mes").textContent = `${mesActual.nombre}`;//${mesActual.numero} - para cuando se mande a pedir por php
     document.getElementById("fechaCompleta").textContent = mesActual.fechaCompleta;
   </script>
+  <script src="../assets/js/calendario.js"></script>
 
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>

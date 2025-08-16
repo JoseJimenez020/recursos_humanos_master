@@ -1,0 +1,55 @@
+.calendar{
+    background-color: #ffffff;
+    /*border-radius: 10px;*/
+    overflow: hidden;
+    color: black;
+    padding: 20px;
+}
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+.btn{
+    cursor: pointer;
+}
+#month-year{
+    font-weight: bolder;
+}
+.weekdays, .days{
+    display: flex;
+    flex-wrap: wrap;
+}
+.days{
+    height: 240px;
+}
+.weekdays div, .days div {
+    width: 14.28%;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 5px;
+}
+.days div{
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.days div:hover{
+    background-color: black;
+    color:  white;
+}
+.days .today{
+    background-color: orangered;
+    color: white;
+}
+.fondo-especial {
+    background-image: url('../img/team-3.jpg'); /* Cambia por tu imagen */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    font-weight: bold;
+}
+.days .fade{
+    color: #555;
+}
