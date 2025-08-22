@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     const fechasConFondo = [
-        { day: 5, month: 7, year: 2025 },  // 5 de agosto de 2025
+        { day: 5, month: 7, year: 2025 },  // 5 de agosto de 2025        
         { day: 11, month: 7, year: 2025 }, // 15 de agosto de 2025
         { day: 28, month: 7, year: 2025 }  // 28 de agosto de 2025
     ];
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
             daysContainer.appendChild(dayDiv);
         }
 
-        
+
     }
 
     /* prevButton.addEventListener('click', function(){

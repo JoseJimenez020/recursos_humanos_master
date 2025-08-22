@@ -39,7 +39,7 @@
     color:  white;
 }
 .days .today{
-    background-color: orangered;
+    background-color: rgba(255, 68, 0, 0.421);
     color: white;
 }
 .fondo-especial {
