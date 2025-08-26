@@ -13,6 +13,29 @@
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
+<?php
+require '../controllers/logica_usuario.php';
+// 1) Inicializamos la variable donde guardaremos el <script> de SweetAlert
+$alertHtml = '';
+
+// 2) Si viene un POST, determinamos si es registro o actualización
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Registro de usuario (formulario principal flotante)
+    if (isset($_POST['registrarU'])) {
+        $alertHtml = RegistrarUsuarioCompleto($_POST, $_FILES, $pdo);
+    }
+
+    // Actualización de usuario (modal de edición)
+    elseif (isset($_POST['updateUser'])) {
+        $alertHtml = actualizarUsuario($_POST, $pdo);
+    }
+}
+
+// 3) Traemos departamentos para poblar ambos selects
+$departamentos = GetDepartamento($pdo);
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -37,6 +60,7 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <!-- CSS Files -->
     <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -45,7 +69,7 @@
         <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
                 aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.html" target="_blank">
+            <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
                 <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
                 <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
             </a>
@@ -100,7 +124,7 @@
                     </h6>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  active bg-gradient-primary text-white" href="../pages/usuarios.html">
+                    <a class="nav-link  active bg-gradient-primary text-white" href="../pages/usuarios.php">
                         <i class="material-symbols-rounded opacity-5">groups</i>
                         <span class="nav-link-text ms-1">Usuarios</span>
                     </a>
@@ -154,6 +178,7 @@
             </ul>
         </div>
     </aside>
+    <!-- CONTENIDO DEL BODY -->
     <div class="main-content position-relative max-height-vh-100 h-100">
         <!-- Navbar -->
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
@@ -183,7 +208,7 @@
                         <li class="nav-item dropdown pe-3 d-flex align-items-center">
                             <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm  me-3 ">
+                                <img class="avatar avatar-sm  me-3" <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?>>
                             </a>
                             <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                                 aria-labelledby="dropdownMenuButton">
@@ -202,15 +227,14 @@
                                     </a>
                                 </li>
                                 <li class="mb-2">
-                                    <a class="dropdown-item border-radius-md" href="../pages/sign-in.html">
+                                    <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#logoutModal">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
                                                 <i class="material-symbols-rounded">logout</i>
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-sm font-weight-normal mb-1">
-                                                    Salir
-                                                </h6>
+                                                <h6 class="text-sm font-weight-normal mb-1">Salir</h6>
                                             </div>
                                         </div>
                                     </a>
@@ -224,6 +248,7 @@
             </div>
         </nav>
         <!-- End Navbar -->
+
         <div class="container-fluid px-2 px-md-4">
             <div class="page-header min-height-300 border-radius-xl mt-4"
                 style="background-image: url('../assets/img/illustrations/banner-usuarios.jpg');">
@@ -264,273 +289,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div>
-                                                    <img src="../assets/img/team-2.jpg"
-                                                        class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">John Michael</h6>
-                                                    <p class="text-xs text-secondary mb-0">john@creative-tim.com</p>
-                                                    <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Manager</p>
-                                            <p class="text-xs text-secondary mb-0">Organization</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Nombre contacto</p>
-                                            <p class="text-xs text-secondary mb-0">Parentesco</p>
-                                            <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-success">Activo</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-bold">23/04/18</span>
-                                        </td>
-                                        <td class="align-middle">
-                                            <a href="" class="text-secondary font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Edit user" target="_blank"
-                                                data-bs-toggle="modal" data-bs-target="#modal-edit">
-                                                <i class="material-symbols-rounded opacity-5">edit</i>
-                                            </a>
-                                            <a href="" class="text-danger font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Delete user" target="_blank"
-                                                data-bs-toggle="modal" data-bs-target="#modal-notification">
-                                                <i class="material-symbols-rounded opacity-5">delete</i>
-                                            </a>
-                                            <a href="" class="text-success font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Vacations" target="_blank"
-                                                data-bs-toggle="modal" data-bs-target="#modal-form">
-                                                <i class="material-symbols-rounded opacity-5">beach_access</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div>
-                                                    <img src="../assets/img/team-3.jpg"
-                                                        class="avatar avatar-sm me-3 border-radius-lg" alt="user2">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">Alexa Liras</h6>
-                                                    <p class="text-xs text-secondary mb-0">alexa@creative-tim.com</p>
-                                                    <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Programator</p>
-                                            <p class="text-xs text-secondary mb-0">Developer</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Nombre contacto</p>
-                                            <p class="text-xs text-secondary mb-0">Parentesco</p>
-                                            <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-secondary">Vacaciones</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-bold">11/01/19</span>
-                                        </td>
-                                        <td>
-                                            <a href="" class="text-secondary font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Edit user">
-                                                <i class="material-symbols-rounded opacity-5">edit</i>
-                                            </a>
-                                            <a href="" class="text-danger font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Delete user">
-                                                <i class="material-symbols-rounded opacity-5">delete</i>
-                                            </a>
-                                            <a href="" class="text-success font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Vacations">
-                                                <i class="material-symbols-rounded opacity-5">beach_access</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div>
-                                                    <img src="../assets/img/team-4.jpg"
-                                                        class="avatar avatar-sm me-3 border-radius-lg" alt="user3">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">Laurent Perrier</h6>
-                                                    <p class="text-xs text-secondary mb-0">laurent@creative-tim.com</p>
-                                                    <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Executive</p>
-                                            <p class="text-xs text-secondary mb-0">Projects</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Nombre contacto</p>
-                                            <p class="text-xs text-secondary mb-0">Parentesco</p>
-                                            <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-success">Activo</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-bold">19/09/17</span>
-                                        </td>
-                                        <td>
-                                            <a href="" class="text-secondary font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Edit user">
-                                                <i class="material-symbols-rounded opacity-5">edit</i>
-                                            </a>
-                                            <a href="" class="text-danger font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Delete user">
-                                                <i class="material-symbols-rounded opacity-5">delete</i>
-                                            </a>
-                                            <a href="" class="text-success font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Vacations">
-                                                <i class="material-symbols-rounded opacity-5">beach_access</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div>
-                                                    <img src="../assets/img/team-3.jpg"
-                                                        class="avatar avatar-sm me-3 border-radius-lg" alt="user4">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">Michael Levi</h6>
-                                                    <p class="text-xs text-secondary mb-0">michael@creative-tim.com</p>
-                                                    <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Programator</p>
-                                            <p class="text-xs text-secondary mb-0">Developer</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Nombre contacto</p>
-                                            <p class="text-xs text-secondary mb-0">Parentesco</p>
-                                            <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-success">Activo</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-bold">24/12/08</span>
-                                        </td>
-                                        <td class="align-middle">
-                                            <a href="" class="text-secondary font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Edit user">
-                                                <i class="material-symbols-rounded opacity-5">edit</i>
-                                            </a>
-                                            <a href="" class="text-danger font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Delete user">
-                                                <i class="material-symbols-rounded opacity-5">delete</i>
-                                            </a>
-                                            <a href="" class="text-success font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Vacations">
-                                                <i class="material-symbols-rounded opacity-5">beach_access</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div>
-                                                    <img src="../assets/img/team-2.jpg"
-                                                        class="avatar avatar-sm me-3 border-radius-lg" alt="user5">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">Richard Gran</h6>
-                                                    <p class="text-xs text-secondary mb-0">richard@creative-tim.com</p>
-                                                    <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Manager</p>
-                                            <p class="text-xs text-secondary mb-0">Executive</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Nombre contacto</p>
-                                            <p class="text-xs text-secondary mb-0">Parentesco</p>
-                                            <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-secondary">Vacaciones</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-bold">04/10/21</span>
-                                        </td>
-                                        <td class="align-middle">
-                                            <a href="" class="text-secondary font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Edit user">
-                                                <i class="material-symbols-rounded opacity-5">edit</i>
-                                            </a>
-                                            <a href="" class="text-danger font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Delete user">
-                                                <i class="material-symbols-rounded opacity-5">delete</i>
-                                            </a>
-                                            <a href="" class="text-success font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Vacations">
-                                                <i class="material-symbols-rounded opacity-5">beach_access</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div>
-                                                    <img src="../assets/img/team-4.jpg"
-                                                        class="avatar avatar-sm me-3 border-radius-lg" alt="user6">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">Miriam Eric</h6>
-                                                    <p class="text-xs text-secondary mb-0">miriam@creative-tim.com</p>
-                                                    <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Programator</p>
-                                            <p class="text-xs text-secondary mb-0">Developer</p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">Nombre contacto</p>
-                                            <p class="text-xs text-secondary mb-0">Parentesco</p>
-                                            <p class="text-xs text-secondary mb-0">(44) 123 1234 123</p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-secondary">Vacaciones</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-bold">14/09/20</span>
-                                        </td>
-                                        <td class="align-middle">
-                                            <a href="" class="text-secondary font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Edit user">
-                                                <i class="material-symbols-rounded opacity-5">edit</i>
-                                            </a>
-                                            <a href="" class="text-danger font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Delete user">
-                                                <i class="material-symbols-rounded opacity-5">delete</i>
-                                            </a>
-                                            <a href="" class="text-success font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Vacations">
-                                                <i class="material-symbols-rounded opacity-5">beach_access</i>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                    <?= GetTableUsuarios($pdo) ?>
                                 </tbody>
                             </table>
 
@@ -575,97 +334,83 @@
                             <!-- FIN DEL MODAL DE VACACIONES -->
 
                             <!--MODAL PARA EDITAR USUARIO-->
-                            <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog"
-                                aria-labelledby="modal-default" aria-hidden="true">
-                                <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+                            <div class="modal fade" id="modal-edit" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h6 class="modal-title font-weight-normal" id="modal-title-default">
-                                                Editar información</h6>
-                                            <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
-                                                aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
+                                            <h6 class="modal-title">Editar información</h6>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <div class="modal-body">
-                                            <p>Editando la información de @Nombre_Usuario</p>
-                                            <form role="form text-left">
+                                        <form id="form-edit-usuario">
+                                            <input type="hidden" name="UsuarioId" id="edit-UsuarioId">
+                                            <div class="modal-body">
                                                 <div class="input-group input-group-outline my-3">
                                                     <label class="form-label">Nombre</label>
-                                                    <input type="text" class="form-control" onfocus="focused(this)"
-                                                        onfocusout="defocused(this)">
+                                                    <input name="NombreUsuario" id="edit-NombreUsuario" type="text"
+                                                        class="form-control" required>
                                                 </div>
                                                 <div class="input-group input-group-outline my-3">
                                                     <label class="form-label">Apellido Paterno</label>
-                                                    <input type="text" class="form-control" onfocus="focused(this)"
-                                                        onfocusout="defocused(this)">
+                                                    <input name="ApellidoPaterno" id="edit-ApellidoPaterno" type="text"
+                                                        class="form-control" required>
                                                 </div>
                                                 <div class="input-group input-group-outline my-3">
                                                     <label class="form-label">Apellido Materno</label>
-                                                    <input type="text" class="form-control" onfocus="focused(this)"
-                                                        onfocusout="defocused(this)">
+                                                    <input name="ApellidoMaterno" id="edit-ApellidoMaterno" type="text"
+                                                        class="form-control" required>
                                                 </div>
-                                                <div class="input-group input-group-static mb-4 ">
-                                                    <label for="exampleFormControlSelect1"
-                                                        class="ms-0">Departamento</label>
-                                                    <select class="form-control" id="exampleFormControlSelect1">
-                                                        <option>1</option>
-                                                        <option>2</option>
-                                                        <option>3</option>
-                                                        <option>4</option>
-                                                        <option>5</option>
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Departamento</label>
+                                                    <select name="DepartamentoId" id="edit-DepartamentoId"
+                                                        class="form-control" required>
+                                                        <!-- Opciones cargadas dinámicamente -->
                                                     </select>
                                                 </div>
-                                                <div class="input-group input-group-static mb-4 ">
-                                                    <label for="exampleFormControlSelect1" class="ms-0">Puesto</label>
-                                                    <select class="form-control" id="exampleFormControlSelect1">
-                                                        <option>1</option>
-                                                        <option>2</option>
-                                                        <option>3</option>
-                                                        <option>4</option>
-                                                        <option>5</option>
+                                                <div class="input-group input-group-static mb-4">
+                                                    <label>Puesto</label>
+                                                    <select name="PuestoId" id="edit-PuestoId" class="form-control"
+                                                        required>
+                                                        <option value="">Seleccione un puesto</option>
                                                     </select>
                                                 </div>
                                                 <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Número celular</label>
-                                                    <input type="number" class="form-control" onfocus="focused(this)"
-                                                        onfocusout="defocused(this)">
+                                                    <label class="form-label">Teléfono celular</label>
+                                                    <input name="NumeroTelefono" id="edit-NumeroTelefono" type="tel"
+                                                        class="form-control">
                                                 </div>
                                                 <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Número alternativo</label>
-                                                    <input type="number" class="form-control" onfocus="focused(this)"
-                                                        onfocusout="defocused(this)">
+                                                    <label class="form-label">Teléfono alternativo</label>
+                                                    <input name="TelefonoAlternativo" id="edit-TelefonoAlternativo"
+                                                        type="tel" class="form-control">
                                                 </div>
                                                 <div class="input-group input-group-outline my-3">
                                                     <label class="form-label">Email</label>
-                                                    <input type="email" class="form-control" onfocus="focused(this)"
-                                                        onfocusout="defocused(this)">
+                                                    <input name="Email" id="edit-Email" type="email"
+                                                        class="form-control" required>
                                                 </div>
                                                 <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Nombre contacto de emergencia</label>
-                                                    <input type="text" class="form-control" onfocus="focused(this)"
-                                                        onfocusout="defocused(this)">
+                                                    <label class="form-label">Nombre contacto emergencia</label>
+                                                    <input name="NombreContacto" id="edit-NombreContacto" type="text"
+                                                        class="form-control">
                                                 </div>
                                                 <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Parentesco contacto de emergencia</label>
-                                                    <input type="text" class="form-control" onfocus="focused(this)"
-                                                        onfocusout="defocused(this)">
+                                                    <label class="form-label">Parentesco contacto emergencia</label>
+                                                    <input name="Parentezco" id="edit-Parentezco" type="text"
+                                                        class="form-control">
                                                 </div>
                                                 <div class="input-group input-group-outline my-3">
                                                     <label class="form-label">Número contacto emergencia</label>
-                                                    <input type="number" class="form-control" onfocus="focused(this)"
-                                                        onfocusout="defocused(this)">
+                                                    <input name="NumeroEmergencia" id="edit-NumeroEmergencia" type="tel"
+                                                        class="form-control">
                                                 </div>
-                                                <div class="text-center">
-                                                    <button type="button"
-                                                        class="btn btn-round bg-gradient-primary btn-lg w-100 mt-4 mb-0 toast-btn"
-                                                        data-bs-dismiss="modal" data-target="successToast">Guardar
-                                                        información</button>
-                                                    <button type="button" class="btn btn-link text-primary ml-auto"
-                                                        data-bs-dismiss="modal">Cancelar</button>
-                                                </div>
-                                            </form>
-                                        </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn bg-gradient-primary w-100">Guardar
+                                                    información</button>
+                                                <button type="button" class="btn btn-link"
+                                                    data-bs-dismiss="modal">Cancelar</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -733,6 +478,7 @@
         </footer>
 
     </div>
+
     <!--PLUGIN PARA MOSTRAR BOTÓN FLOTANTE-->
     <div class="fixed-plugin">
         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
@@ -756,85 +502,124 @@
 
                 <!-- Navbar Fixed -->
                 <div class="mt-3 d-flex">
-                    <form>
+                    <form method="POST" enctype="multipart/form-data">
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Nombre</label>
-                            <input type="text" class="form-control">
+                            <input name="nombre" type="text" class="form-control">
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Apellido Paterno</label>
-                            <input type="text" class="form-control">
+                            <input name="apellidoPaterno" type="text" class="form-control">
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Apellido Materno</label>
-                            <input type="text" class="form-control">
+                            <input name="apellidoMaterno" type="text" class="form-control">
                         </div>
                         <div class="input-group input-group-static mb-4 ">
-                            <label for="exampleFormControlSelect1" class="ms-0">Departamento</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
+                            <label for="exampleFormControlSelect1" class="ms-0">Tipo de Sangre</label>
+                            <select class="form-control" name="tipoSangre" id="exampleFormControlSelect1">
+                                <option selected>Seleccionar</option>
+                                <option value="O-">O-</option>
+                                <option value="O+">O+</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
                             </select>
-                        </div>
-                        <div class="input-group input-group-static mb-4 ">
-                            <label for="exampleFormControlSelect1" class="ms-0">Puesto</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
-                        </div>
-                        <div class="input-group input-group-outline my-3">
-                            <label class="form-label">Foto de perfil</label>
-                            <input type="file" class="form-control">
-                        </div>
-                        <div class="input-group input-group-outline my-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control">
-                        </div>
-                        <div class="input-group input-group-outline my-3">
-                            <label class="form-label">Número celular</label>
-                            <input type="number" class="form-control">
-                        </div>
-                        <div class="input-group input-group-outline my-3">
-                            <label class="form-label">Número alternativo</label>
-                            <input type="number" class="form-control">
-                        </div>
-                        <div class="input-group input-group-outline my-3">
-                            <label class="form-label">Nombre contacto de emergencia</label>
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="input-group input-group-outline my-3">
-                            <label class="form-label">Parentesco</label>
-                            <input type="text" class="form-control">
-                        </div>
-                        <div class="input-group input-group-outline my-3">
-                            <label class="form-label">Número de emergencia</label>
-                            <input type="number" class="form-control">
                         </div>
                         <div class="input-group input-group-static my-3">
                             <label>Fecha de nacimiento</label>
-                            <input type="date" class="form-control">
+                            <input name="fechaNacimiento" type="date" class="form-control">
                         </div>
-                        <div class="input-group input-group-static mb-4 ">
-                            <label for="exampleFormControlSelect1" class="ms-0">¿Es Adminsitrador?</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
+                        <div class="input-group input-group-static mb-4">
+                            <label>Departamento</label>
+                            <select name="DepartamentoId" id="departamento" class="form-control" required>
+                                <option value="">Seleccionar</option>
+                                <?= GetListaDepartamentos($departamentos) ?>
                             </select>
                         </div>
-                        <hr class="horizontal dark my-3">
-                        <button type="button" class="btn bg-gradient-primary w-100 toast-btn fixed-plugin-close-button"
-                            data-target="successToast">Registrar
-                            usuario</button>
-                    </form>
-                </div>
+                        <!-- Selección dinámica de puesto -->
+                        <div class="input-group input-group-static mb-4">
+                            <label>Puesto</label>
+                            <select name="PuestoId" id="puesto" class="form-control" required>
+                                <option value="">Seleccionar</option>
+                            </select>
+                        </div>
+                        <!-- Foto de perfil -->
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Foto de perfil</label>
+                            <input name="fotoPerfil" type="file" accept="image/jpeg" class="form-control" required>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Email</label>
+                            <input name="correo" type="email" class="form-control">
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Número celular</label>
+                            <input name="celular" type="number" class="form-control">
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Número alternativo</label>
+                            <input name="telefonoAlternativo" type="number" class="form-control">
+                        </div>
+                        <!-- Datos de contacto de emergencia -->
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Nombre contacto de emergencia</label>
+                            <input name="NombreContacto" type="text" class="form-control" required>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Parentesco</label>
+                            <input name="Parentesco" type="text" class="form-control" required>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Número de emergencia</label>
+                            <input name="NumeroEmergencia" type="tel" class="form-control" required>
+                        </div>
+                        <div class="input-group input-group-static mb-4 ">
+                            <label for="exampleFormControlSelect1" class="ms-0">Base</label>
+                            <select name="Base" class="form-control" id="exampleFormControlSelect1">
+                                <option selected>Seleccionar</option>
+                                <option>Allende</option>
+                                <option>Chihuahua</option>
+                                <option>Ciudad del carmen</option>
+                                <option>Comalcalco</option>
+                                <option>Cunduacán </option>
+                                <option>Delicias</option>
+                                <option>Jalapa</option>
+                                <option>Jalpa de Méndez</option>
+                                <option>Lázaro Cárdenas</option>
+                                <option>Nacajuca</option>
+                                <option>Paraíso </option>
+                                <option>Parrilla</option>
+                                <option>Petrolera</option>
+                                <option>Pichucalco</option>
+                                <option>Pomoca</option>
+                                <option>Tacotalpa</option>
+                                <option>Teapa</option>
+                                <option>Villahermosa</option>
 
+                            </select>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Username</label>
+                            <input name="username" type="text" class="form-control">
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Contraseña</label>
+                            <input name="password" type="text" class="form-control">
+                        </div>
+                        <div class="input-group input-group-static mb-4 ">
+                            <input type="checkbox" name="admin" value="1">
+                            <label for="exampleFormControlSelect1" class="ms-0">¿Es Administrador?</label>
+                        </div>
+                        <hr class="horizontal dark my-3">
+                        <button type="submit" name="registrarU" class="btn bg-gradient-primary w-100">
+                            Registrar Usuario
+                        </button>
+
+                    </form>
+                    <?= $alertHtml ?>
+                </div>
             </div>
         </div>
     </div>
@@ -905,11 +690,152 @@
         </div>
     </div>
     <!-- FIN DE LAS NOTIFICACIONES -->
+
     <!--   Core JS Files   -->
     <script src="../assets/js/core/popper.min.js"></script>
     <script src="../assets/js/core/bootstrap.min.js"></script>
     <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const editModal = document.getElementById('modal-edit');
+            const formEdit = document.getElementById('form-edit-usuario');
+
+            // 1) Cuando se abre el modal, leer el data-user-id del botón que lo disparó
+            editModal.addEventListener('show.bs.modal', async function (event) {
+                const button = event.relatedTarget;
+                const userId = button.getAttribute('data-user-id');
+
+                // Guardar ID en el hidden input
+                document.getElementById('edit-UsuarioId').value = userId;
+
+                // 2) Pedir al backend los datos del usuario
+                const resp = await fetch(`../controllers/get_usuario.php?id=${userId}`);
+                const u = await resp.json();
+
+                // 3) Rellenar inputs
+                document.getElementById('edit-NombreUsuario').value = u.NombreUsuario;
+                document.getElementById('edit-ApellidoPaterno').value = u.ApellidoPaterno;
+                document.getElementById('edit-ApellidoMaterno').value = u.ApellidoMaterno;
+                document.getElementById('edit-NumeroTelefono').value = u.NumeroTelefono || '';
+                document.getElementById('edit-TelefonoAlternativo').value = u.TelefonoAlternativo || '';
+                document.getElementById('edit-Email').value = u.Email;
+
+                // 4) Cargar lista de departamentos y marcar el actual
+                const depSel = document.getElementById('edit-DepartamentoId');
+                depSel.innerHTML = '<option value="">Cargando…</option>';
+                const deps = <?= json_encode($departamentos, JSON_UNESCAPED_UNICODE) ?>;
+                depSel.innerHTML = '<option value="">Seleccione</option>';
+                deps.forEach(d => {
+                    const o = document.createElement('option');
+                    o.value = d.DepartamentoId;
+                    o.textContent = d.DepartamentoNombre;
+                    if (d.DepartamentoId == u.DepartamentoId) o.selected = true;
+                    depSel.appendChild(o);
+                });
+
+                // 5) Al seleccionar departamento, recargar puestos
+                async function loadPuestos(depId, selectedId) {
+                    const pSel = document.getElementById('edit-PuestoId');
+                    pSel.innerHTML = '<option value="">Cargando…</option>';
+                    const res = await fetch(`../controllers/logica_usuario.php?DepartamentoId=${depId}`);
+                    const puestos = await res.json();
+                    pSel.innerHTML = '<option value="">Seleccione</option>';
+                    puestos.forEach(p => {
+                        const o = document.createElement('option');
+                        o.value = p.PuestoId;
+                        o.textContent = p.PuestoNombre;
+                        if (p.PuestoId == selectedId) o.selected = true;
+                        pSel.appendChild(o);
+                    });
+                }
+                // Primera carga de puestos
+                await loadPuestos(u.DepartamentoId, u.PuestoId);
+
+                // Resetear evento para cambios posteriores
+                depSel.onchange = () => loadPuestos(depSel.value, null);
+
+                // 6) Cargar contacto de emergencia
+                document.getElementById('edit-NombreContacto').value = u.NombreContacto || '';
+                document.getElementById('edit-Parentezco').value = u.Parentezco || '';
+                document.getElementById('edit-NumeroEmergencia').value = u.NumeroEmergencia || '';
+            });
+
+            // 7) Al enviar el formulario, hacer POST AJAX a update_usuario.php
+            formEdit.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const data = new FormData(this);
+
+                const resp = await fetch('../controllers/update_usuario.php', {
+                    method: 'POST',
+                    body: data
+                });
+
+                // 1.1) Lee la respuesta como texto
+                const text = await resp.text();
+
+                // 1.2) Muestra TODO lo que llega
+                console.log('RAW RESPONSE:', text);
+
+                // 1.3) Luego intenta parsear si es JSON
+                try {
+                    const result = JSON.parse(text);
+                    console.log('PARSED JSON:', result);
+                    // tu código original de Swal…
+                } catch (err) {
+                    console.error('JSON PARSE ERROR:', err);
+                }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const editModalEl = document.getElementById('modal-edit');
+            // Asegúrate de usar la misma versión de Bootstrap (5) que tu proyecto
+            const bsEditModal = bootstrap.Modal.getOrCreateInstance(editModalEl);
+            const formEdit = document.getElementById('form-edit-usuario');
+
+            formEdit.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const data = new FormData(formEdit);
+
+                try {
+                    const resp = await fetch('../controllers/update_usuario.php', {
+                        method: 'POST',
+                        body: data
+                    });
+                    const result = await resp.json();
+
+                    if (result.success) {
+                        // 1) Cerrar el modal
+                        bsEditModal.hide();
+
+                        // 2) Mostrar alerta de éxito
+                        await Swal.fire({
+                            title: '¡Actualizado!',
+                            text: result.message,
+                            icon: 'success'
+                        });
+
+                        // 3) Opcional: recargar la página o rehacer la tabla
+                        window.location.reload();
+                    } else {
+                        // Si hubo error, mantén el modal abierto y avisa
+                        Swal.fire({
+                            title: 'Error',
+                            text: result.message,
+                            icon: 'error'
+                        });
+                    }
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrió un fallo de comunicación.',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    </script>
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -919,9 +845,63 @@
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
     </script>
+    <script>
+        document.getElementById('departamento').addEventListener('change', function () {
+            const departamentoId = this.value;
+            const puestoSelect = document.getElementById('puesto');
+
+            // Limpia opciones anteriores
+            puestoSelect.innerHTML = '<option value="">Cargando puestos...</option>';
+
+            if (!departamentoId) {
+                puestoSelect.innerHTML = '<option value="">Seleccione un puesto</option>';
+                return;
+            }
+
+            fetch(`../controllers/logica_usuario.php?DepartamentoId=${departamentoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    puestoSelect.innerHTML = '<option value="">Seleccione un puesto</option>';
+                    data.forEach(puesto => {
+                        const option = document.createElement('option');
+                        option.value = puesto.PuestoId;
+                        option.textContent = puesto.PuestoNombre;
+                        puestoSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    puestoSelect.innerHTML = '<option value="">Error al cargar</option>';
+                    console.error('Error:', error);
+                });
+        });
+    </script>
     <script src="../assets/js/settings.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <p>Estás a punto de cerrar sesión.</p>
+                        <p>¿Seguro que quieres continuar?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+                            sesión</button>
+                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--End logout modal-->
 </body>
 
 </html>

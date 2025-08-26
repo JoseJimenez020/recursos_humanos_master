@@ -1,9 +1,9 @@
 <?php
 
-if (isset($_SESSION['UsuarioId'])) {
+if (isset($_SESSION['user_id'])) {
     
   $stmt = $pdo->prepare('SELECT UsuarioId, Username, EsAdmin, NombreUsuario, ApellidoPaterno, ApellidoMaterno FROM usuarios WHERE UsuarioId = :id');
-  $stmt->bindParam(':id', $_SESSION['UsuarioId']);
+  $stmt->bindParam(':id', $_SESSION['user_id']);
   $stmt->execute();
   $results = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -15,17 +15,40 @@ if (isset($_SESSION['UsuarioId'])) {
   //var_dump($results);
 }
 
-function obtenerFotoAsesor($pdo, $usuarioId) {
-  $sql = "SELECT FotoContenido FROM fotos WHERE EntidadTipo = 'usuario' AND EntidadId = $usuarioId;";
-  $stmt = $pdo->prepare($sql);
-  $stmt->bindParam(":id", $usuarioId, PDO::PARAM_INT);
-  $stmt->execute();
-  $foto = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  $fotoBase64 = $foto ? base64_encode($foto['AsesorFoto']) : null;
-  $imagen = $fotoBase64 ? 'src="data:image/jpeg;base64,' . $fotoBase64 . '"' : 'src="../assets/img/small-logos/user.png"';
+/**
+ * Devuelve el atributo src de la imagen de perfil para un usuario.
+ *
+ * @param PDO $pdo
+ * @param int $usuarioId
+ * @return string   Algo como: src="data:image/jpeg;base64,..." o
+ *                  src="../assets/img/small-logos/user.png"
+ */
+function obtenerFotoUsuario(PDO $pdo, int $usuarioId): string
+{
+    $sql = "
+      SELECT FotoContenido
+        FROM fotos
+       WHERE EntidadTipo = :tipo
+         AND EntidadId   = :id
+       LIMIT 1
+    ";
+    $stmt = $pdo->prepare($sql);
+    // Aquí sí usamos dos placeholders y los bindamos correctamente
+    $stmt->execute([
+      'tipo' => 'usuario',
+      'id'   => $usuarioId
+    ]);
 
-  return $imagen;
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($row && !empty($row['FotoContenido'])) {
+        $base64 = base64_encode($row['FotoContenido']);
+        return 'src="data:image/jpeg;base64,' . $base64 . '"';
+    }
+
+    // Si no hay foto, devolvemos la imagen por defecto
+    return 'src="../assets/img/small-logos/user.png"';
 }
 
-?>
+

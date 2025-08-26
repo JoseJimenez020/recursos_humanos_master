@@ -46,7 +46,7 @@
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
         aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.html" target="_blank">
+      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
         <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
         <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
       </a>
@@ -55,7 +55,7 @@
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.html">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
             <span class="nav-link-text ms-1">Home</span>
           </a>
@@ -633,19 +633,35 @@
                 <div class="carousel-inner mb-4">
                   <div class="carousel-item">
                     <a href="../pages/campania_ext.html">
-                    <div class="page-header min-vh-45 m-3 border-radius-md"
-                      style="background-image: url('../assets/img/campania1.jpg');">
-                      <span class="mask bg-gradient-dark"></span>
-                      <div class="container">
-                        <div class="row">
-                          <div class="col-lg-6 my-auto">
-                            <h4 class="text-white fadeIn2 fadeInBottom">Work with the rockets</h4>
-                            <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">Wealth creation is an
-                              evolutionarily recent positive-sum game. Status is an old zero-sum game. </p>
+                      <div class="page-header min-vh-45 m-3 border-radius-md"
+                        style="background-image: url('../assets/img/campania_acoso.jpg');">
+                        <span class="mask bg-gradient-dark"></span>
+                        <div class="container">
+                          <div class="row">
+                            <div class="col-lg-8 my-auto">
+                              <h4 class="text-white fadeIn2 fadeInBottom">Acoso Laboral</h4>
+                              <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">¿Qué hacer en caso de? Acudir con el departamento de Recursos Humanos, RH, de manera presencial o al correo electrónico: recursoshumuanos@fast-net.com.mx</p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </a>
+                  </div>
+                  <div class="carousel-item">
+                    <a href="../pages/campania_ext.html">
+                      <div class="page-header min-vh-45 m-3 border-radius-md"
+                        style="background-image: url('../assets/img/campania1.jpg');">
+                        <span class="mask bg-gradient-dark"></span>
+                        <div class="container">
+                          <div class="row">
+                            <div class="col-lg-6 my-auto">
+                              <h4 class="text-white fadeIn2 fadeInBottom">Work with the rockets</h4>
+                              <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">Wealth creation is an
+                                evolutionarily recent positive-sum game. Status is an old zero-sum game. </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </a>
                   </div>
                   <div class="carousel-item">
@@ -654,7 +670,7 @@
                       <span class="mask bg-gradient-dark"></span>
                       <div class="container">
                         <div class="row">
-                          <div class="col-lg-6 my-auto">
+                          <div class="col-lg-8 my-auto">
                             <h4 class="text-white fadeIn2 fadeInBottom">Work with the best</h4>
                             <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">Free people make free choices.
                               Free choices mean you get unequal outcomes. </p>
@@ -669,7 +685,7 @@
                       <span class="mask bg-gradient-dark"></span>
                       <div class="container">
                         <div class="row">
-                          <div class="col-lg-6 my-auto">
+                          <div class="col-lg-8 my-auto">
                             <h4 class="text-white fadeIn2 fadeInBottom">Work from home</h4>
                             <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">You’re spending time to save
                               money

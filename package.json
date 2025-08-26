@@ -2,7 +2,7 @@
   "name": "material-dashboard",
   "version": "3.2.0",
   "description": "Premium Dashboard for Bootstrap 5",
-  "main": "/dashboard.html",
+  "main": "/dashboard.php",
   "type": "module",
   "directories": {
     "example": "root"

@@ -12,6 +12,9 @@
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
+<?php
+require_once '../controllers/login.php';
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -56,26 +59,25 @@
             <div class="card z-index-0 fadeIn3 fadeInBottom">
               <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                 <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
-                  <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Iniciar Sesión</h4>                 
+                  <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Iniciar Sesión</h4>
                 </div>
               </div>
               <div class="card-body">
-                <form role="form" class="text-start">
+                <form role="form" class="text-start" method="POST">
                   <div class="input-group input-group-outline my-3">
                     <label class="form-label">Usuario</label>
-                    <input type="email" class="form-control">
+                    <input type="text" name="username" class="form-control">
                   </div>
                   <div class="input-group input-group-outline mb-3">
-                    <label class="form-label">Contraseña</label>
-                    <input type="password" class="form-control">
+                    <label class="form-label" type="password">Contraseña</label>
+                    <input type="password"  name="password" class="form-control">
                   </div>
                   <div class="form-check form-switch d-flex align-items-center mb-3">
                     <input class="form-check-input" type="checkbox" id="rememberMe">
                     <label class="form-check-label mb-0 ms-3" for="rememberMe">Recordar usuario</label>
                   </div>
                   <div class="text-center">
-                    <button type="button" onclick="window.location.href='../pages/dashboard.html'"
-                      class="btn bg-gradient-primary w-100 my-4 mb-2">Entrar</button>
+                    <button type="submit" name="login" class="btn bg-gradient-primary w-100 my-4 mb-2">Entrar</button>
                   </div>
                 </form>
               </div>
@@ -117,6 +119,7 @@
   </script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>
