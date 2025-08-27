@@ -20,6 +20,7 @@ if (!isset($_SESSION['user_id'])) {
 require 'sesion.php';
 require 'logout.php';
 
+
 function GetFoto($id, $pdo)
 {
     $query = "SELECT FotoContenido FROM fotos WHERE EntidadTipo = 'usuario' AND EntidadId = :id";
@@ -104,8 +105,8 @@ function GetTableUsuarios(PDO $pdo): string
   </td>
   <td>
     <p class="text-xs font-weight-bold mb-0">' . ($u['NombreContacto'] ?? 'Sin registros') . '</p>
-    <p class="text-xs text-secondary mb-0">' . ($u['Parentezco'] ?? '') . '</p>
-    <p class="text-xs text-secondary mb-0">' . ($u['CEtelefono'] ?? '') . '</p>
+    <p class="text-xs text-secondary mb-0">' . ($u['Parentezco'] ?? 'Sin registros') . '</p>
+    <p class="text-xs text-secondary mb-0">' . ($u['CEtelefono'] ?? 'Sin registros') . '</p>
   </td>
   <td class="align-middle text-center text-sm">' . $badge . '</td>
   <td class="align-middle text-center">
@@ -146,7 +147,6 @@ function GetDepartamento($pdo)
     $fetch = $result->fetchAll(PDO::FETCH_ASSOC);
     return $fetch;
 }
-
 $departamentos = GetDepartamento($pdo);
 
 function GetListaDepartamentos($departamentos)
@@ -194,117 +194,112 @@ function UsuarioExiste($usuario, $pdo)
     return ($user !== false);
 }
 
-function RegistrarUsuarioCompleto(array $post, array $file, PDO $pdo): string
+function RegistrarUsuarioCompleto(array $post, PDO $pdo): string
 {
-    // 1. Sanitizar y validar
-    $nombre = strtoupper(filter_var($post['nombre'], FILTER_SANITIZE_STRING));
-    $apellidoP = strtoupper(filter_var($post['apellidoPaterno'], FILTER_SANITIZE_STRING));
-    $apellidoM = strtoupper(filter_var($post['apellidoMaterno'], FILTER_SANITIZE_STRING));
+    // 1) Sanitizar y validar inputs
+    $nombre = filter_var($post['nombre'], FILTER_SANITIZE_STRING);
+    $apellidoP = filter_var($post['apellidoPaterno'], FILTER_SANITIZE_STRING);
+    $apellidoM = filter_var($post['apellidoMaterno'], FILTER_SANITIZE_STRING);
     $email = filter_var($post['correo'], FILTER_VALIDATE_EMAIL);
     $fechaNac = filter_var($post['fechaNacimiento'], FILTER_SANITIZE_STRING);
     $tipoSangre = filter_var($post['tipoSangre'], FILTER_SANITIZE_STRING);
-    $depId = filter_var($post['DepartamentoId'], FILTER_VALIDATE_INT);
+    $departamentoId = filter_var($post['DepartamentoId'], FILTER_VALIDATE_INT);
     $puestoId = filter_var($post['PuestoId'], FILTER_VALIDATE_INT);
     $base = filter_var($post['Base'], FILTER_SANITIZE_STRING);
+    $celular = filter_var($post['celular'], FILTER_SANITIZE_STRING);
     $username = filter_var($post['username'], FILTER_SANITIZE_STRING);
-    $password = $post['password'];
+    $password = $post['password'] ?? '';
     $esAdmin = isset($post['admin']) ? 1 : 0;
-    $nombreCont = strtoupper(filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING));
-    $parentesco = strtoupper(filter_var($post['Parentesco'], FILTER_SANITIZE_STRING));
-    $numEmergencia = filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING);
+    $nombreCont = trim(filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING));
+    $parentesco = trim(filter_var($post['Parentezco'], FILTER_SANITIZE_STRING));
+    $numEmergencia = trim(filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING));
 
-    // 2. Verificar duplicados
-    if (CorreoExiste($email, $pdo)) {
-        return alertScript('Error', 'Ya hay un usuario registrado con este correo', 'error');
-    }
-    if (UsuarioExiste($username, $pdo)) {
-        return alertScript('Error', 'Nombre de usuario ya existe', 'error');
+    // 2) Validaciones mínimas obligatorias
+    if (
+        !$nombre || !$apellidoP || !$departamentoId || !$puestoId
+        || !$username || !$password || !$base
+    ) {
+        return alertScript('Error', 'Faltan datos obligatorios.', 'error');
     }
 
-    // 3. Manejo de la foto
-    if (empty($file['fotoPerfil']) || $file['fotoPerfil']['error'] !== UPLOAD_ERR_OK) {
-        return alertScript('Error', 'Error al cargar la foto', 'error');
+    // 3) Duplicados: correo y usuario
+    $chk = $pdo->prepare("SELECT 1 FROM usuarios WHERE Username = :u");
+    $chk->execute(['u' => $username]);
+    if ($chk->fetch()) {
+        return alertScript('Error', 'El nombre de usuario ya está en uso.', 'error');
     }
-    if ($file['fotoPerfil']['size'] > 1_048_576) {
-        return alertScript('Error', 'La foto excede 1 MB', 'error');
-    }
-    $mime = mime_content_type($file['fotoPerfil']['tmp_name']);
-    if (!in_array($mime, ['image/jpeg', 'image/jpg', 'image/png'], true)) {
-        return alertScript('Error', 'Formato de foto no válido', 'error');
-    }
-    $fotoBin = file_get_contents($file['fotoPerfil']['tmp_name']);
 
-    // 4. Transacción: usuarios + contacto + fotos
     try {
         $pdo->beginTransaction();
 
-        // 4.1 Insertar usuario
-        $sqlUser = "
-          INSERT INTO usuarios 
-                   (Username, Contrasena, NombreUsuario, ApellidoPaterno, ApellidoMaterno,
-                    FechaNacimiento, TipoSangre, DepartamentoId, PuestoId,
-                    NumeroTelefono, TelefonoAlternativo, Email, EsAdmin, Base, UsuarioActivo)
-            VALUES (:user, :pass, :nom, :pat, :mat, :fn, :ts, :dep, :puesto,
-                    :tel, :alt, :email, :admin, :base, 1, CURDATE())";
-        $stmt = $pdo->prepare($sqlUser);
-        $stmt->execute([
-            ':user' => $username,
-            ':pass' => password_hash($password, PASSWORD_DEFAULT),
-            ':nom' => $nombre,
-            ':pat' => $apellidoP,
-            ':mat' => $apellidoM,
-            ':fn' => $fechaNac,
-            ':ts' => $tipoSangre,
-            ':dep' => $depId,
-            ':puesto' => $puestoId,
-            ':tel' => $post['celular'],
-            ':alt' => $post['telefonoAlternativo'],
-            ':email' => $email,
-            ':admin' => $esAdmin,
-            ':base' => $base,
+        // 4.1) Insertar en usuarios (incluye Base y FechaRegistro=CURDATE())
+        $sqlU = "
+          INSERT INTO usuarios
+            (Username, Contrasena,
+             NombreUsuario, ApellidoPaterno, ApellidoMaterno,
+             FechaNacimiento, TipoSangre,
+             DepartamentoId, PuestoId,
+             NumeroTelefono, Email,
+             Base, FechaRegistro,
+             EsAdmin, UsuarioActivo)
+          VALUES
+            (:usr, :pwd,
+             :nom, :pat, :mat,
+             :fn,  :ts,
+             :dep, :pst,
+             :cel, :e,
+             :base, CURDATE(),
+             :adm, 1)
+        ";
+        $stU = $pdo->prepare($sqlU);
+        $stU->execute([
+            'usr' => $username,
+            'pwd' => password_hash($password, PASSWORD_DEFAULT),
+            'nom' => $nombre,
+            'pat' => $apellidoP,
+            'mat' => $apellidoM,
+            'fn' => $fechaNac,
+            'ts' => $tipoSangre,
+            'dep' => $departamentoId,
+            'pst' => $puestoId,
+            'cel' => $celular,
+            'e' => $email ?: null,
+            'base' => $base,
+            'adm' => $esAdmin
         ]);
         $usuarioId = $pdo->lastInsertId();
 
-        // 4.2 Insertar contacto de emergencia
+        // 4.2) Insertar contacto de emergencia
         $sqlCE = "
           INSERT INTO contacto_emergencia
-                   (NombreContacto, Parentezco, NumeroTelefono, UsuarioId)
-            VALUES (:nContact, :parent, :num, :uid)";
-        $stmt = $pdo->prepare($sqlCE);
-        $stmt->execute([
-            ':nContact' => $nombreCont,
-            ':parent' => $parentesco,
-            ':num' => $numEmergencia,
-            ':uid' => $usuarioId,
+            (NombreContacto, Parentezco, NumeroTelefono, UsuarioId)
+          VALUES
+            (:nc, :par, :tel, :uid)
+        ";
+        $stCE = $pdo->prepare($sqlCE);
+        $stCE->execute([
+            'nc' => $nombreCont ?: null,
+            'par' => $parentesco ?: null,
+            'tel' => $numEmergencia ?: null,
+            'uid' => $usuarioId
         ]);
 
-        // 4.3 Insertar foto de perfil en tabla fotos
-        $sqlFoto = "INSERT INTO fotos 
-        (FotoContenido, EntidadTipo, EntidadId)
-        VALUES 
-        (:blob, 'usuario', :uid)";
-        $stmt = $pdo->prepare($sqlFoto);
-
-        // Vinculas ambos parámetros
-        $stmt->bindParam(':blob', $fotoBin, PDO::PARAM_LOB);
-        $stmt->bindParam(':uid', $usuarioId, PDO::PARAM_INT);
-
-        // Ejecutas sin pasar array
-        $stmt->execute();
-
         $pdo->commit();
+
         return alertScript(
             '¡Éxito!',
-            'Usuario registrado exitosamente',
+            'Usuario registrado correctamente.',
             'success',
             'usuarios.php'
         );
 
     } catch (PDOException $e) {
         $pdo->rollBack();
-        // Aquí podrías loguear 
-        $e->getMessage();
-        return alertScript('Error', 'Ocurrió un fallo al guardar' . $e . ' ', 'error');
+        return alertScript(
+            'Error',
+            'No se pudo registrar: ' . $e->getMessage(),
+            'error'
+        );
     }
 }
 
@@ -336,19 +331,19 @@ function alertScript(string $title, string $text, string $icon, string $redir = 
 HTML;
 }
 
-/*function actualizarUsuario(array $post, PDO $pdo): string
+/*
+function actualizarUsuario(array $post, PDO $pdo): string
 {
     $usuarioId = filter_var($post['UsuarioId'], FILTER_VALIDATE_INT);
-    $nombreUsuario = strtoupper(filter_var($post['NombreUsuario'], FILTER_SANITIZE_STRING));
-    $apellidoPaterno = strtoupper(filter_var($post['ApellidoPaterno'], FILTER_SANITIZE_STRING));
-    $apellidoMaterno = strtoupper(filter_var($post['ApellidoMaterno'], FILTER_SANITIZE_STRING));
+    $nombreUsuario = filter_var($post['NombreUsuario'], FILTER_SANITIZE_STRING);
+    $apellidoPaterno = filter_var($post['ApellidoPaterno'], FILTER_SANITIZE_STRING);
+    $apellidoMaterno = filter_var($post['ApellidoMaterno'], FILTER_SANITIZE_STRING);
     $email = filter_var($post['Email'], FILTER_VALIDATE_EMAIL);
     $numeroTelefono = filter_var($post['NumeroTelefono'], FILTER_SANITIZE_STRING);
-    $telefonoAlternativo = filter_var($post['TelefonoAlternativo'], FILTER_SANITIZE_STRING);
     $departamentoId = filter_var($post['DepartamentoId'], FILTER_VALIDATE_INT);
     $puestoId = filter_var($post['PuestoId'], FILTER_VALIDATE_INT);
-    $nombreContacto = strtoupper(filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING));
-    $parentezco = strtoupper(filter_var($post['Parentezco'], FILTER_SANITIZE_STRING));
+    $nombreContacto = filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING);
+    $parentezco = filter_var($post['Parentezco'], FILTER_SANITIZE_STRING);
     $numeroEmergencia = filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING);
 
     try {
@@ -362,7 +357,6 @@ HTML;
             ApellidoMaterno     = :apellidoMaterno,
             Email               = :email,
             NumeroTelefono      = :numeroTelefono,
-            TelefonoAlternativo = :telefonoAlternativo,
             DepartamentoId      = :departamentoId,
             PuestoId            = :puestoId
           WHERE UsuarioId = :usuarioId
@@ -374,7 +368,6 @@ HTML;
             'apellidoMaterno' => $apellidoMaterno,
             'email' => $email,
             'numeroTelefono' => $numeroTelefono,
-            'telefonoAlternativo' => $telefonoAlternativo,
             'departamentoId' => $departamentoId,
             'puestoId' => $puestoId,
             'usuarioId' => $usuarioId
@@ -433,83 +426,80 @@ HTML;
             'error'
         );
     }
-}*/
-
+}
+*/
 
 function actualizarUsuario(array $post, PDO $pdo): array
 {
     $usuarioId = filter_var($post['UsuarioId'], FILTER_VALIDATE_INT);
-    $nombreUsuario = strtoupper(filter_var($post['NombreUsuario'], FILTER_SANITIZE_STRING));
-    $apellidoPaterno = strtoupper(filter_var($post['ApellidoPaterno'], FILTER_SANITIZE_STRING));
-    $apellidoMaterno = strtoupper(filter_var($post['ApellidoMaterno'], FILTER_SANITIZE_STRING));
+    $nombreUsuario = filter_var($post['NombreUsuario'], FILTER_SANITIZE_STRING);
+    $apellidoPaterno = filter_var($post['ApellidoPaterno'], FILTER_SANITIZE_STRING);
+    $apellidoMaterno = filter_var($post['ApellidoMaterno'], FILTER_SANITIZE_STRING);
     $email = filter_var($post['Email'], FILTER_VALIDATE_EMAIL);
     $numeroTelefono = filter_var($post['NumeroTelefono'], FILTER_SANITIZE_STRING);
-    $telefonoAlternativo = filter_var($post['TelefonoAlternativo'], FILTER_SANITIZE_STRING);
     $departamentoId = filter_var($post['DepartamentoId'], FILTER_VALIDATE_INT);
     $puestoId = filter_var($post['PuestoId'], FILTER_VALIDATE_INT);
-    $nombreContacto = strtoupper(filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING));
-    $parentezco = strtoupper(filter_var($post['Parentezco'], FILTER_SANITIZE_STRING));
+    $nombreContacto = filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING);
+    $parentezco = filter_var($post['Parentezco'], FILTER_SANITIZE_STRING);
     $numeroEmergencia = filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING);
     // 2) Iniciar transacción
-        $pdo->beginTransaction();
+    $pdo->beginTransaction();
 
-        // 3) Actualizar tabla usuarios
-        $sqlUser = "UPDATE usuarios SET
+    // 3) Actualizar tabla usuarios
+    $sqlUser = "UPDATE usuarios SET
             NombreUsuario       = :nombreUsuario,
             ApellidoPaterno     = :apellidoPaterno,
             ApellidoMaterno     = :apellidoMaterno,
             Email               = :email,
             NumeroTelefono      = :numeroTelefono,
-            TelefonoAlternativo = :telefonoAlternativo,
             DepartamentoId      = :departamentoId,
             PuestoId            = :puestoId
           WHERE UsuarioId = :usuarioId
         ";
-        $stmt = $pdo->prepare($sqlUser);
-        $stmt->execute([
-            'nombreUsuario' => $nombreUsuario,
-            'apellidoPaterno' => $apellidoPaterno,
-            'apellidoMaterno' => $apellidoMaterno,
-            'email' => $email,
-            'numeroTelefono' => $numeroTelefono,
-            'telefonoAlternativo' => $telefonoAlternativo,
-            'departamentoId' => $departamentoId,
-            'puestoId' => $puestoId,
-            'usuarioId' => $usuarioId
-        ]);
+    $stmt = $pdo->prepare($sqlUser);
+    $stmt->execute([
+        'nombreUsuario' => $nombreUsuario,
+        'apellidoPaterno' => $apellidoPaterno,
+        'apellidoMaterno' => $apellidoMaterno,
+        'email' => $email,
+        'numeroTelefono' => $numeroTelefono,
+        'departamentoId' => $departamentoId,
+        'puestoId' => $puestoId,
+        'usuarioId' => $usuarioId
+    ]);
 
-        // 4) Verificar si ya existe un contacto de emergencia
-        $chk = $pdo->prepare(
-            "SELECT ContactoId 
+    // 4) Verificar si ya existe un contacto de emergencia
+    $chk = $pdo->prepare(
+        "SELECT ContactoId 
              FROM contacto_emergencia 
             WHERE UsuarioId = :usuarioId"
-        );
-        $chk->execute(['usuarioId' => $usuarioId]);
-        $existe = (bool) $chk->fetchColumn();
+    );
+    $chk->execute(['usuarioId' => $usuarioId]);
+    $existe = (bool) $chk->fetchColumn();
 
-        if ($existe) {
-            // 4a) Actualizar contacto existente
-            $sqlCE = "UPDATE contacto_emergencia SET
+    if ($existe) {
+        // 4a) Actualizar contacto existente
+        $sqlCE = "UPDATE contacto_emergencia SET
                 NombreContacto = :nombreContacto,
                 Parentezco     = :parentezco,
                 NumeroTelefono = :numeroEmergencia
               WHERE UsuarioId = :usuarioId
             ";
-        } else {
-            // 4b) Insertar nuevo contacto
-            $sqlCE = "INSERT INTO contacto_emergencia
+    } else {
+        // 4b) Insertar nuevo contacto
+        $sqlCE = "INSERT INTO contacto_emergencia
                 (NombreContacto, Parentezco, NumeroTelefono, UsuarioId)
               VALUES
                 (:nombreContacto, :parentezco, :numeroEmergencia, :usuarioId)
             ";
-        }
-        $stmt = $pdo->prepare($sqlCE);
-        $stmt->execute([
-            'nombreContacto' => $nombreContacto,
-            'parentezco' => $parentezco,
-            'numeroEmergencia' => $numeroEmergencia,
-            'usuarioId' => $usuarioId
-        ]);
+    }
+    $stmt = $pdo->prepare($sqlCE);
+    $stmt->execute([
+        'nombreContacto' => $nombreContacto,
+        'parentezco' => $parentezco,
+        'numeroEmergencia' => $numeroEmergencia,
+        'usuarioId' => $usuarioId
+    ]);
 
     try {
         $pdo->commit();

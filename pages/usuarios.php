@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Registro de usuario (formulario principal flotante)
     if (isset($_POST['registrarU'])) {
-        $alertHtml = RegistrarUsuarioCompleto($_POST, $_FILES, $pdo);
+        $alertHtml = RegistrarUsuarioCompleto($_POST, $pdo);
     }
 
     // Actualización de usuario (modal de edición)
@@ -78,7 +78,7 @@ $departamentos = GetDepartamento($pdo);
         <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/admin.html">
+                    <a class="nav-link text-primary" href="../pages/dashboard.php">
                         <i class="material-symbols-rounded opacity-5">dashboard</i>
                         <span class="nav-link-text ms-1">Home</span>
                     </a>
@@ -248,6 +248,29 @@ $departamentos = GetDepartamento($pdo);
             </div>
         </nav>
         <!-- End Navbar -->
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST">
+                        <div class="modal-body">
+                            <p>Estás a punto de cerrar sesión.</p>
+                            <p>¿Seguro que quieres continuar?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+                                sesión</button>
+                            <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--End logout modal-->
 
         <div class="container-fluid px-2 px-md-4">
             <div class="page-header min-height-300 border-radius-xl mt-4"
@@ -332,89 +355,6 @@ $departamentos = GetDepartamento($pdo);
                                 </div>
                             </div>
                             <!-- FIN DEL MODAL DE VACACIONES -->
-
-                            <!--MODAL PARA EDITAR USUARIO-->
-                            <div class="modal fade" id="modal-edit" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h6 class="modal-title">Editar información</h6>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <form id="form-edit-usuario">
-                                            <input type="hidden" name="UsuarioId" id="edit-UsuarioId">
-                                            <div class="modal-body">
-                                                <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Nombre</label>
-                                                    <input name="NombreUsuario" id="edit-NombreUsuario" type="text"
-                                                        class="form-control" required>
-                                                </div>
-                                                <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Apellido Paterno</label>
-                                                    <input name="ApellidoPaterno" id="edit-ApellidoPaterno" type="text"
-                                                        class="form-control" required>
-                                                </div>
-                                                <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Apellido Materno</label>
-                                                    <input name="ApellidoMaterno" id="edit-ApellidoMaterno" type="text"
-                                                        class="form-control" required>
-                                                </div>
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Departamento</label>
-                                                    <select name="DepartamentoId" id="edit-DepartamentoId"
-                                                        class="form-control" required>
-                                                        <!-- Opciones cargadas dinámicamente -->
-                                                    </select>
-                                                </div>
-                                                <div class="input-group input-group-static mb-4">
-                                                    <label>Puesto</label>
-                                                    <select name="PuestoId" id="edit-PuestoId" class="form-control"
-                                                        required>
-                                                        <option value="">Seleccione un puesto</option>
-                                                    </select>
-                                                </div>
-                                                <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Teléfono celular</label>
-                                                    <input name="NumeroTelefono" id="edit-NumeroTelefono" type="tel"
-                                                        class="form-control">
-                                                </div>
-                                                <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Teléfono alternativo</label>
-                                                    <input name="TelefonoAlternativo" id="edit-TelefonoAlternativo"
-                                                        type="tel" class="form-control">
-                                                </div>
-                                                <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Email</label>
-                                                    <input name="Email" id="edit-Email" type="email"
-                                                        class="form-control" required>
-                                                </div>
-                                                <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Nombre contacto emergencia</label>
-                                                    <input name="NombreContacto" id="edit-NombreContacto" type="text"
-                                                        class="form-control">
-                                                </div>
-                                                <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Parentesco contacto emergencia</label>
-                                                    <input name="Parentezco" id="edit-Parentezco" type="text"
-                                                        class="form-control">
-                                                </div>
-                                                <div class="input-group input-group-outline my-3">
-                                                    <label class="form-label">Número contacto emergencia</label>
-                                                    <input name="NumeroEmergencia" id="edit-NumeroEmergencia" type="tel"
-                                                        class="form-control">
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn bg-gradient-primary w-100">Guardar
-                                                    información</button>
-                                                <button type="button" class="btn btn-link"
-                                                    data-bs-dismiss="modal">Cancelar</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- FIN DEL MODAL DE EDITAR USUARIO -->
 
                             <!-- MODAL NOTIFICACIÓN BORRADO -->
                             <div class="modal fade" id="modal-notification" tabindex="-1" role="dialog"
@@ -502,7 +442,7 @@ $departamentos = GetDepartamento($pdo);
 
                 <!-- Navbar Fixed -->
                 <div class="mt-3 d-flex">
-                    <form method="POST" enctype="multipart/form-data">
+                    <form method="POST">
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Nombre</label>
                             <input name="nombre" type="text" class="form-control">
@@ -517,7 +457,7 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                         <div class="input-group input-group-static mb-4 ">
                             <label for="exampleFormControlSelect1" class="ms-0">Tipo de Sangre</label>
-                            <select class="form-control" name="tipoSangre" id="exampleFormControlSelect1">
+                            <select class="form-control" name="tipoSangre" id="exampleFormControlSelect1" required>
                                 <option selected>Seleccionar</option>
                                 <option value="O-">O-</option>
                                 <option value="O+">O+</option>
@@ -545,31 +485,22 @@ $departamentos = GetDepartamento($pdo);
                                 <option value="">Seleccionar</option>
                             </select>
                         </div>
-                        <!-- Foto de perfil -->
-                        <div class="input-group input-group-outline my-3">
-                            <label class="form-label">Foto de perfil</label>
-                            <input name="fotoPerfil" type="file" accept="image/jpeg" class="form-control" required>
-                        </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Email</label>
                             <input name="correo" type="email" class="form-control">
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Número celular</label>
-                            <input name="celular" type="number" class="form-control">
-                        </div>
-                        <div class="input-group input-group-outline my-3">
-                            <label class="form-label">Número alternativo</label>
-                            <input name="telefonoAlternativo" type="number" class="form-control">
+                            <input name="celular" type="tel" class="form-control" required>
                         </div>
                         <!-- Datos de contacto de emergencia -->
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Nombre contacto de emergencia</label>
-                            <input name="NombreContacto" type="text" class="form-control" required>
+                            <input name="NombreContacto" type="text" class="form-control">
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Parentesco</label>
-                            <input name="Parentesco" type="text" class="form-control" required>
+                            <input name="Parentesco" type="text" class="form-control">
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Número de emergencia</label>
@@ -577,7 +508,7 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                         <div class="input-group input-group-static mb-4 ">
                             <label for="exampleFormControlSelect1" class="ms-0">Base</label>
-                            <select name="Base" class="form-control" id="exampleFormControlSelect1">
+                            <select name="Base" class="form-control" id="exampleFormControl2" required>
                                 <option selected>Seleccionar</option>
                                 <option>Allende</option>
                                 <option>Chihuahua</option>
@@ -700,90 +631,67 @@ $departamentos = GetDepartamento($pdo);
         document.addEventListener('DOMContentLoaded', function () {
             const editModal = document.getElementById('modal-edit');
             const formEdit = document.getElementById('form-edit-usuario');
+            const bsModal = new bootstrap.Modal(editModal);
 
-            // 1) Cuando se abre el modal, leer el data-user-id del botón que lo disparó
-            editModal.addEventListener('show.bs.modal', async function (event) {
-                const button = event.relatedTarget;
-                const userId = button.getAttribute('data-user-id');
+            editModal.addEventListener('show.bs.modal', async e => {
+                const userId = e.relatedTarget.dataset.userId;
+                formEdit.UsuarioId.value = userId;
 
-                // Guardar ID en el hidden input
-                document.getElementById('edit-UsuarioId').value = userId;
-
-                // 2) Pedir al backend los datos del usuario
-                const resp = await fetch(`../controllers/get_usuario.php?id=${userId}`);
+                // TRAEMOS JSON PURO, NUNCA HTML
+                const resp = await fetch(`../controllers/get_usuario_ajax.php?id=${userId}`);
                 const u = await resp.json();
 
-                // 3) Rellenar inputs
-                document.getElementById('edit-NombreUsuario').value = u.NombreUsuario;
-                document.getElementById('edit-ApellidoPaterno').value = u.ApellidoPaterno;
-                document.getElementById('edit-ApellidoMaterno').value = u.ApellidoMaterno;
-                document.getElementById('edit-NumeroTelefono').value = u.NumeroTelefono || '';
-                document.getElementById('edit-TelefonoAlternativo').value = u.TelefonoAlternativo || '';
-                document.getElementById('edit-Email').value = u.Email;
-
-                // 4) Cargar lista de departamentos y marcar el actual
-                const depSel = document.getElementById('edit-DepartamentoId');
-                depSel.innerHTML = '<option value="">Cargando…</option>';
-                const deps = <?= json_encode($departamentos, JSON_UNESCAPED_UNICODE) ?>;
-                depSel.innerHTML = '<option value="">Seleccione</option>';
-                deps.forEach(d => {
-                    const o = document.createElement('option');
-                    o.value = d.DepartamentoId;
-                    o.textContent = d.DepartamentoNombre;
-                    if (d.DepartamentoId == u.DepartamentoId) o.selected = true;
-                    depSel.appendChild(o);
-                });
-
-                // 5) Al seleccionar departamento, recargar puestos
-                async function loadPuestos(depId, selectedId) {
-                    const pSel = document.getElementById('edit-PuestoId');
-                    pSel.innerHTML = '<option value="">Cargando…</option>';
-                    const res = await fetch(`../controllers/logica_usuario.php?DepartamentoId=${depId}`);
-                    const puestos = await res.json();
-                    pSel.innerHTML = '<option value="">Seleccione</option>';
-                    puestos.forEach(p => {
+                // Rellenas los inputs
+                formEdit.NombreUsuario.value = u.NombreUsuario || '';
+                formEdit.ApellidoPaterno.value = u.ApellidoPaterno || '';
+                formEdit.ApellidoMaterno.value = u.ApellidoMaterno || '';
+                formEdit.NumeroTelefono.value = u.NumeroTelefono || '';
+                formEdit.Email.value = u.Email || '';
+                // 4) Rellena departamento y puesto
+                const depSel = formEdit.DepartamentoId;
+                depSel.value = u.DepartamentoId || '';
+                // Carga puestos y marca
+                const loadPuestos = async (depId, selId) => {
+                    const ps = formEdit.PuestoId;
+                    ps.innerHTML = '<option>Cargando…</option>';
+                    const r = await fetch(`../controllers/logica_usuario.php?DepartamentoId=${depId}`);
+                    const arr = await r.json();
+                    ps.innerHTML = '<option value="">Seleccione...</option>';
+                    arr.forEach(p => {
                         const o = document.createElement('option');
                         o.value = p.PuestoId;
-                        o.textContent = p.PuestoNombre;
-                        if (p.PuestoId == selectedId) o.selected = true;
-                        pSel.appendChild(o);
+                        o.text = p.PuestoNombre;
+                        if (p.PuestoId == selId) o.selected = true;
+                        ps.append(o);
                     });
-                }
-                // Primera carga de puestos
+                };
                 await loadPuestos(u.DepartamentoId, u.PuestoId);
-
-                // Resetear evento para cambios posteriores
                 depSel.onchange = () => loadPuestos(depSel.value, null);
-
-                // 6) Cargar contacto de emergencia
-                document.getElementById('edit-NombreContacto').value = u.NombreContacto || '';
-                document.getElementById('edit-Parentezco').value = u.Parentezco || '';
-                document.getElementById('edit-NumeroEmergencia').value = u.NumeroEmergencia || '';
+                formEdit.NombreContacto.value = u.NombreContacto || '';
+                formEdit.Parentezco.value = u.Parentezco || '';
+                formEdit.NumeroEmergencia.value = u.ContactoTelefono || '';
             });
 
-            // 7) Al enviar el formulario, hacer POST AJAX a update_usuario.php
-            formEdit.addEventListener('submit', async function (e) {
-                e.preventDefault();
-                const data = new FormData(this);
 
-                const resp = await fetch('../controllers/update_usuario.php', {
+            // 7) Al enviar el formulario, hacer POST AJAX a update_usuario.php
+            formEdit.addEventListener('submit', async e => {
+                e.preventDefault();
+                const resp = await fetch('../controllers/update_usuario_ajax.php', {
                     method: 'POST',
-                    body: data
+                    body: new FormData(formEdit)
                 });
 
-                // 1.1) Lee la respuesta como texto
-                const text = await resp.text();
+                const result = await resp.json();
 
-                // 1.2) Muestra TODO lo que llega
-                console.log('RAW RESPONSE:', text);
+                await Swal.fire({
+                    title: result.success ? '¡Actualizado!' : 'Error',
+                    text: result.message,
+                    icon: result.success ? 'success' : 'error'
+                });
 
-                // 1.3) Luego intenta parsear si es JSON
-                try {
-                    const result = JSON.parse(text);
-                    console.log('PARSED JSON:', result);
-                    // tu código original de Swal…
-                } catch (err) {
-                    console.error('JSON PARSE ERROR:', err);
+                if (result.success) {
+                    bsEditModal.hide();
+                    window.location.reload();
                 }
             });
         });
@@ -836,6 +744,7 @@ $departamentos = GetDepartamento($pdo);
             });
         });
     </script>
+
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -878,30 +787,75 @@ $departamentos = GetDepartamento($pdo);
     <script src="../assets/js/settings.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <!--MODAL PARA EDITAR USUARIO-->
+    <div class="modal fade" id="modal-edit" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h6 class="modal-title">Editar información</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST">
+                <form id="form-edit-usuario">
+                    <input type="hidden" name="UsuarioId" id="edit-UsuarioId">
                     <div class="modal-body">
-                        <p>Estás a punto de cerrar sesión.</p>
-                        <p>¿Seguro que quieres continuar?</p>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Nombre</label>
+                            <input name="NombreUsuario" id="edit-NombreUsuario" type="text" class="form-control"
+                                required>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Apellido Paterno</label>
+                            <input name="ApellidoPaterno" id="edit-ApellidoPaterno" type="text" class="form-control"
+                                required>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Apellido Materno</label>
+                            <input name="ApellidoMaterno" id="edit-ApellidoMaterno" type="text" class="form-control"
+                                >
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label>Departamento</label>
+                            <select name="DepartamentoId" id="edit-DepartamentoId" class="form-control">
+                                <!-- Opciones cargadas dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="input-group input-group-static mb-4">
+                            <label>Puesto</label>
+                            <select name="PuestoId" id="edit-PuestoId" class="form-control">
+                                <option value="">Seleccione un puesto</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Teléfono celular</label>
+                            <input name="NumeroTelefono" id="edit-NumeroTelefono" type="tel" class="form-control">
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Email</label>
+                            <input name="Email" id="edit-Email" type="email" class="form-control" required>
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Nombre contacto emergencia</label>
+                            <input name="NombreContacto" id="edit-NombreContacto" type="text" class="form-control">
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Parentesco contacto emergencia</label>
+                            <input name="Parentezco" id="edit-Parentezco" type="text" class="form-control">
+                        </div>
+                        <div class="input-group input-group-outline my-3">
+                            <label class="form-label">Número contacto emergencia</label>
+                            <input name="NumeroEmergencia" id="edit-NumeroEmergencia" type="tel" class="form-control">
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
-                            sesión</button>
+                        <button type="submit" class="btn bg-gradient-primary w-100">Guardar
+                            información</button>
                         <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <!--End logout modal-->
+    <!-- FIN DEL MODAL DE EDITAR USUARIO -->
 </body>
 
 </html>
