@@ -24,6 +24,7 @@ $stmt = $pdo->prepare("
     u.DepartamentoId,
     u.PuestoId,
     u.NumeroTelefono,
+    u.TipoSangre,
     ce.NombreContacto,
     ce.Parentezco,
     ce.NumeroTelefono AS ContactoTelefono

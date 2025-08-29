@@ -112,7 +112,7 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/avisos.html">
+          <a class="nav-link text-primary" href="../pages/avisos.php">
             <i class="material-symbols-rounded opacity-5">add_alert</i>
             <span class="nav-link-text ms-1">Avisos</span>
           </a>
@@ -263,6 +263,7 @@ require_once '../controllers/dashboard.php';
   </aside>';
   }
   ?>
+
   <div class="main-content position-relative max-height-vh-100 h-100">
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
@@ -364,7 +365,7 @@ require_once '../controllers/dashboard.php';
               <div class="row">
                 <div class="row">
                   <h6 class="mb-0">¡Sé bienvenid@!</h6>
-                  <h6 class="mb-0" id="fechaCompleta">¡Sé bienvenid@!</h6>
+                  <h6 class="mb-0" id="fechaCompleta"></h6>
                 </div>
               </div>
               <hr class="dark horizontal">

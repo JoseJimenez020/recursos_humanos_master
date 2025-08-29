@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 require_once 'conn.php';
 
@@ -35,37 +37,49 @@ function GetFoto($id, $pdo)
         : '../assets/img/small-logos/user.png';
 }
 
-function GetTableUsuarios(PDO $pdo): string
+function GetTableUsuarios(PDO $pdo, string $nombre, string $departamento): string
 {
-    $sql = "
-      SELECT 
-        u.UsuarioId,
-        u.NombreUsuario,
-        u.ApellidoPaterno,
-        u.ApellidoMaterno,
-        u.Email,
-        u.NumeroTelefono,
-        d.DepartamentoNombre,
-        p.PuestoNombre,
-        ce.NombreContacto,
-        ce.Parentezco,
-        ce.NumeroTelefono AS CEtelefono,
-        u.UsuarioActivo,
-        u.FechaRegistro,
-        f.FotoContenido
+    $sql = "SELECT
+        u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno,
+        u.Username, u.NumeroTelefono, d.DepartamentoNombre, p.PuestoNombre,
+        ce.NombreContacto, ce.Parentezco, ce.NumeroTelefono AS CEtelefono,
+        u.UsuarioActivo, u.FechaRegistro, f.FotoContenido
       FROM usuarios u
-      LEFT JOIN departamento d 
-        ON u.DepartamentoId = d.DepartamentoId
-      LEFT JOIN puesto p 
-        ON u.PuestoId = p.PuestoId
-      LEFT JOIN contacto_emergencia ce 
-        ON ce.UsuarioId = u.UsuarioId
-      LEFT JOIN fotos f 
-        ON f.EntidadTipo = 'usuario' 
-       AND f.EntidadId   = u.UsuarioId
-      ORDER BY u.ApellidoPaterno;
+      LEFT JOIN departamento d ON u.DepartamentoId = d.DepartamentoId
+      LEFT JOIN puesto p        ON u.PuestoId       = p.PuestoId
+      LEFT JOIN contacto_emergencia ce ON ce.UsuarioId = u.UsuarioId
+      LEFT JOIN fotos f ON f.EntidadTipo = 'usuario'
+                       AND f.EntidadId   = u.UsuarioId
+      WHERE 1=1
     ";
-    $stmt = $pdo->query($sql);
+
+    $params = [];
+
+    // Filtro por nombre
+    if ($nombre !== '') {
+        $sql .= " AND (
+                        u.NombreUsuario   LIKE ? OR
+                        u.ApellidoPaterno LIKE ? OR
+                        u.ApellidoMaterno LIKE ? OR
+                        u.Username        LIKE ?
+
+                     )";
+        // clave sin dos puntos
+        $params = array_fill(0, 4, "%{$nombre}%");
+
+    }
+
+    // Filtro por departamento
+    if ($departamento !== '') {
+        $sql .= " AND u.DepartamentoId = :departamento";
+        $params['departamento'] = $departamento;
+    }
+
+    $sql .= " ORDER BY u.ApellidoPaterno";
+
+    // Preparar y ejecutar
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($rows)) {
@@ -74,69 +88,63 @@ function GetTableUsuarios(PDO $pdo): string
 
     $html = '';
     foreach ($rows as $u) {
-        // Foto de perfil (si no existe, imagen por defecto)
         $src = $u['FotoContenido']
             ? 'data:image/jpeg;base64,' . base64_encode($u['FotoContenido'])
             : '../assets/img/small-logos/user.png';
 
-        // Nombre completo
         $full = "{$u['NombreUsuario']} {$u['ApellidoPaterno']} {$u['ApellidoMaterno']}";
-
-        // Estado: Activo vs Vacaciones
         $badge = $u['UsuarioActivo']
-            ? '<span class="badge badge-sm bg-gradient-success">Activo</span>'
-            : '<span class="badge badge-sm bg-gradient-secondary">Vacaciones</span>';
+            ? '<span class="badge bg-success">Activo</span>'
+            : '<span class="badge bg-secondary">Vacaciones</span>';
 
-        // Componer fila
         $html .= '<tr>
-  <td>
-    <div class="d-flex px-2 py-1">
-      <div><img src="' . $src . '" class="avatar avatar-sm me-3 border-radius-lg"></div>
-      <div class="d-flex flex-column justify-content-center">
-        <h6 class="mb-0 text-sm">' . $full . '</h6>
-        <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['Email']) . '</p>
-        <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['NumeroTelefono']) . '</p>
-      </div>
-    </div>
-  </td>
-  <td>
-    <p class="text-xs font-weight-bold mb-0">' . ($u['PuestoNombre'] ?? 'Sin registros') . '</p>
-    <p class="text-xs text-secondary mb-0">' . ($u['DepartamentoNombre'] ?? 'Sin registros') . '</p>
-  </td>
-  <td>
-    <p class="text-xs font-weight-bold mb-0">' . ($u['NombreContacto'] ?? 'Sin registros') . '</p>
-    <p class="text-xs text-secondary mb-0">' . ($u['Parentezco'] ?? 'Sin registros') . '</p>
-    <p class="text-xs text-secondary mb-0">' . ($u['CEtelefono'] ?? 'Sin registros') . '</p>
-  </td>
-  <td class="align-middle text-center text-sm">' . $badge . '</td>
-  <td class="align-middle text-center">
-    <span class="text-secondary text-xs font-weight-bold">' . date('d/m/Y', strtotime($u['FechaRegistro'])) . '</span>
-  </td>
-  <td class="align-middle">
-    <td class="align-middle">
-                                            <a href=""
-                                            class="text-secondary font-weight-bold text-xs btn-edit"
-                                            data-user-id="' . ($u['UsuarioId']) . '"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#modal-edit">
-                                            <i class="material-symbols-rounded opacity-5">edit</i>
-                                            </a>
-                                            <a href="" class="text-danger font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Delete user" target="_blank"
-                                                data-bs-toggle="modal" data-bs-target="#modal-notification">
-                                                <i class="material-symbols-rounded opacity-5">delete</i>
-                                            </a>
-                                            <a href="" class="text-success font-weight-bold text-xs"
-                                                data-toggle="tooltip" data-original-title="Vacations" target="_blank"
-                                                data-bs-toggle="modal" data-bs-target="#modal-form">
-                                                <i class="material-symbols-rounded opacity-5">beach_access</i>
-                                            </a>
-                                        </td>
-  </td>
-</tr>';
+                    <td>
+                        <div class="d-flex px-2 py-1">
+                        <img src="' . $src . '" class="avatar avatar-sm me-3 border-radius-lg">
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">' . $full . '</h6>
+                            <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['Username']) . '</p>
+                            <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['NumeroTelefono'] ?? 'No disponible') . '</p>
+                        </div>
+                        </div>
+                    </td>
+                    <td>
+                        <p class="text-xs font-weight-bold mb-0">' . ($u['PuestoNombre'] ?? 'Sin registros') . '</p>
+                        <p class="text-xs text-secondary mb-0">' . ($u['DepartamentoNombre'] ?? 'Sin registros') . '</p>
+                    </td>
+                    <td>
+                        <p class="text-xs font-weight-bold mb-0">' . ($u['NombreContacto'] ?? 'Sin registros') . '</p>
+                        <p class="text-xs text-secondary mb-0">' . ($u['Parentezco'] ?? 'Sin registros') . '</p>
+                        <p class="text-xs text-secondary mb-0">' . ($u['CEtelefono'] ?? 'Sin registros') . '</p>
+                    </td>
+                    <td class="text-center text-sm">' . $badge . '</td>
+                    <td class="text-center text-xs">' . date('d/m/Y', strtotime($u['FechaRegistro'])) . '</td>
+                    <td class="align-middle">
+                        <a href="" class="text-secondary font-weight-bold text-xs btn-edit"
+                        data-user-id="' . ($u['UsuarioId']) . '"
+                        data-bs-toggle="modal" data-bs-target="#modal-edit">
+                        <i class="material-symbols-rounded opacity-5">edit</i>
+                        </a>
+                        <a href="" class="text-danger font-weight-bold text-xs"
+                        data-user-id="' . ($u['UsuarioId']) . '"';
+        $full = "{$u['NombreUsuario']} {$u['ApellidoPaterno']} {$u['ApellidoMaterno']}";
+        $html .= 'data-user-name="' . htmlspecialchars($full) . '"
+                        data-toggle="tooltip" data-original-title="Delete user" target="_blank"
+                        data-bs-toggle="modal" data-bs-target="#modal-notification">
+                        <i class="material-symbols-rounded opacity-5">delete</i>
+                        </a>
+                        <a href="" class="text-success font-weight-bold text-xs"
+                        data-user-id="' . ($u['UsuarioId']) . '"
+                        data-toggle="tooltip" data-original-title="Vacations" target="_blank"
+                        data-bs-toggle="modal" data-bs-target="#modal-form">
+                        <i class="material-symbols-rounded opacity-5">beach_access</i>
+                        </a>
+                    </td>
+                    </tr>';
     }
 
     return $html;
+
 }
 
 function GetDepartamento($pdo)
@@ -269,21 +277,21 @@ function RegistrarUsuarioCompleto(array $post, PDO $pdo): string
         ]);
         $usuarioId = $pdo->lastInsertId();
 
-        // 4.2) Insertar contacto de emergencia
-        $sqlCE = "
-          INSERT INTO contacto_emergencia
-            (NombreContacto, Parentezco, NumeroTelefono, UsuarioId)
-          VALUES
-            (:nc, :par, :tel, :uid)
-        ";
-        $stCE = $pdo->prepare($sqlCE);
-        $stCE->execute([
-            'nc' => $nombreCont ?: null,
-            'par' => $parentesco ?: null,
-            'tel' => $numEmergencia ?: null,
-            'uid' => $usuarioId
-        ]);
-
+        // 4.2) Insertar contacto de emergencia si al menos uno de los tres campos tiene valor
+        if ($nombreCont !== '' || $parentesco !== '' || $numEmergencia !== '') {
+            $sqlCE = "INSERT INTO contacto_emergencia
+                (NombreContacto, Parentezco, NumeroTelefono, UsuarioId)
+            VALUES
+                (:nc, :par, :tel, :uid)
+            ";
+            $stCE = $pdo->prepare($sqlCE);
+            $stCE->execute([
+                'nc' => $nombreCont !== '' ? $nombreCont : null,
+                'par' => $parentesco !== '' ? $parentesco : null,
+                'tel' => $numEmergencia !== '' ? $numEmergencia : null,
+                'uid' => $usuarioId
+            ]);
+        }
         $pdo->commit();
 
         return alertScript(
@@ -439,6 +447,7 @@ function actualizarUsuario(array $post, PDO $pdo): array
     $numeroTelefono = filter_var($post['NumeroTelefono'], FILTER_SANITIZE_STRING);
     $departamentoId = filter_var($post['DepartamentoId'], FILTER_VALIDATE_INT);
     $puestoId = filter_var($post['PuestoId'], FILTER_VALIDATE_INT);
+    $tipoSangre = filter_var($post['TipoSangre'], FILTER_VALIDATE_INT);
     $nombreContacto = filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING);
     $parentezco = filter_var($post['Parentezco'], FILTER_SANITIZE_STRING);
     $numeroEmergencia = filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING);
@@ -451,6 +460,7 @@ function actualizarUsuario(array $post, PDO $pdo): array
             ApellidoPaterno     = :apellidoPaterno,
             ApellidoMaterno     = :apellidoMaterno,
             Email               = :email,
+            TipoSangre          = :tipoSangre,
             NumeroTelefono      = :numeroTelefono,
             DepartamentoId      = :departamentoId,
             PuestoId            = :puestoId
@@ -462,6 +472,7 @@ function actualizarUsuario(array $post, PDO $pdo): array
         'apellidoPaterno' => $apellidoPaterno,
         'apellidoMaterno' => $apellidoMaterno,
         'email' => $email,
+        'tipoSangre' => $tipoSangre,
         'numeroTelefono' => $numeroTelefono,
         'departamentoId' => $departamentoId,
         'puestoId' => $puestoId,
@@ -512,6 +523,28 @@ function actualizarUsuario(array $post, PDO $pdo): array
         return [
             'success' => false,
             'message' => 'No se pudo actualizar: ' . $e->getMessage()
+        ];
+    }
+}
+
+function eliminarUsuario(PDO $pdo, int $userId): array
+{
+    try {
+        $sql = "DELETE FROM usuarios WHERE UsuarioId = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['id' => $userId]);
+
+        // Si quisieras saber cuántas filas afectó:
+        // $deleted = $stmt->rowCount();
+
+        return [
+            'success' => true,
+            'message' => null
+        ];
+    } catch (PDOException $e) {
+        return [
+            'success' => false,
+            'message' => $e->getMessage()
         ];
     }
 }

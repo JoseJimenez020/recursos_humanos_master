@@ -30,8 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     elseif (isset($_POST['updateUser'])) {
         $alertHtml = actualizarUsuario($_POST, $pdo);
     }
+
 }
 
+$filterName = trim($_GET['nombreusuario'] ?? '');
+$filterDept = $_GET['departamento'] ?? '';
 // 3) Traemos departamentos para poblar ambos selects
 $departamentos = GetDepartamento($pdo);
 ?>
@@ -64,120 +67,225 @@ $departamentos = GetDepartamento($pdo);
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
-        id="sidenav-main">
-        <div class="sidenav-header">
-            <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-                aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
-                <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
-                <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
-            </a>
-        </div>
-        <hr class="horizontal dark mt-0 mb-2">
-        <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/dashboard.php">
-                        <i class="material-symbols-rounded opacity-5">dashboard</i>
-                        <span class="nav-link-text ms-1">Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/politicas.html">
-                        <i class="material-symbols-rounded opacity-5">policy</i>
-                        <span class="nav-link-text ms-1">Políticas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
-                        <i class="material-symbols-rounded opacity-5">rule</i>
-                        <span class="nav-link-text ms-1">Reglamento Interno</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/procesos.html">
-                        <i class="material-symbols-rounded opacity-5">receipt_long</i>
-                        <span class="nav-link-text ms-1">Procesos</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/organigrama.html">
-                        <i class="material-symbols-rounded opacity-5">globe_book</i>
-                        <span class="nav-link-text ms-1">Organigrama</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/mision_vision.html">
-                        <i class="material-symbols-rounded opacity-5">public</i>
-                        <span class="nav-link-text ms-1">Misión, Visión</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/valores.html">
-                        <i class="material-symbols-rounded opacity-5">psychology</i>
-                        <span class="nav-link-text ms-1">Valores</span>
-                    </a>
-                </li>
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Administrador
-                    </h6>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link  active bg-gradient-primary text-white" href="../pages/usuarios.php">
-                        <i class="material-symbols-rounded opacity-5">groups</i>
-                        <span class="nav-link-text ms-1">Usuarios</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/avisos.html">
-                        <i class="material-symbols-rounded opacity-5">add_alert</i>
-                        <span class="nav-link-text ms-1">Avisos</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/felicitaciones.html">
-                        <i class="material-symbols-rounded opacity-5">celebration</i>
-                        <span class="nav-link-text ms-1">Felicitaciones</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/campanias.html">
-                        <i class="material-symbols-rounded opacity-5">campaign</i>
-                        <span class="nav-link-text ms-1">Campañas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/r_vacantes.html">
-                        <i class="material-symbols-rounded opacity-5">explore</i>
-                        <span class="nav-link-text ms-1">Vacantes</span>
-                    </a>
-                </li>
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
-                        adicional</h6>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/manuales.html">
-                        <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
-                        <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/nom035.html">
-                        <i class="material-symbols-rounded opacity-5">comment</i>
-                        <span class="nav-link-text ms-1">NOM-35</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/sign-in.html">
-                        <i class="material-symbols-rounded opacity-5">login</i>
-                        <span class="nav-link-text ms-1">Salir</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </aside>
+
+    <?php
+    if ($sesion['EsAdmin'] === 1) {
+        echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/dashboard.php">
+            <i class="material-symbols-rounded opacity-5">dashboard</i>
+            <span class="nav-link-text ms-1">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/politicas.html">
+            <i class="material-symbols-rounded opacity-5">policy</i>
+            <span class="nav-link-text ms-1">Políticas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+            <i class="material-symbols-rounded opacity-5">rule</i>
+            <span class="nav-link-text ms-1">Reglamento Interno</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/procesos.html">
+            <i class="material-symbols-rounded opacity-5">receipt_long</i>
+            <span class="nav-link-text ms-1">Procesos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/organigrama.html">
+            <i class="material-symbols-rounded opacity-5">globe_book</i>
+            <span class="nav-link-text ms-1">Organigrama</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+            <i class="material-symbols-rounded opacity-5">public</i>
+            <span class="nav-link-text ms-1">Misión, Visión</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/valores.html">
+            <i class="material-symbols-rounded opacity-5">psychology</i>
+            <span class="nav-link-text ms-1">Valores</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Administrador</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/usuarios.php">
+            <i class="material-symbols-rounded opacity-5">groups</i>
+            <span class="nav-link-text ms-1">Usuarios</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/avisos.php">
+            <i class="material-symbols-rounded opacity-5">add_alert</i>
+            <span class="nav-link-text ms-1">Avisos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/felicitaciones.html">
+            <i class="material-symbols-rounded opacity-5">celebration</i>
+            <span class="nav-link-text ms-1">Felicitaciones</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/campanias.html">
+            <i class="material-symbols-rounded opacity-5">campaign</i>
+            <span class="nav-link-text ms-1">Campañas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+            adicional</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/manuales.html">
+            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/nom035.html">
+            <i class="material-symbols-rounded opacity-5">comment</i>
+            <span class="nav-link-text ms-1">NOM-35</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/sign-in.html">
+            <i class="material-symbols-rounded opacity-5">login</i>
+            <span class="nav-link-text ms-1">Salir</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>';
+    } elseif ($sesion['EsAdmin'] === 0) {
+        echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
+            <i class="material-symbols-rounded opacity-5">dashboard</i>
+            <span class="nav-link-text ms-1">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/politicas.html">
+            <i class="material-symbols-rounded opacity-5">policy</i>
+            <span class="nav-link-text ms-1">Políticas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+            <i class="material-symbols-rounded opacity-5">rule</i>
+            <span class="nav-link-text ms-1">Reglamento Interno</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/procesos.html">
+            <i class="material-symbols-rounded opacity-5">receipt_long</i>
+            <span class="nav-link-text ms-1">Procesos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/organigrama.html">
+            <i class="material-symbols-rounded opacity-5">globe_book</i>
+            <span class="nav-link-text ms-1">Organigrama</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+            <i class="material-symbols-rounded opacity-5">public</i>
+            <span class="nav-link-text ms-1">Misión, Visión</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/valores.html">
+            <i class="material-symbols-rounded opacity-5">psychology</i>
+            <span class="nav-link-text ms-1">Valores</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+            adicional</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/manuales.html">
+            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/nom035.html">
+            <i class="material-symbols-rounded opacity-5">comment</i>
+            <span class="nav-link-text ms-1">NOM-35</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/sign-in.html">
+            <i class="material-symbols-rounded opacity-5">login</i>
+            <span class="nav-link-text ms-1">Salir</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+      <div class="mx-3">
+        <a class="btn btn-outline mt-4 w-100 text-primary">
+          <i class="material-symbols-rounded opacity-5">explore</i>
+          <span class="nav-link-text ms-1">Vacantes</span>
+        </a>
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+          <span class="nav-link-text ms-1">Comercial</span>
+          <i class="material-symbols-rounded opacity-5">groups</i>
+          <span id="contador_vacantes">4</span>
+          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
+        </a>
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+          <span class="nav-link-text ms-1">Técnico</span>
+          <i class="material-symbols-rounded opacity-5">groups</i>
+          <span id="contador_vacantes">4</span>
+          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
+        </a>
+      </div>
+    </div>
+  </aside>';
+    }
+    ?>
     <!-- CONTENIDO DEL BODY -->
     <div class="main-content position-relative max-height-vh-100 h-100">
         <!-- Navbar -->
@@ -248,29 +356,6 @@ $departamentos = GetDepartamento($pdo);
             </div>
         </nav>
         <!-- End Navbar -->
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="POST">
-                        <div class="modal-body">
-                            <p>Estás a punto de cerrar sesión.</p>
-                            <p>¿Seguro que quieres continuar?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
-                                sesión</button>
-                            <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!--End logout modal-->
 
         <div class="container-fluid px-2 px-md-4">
             <div class="page-header min-height-300 border-radius-xl mt-4"
@@ -290,7 +375,39 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                     </div>
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive p-0">
+                        <div class="table-responsive p-0 panel">
+                            <form action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="get">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-outline my-3">
+                                            <label class="form-label">Nombre de usuario</label>
+                                            <input type="text" name="nombreusuario" class="form-control"
+                                                value="<?= htmlspecialchars($filterName) ?>">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group input-group-static my-3">
+                                            <select name="departamento" class="form-control" id="departamento">
+                                                <option value="" selected> Departamento</option>
+                                                <?php foreach ($departamentos as $d): ?>
+                                                    <option value="<?= $d['DepartamentoId'] ?>"
+                                                        <?= $filterDept == $d['DepartamentoId'] ?>>
+                                                        <?= htmlspecialchars($d['DepartamentoNombre']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-icon btn-3 btn-primary" type="submit">
+                                    <span class="btn-inner--icon"><i class="material-symbols-rounded">search</i></span>
+                                    <span class="btn-inner--text">Buscar</span>
+                                </button>
+                                <button class="btn btn-icon btn-2 btn-primary" type="button"
+                                    onclick="window.location.href='<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>'">
+                                    <span class="btn-inner--icon"><i class="material-symbols-rounded">Close</i></span>
+                                </button>
+                            </form>
                             <table class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
@@ -308,11 +425,11 @@ $departamentos = GetDepartamento($pdo);
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Añadido el</th>
-                                        <th class="text-secondary opacity-7 ps-2"></th>
+                                        <th class="text-secondary opacity-7 ps-2"> </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?= GetTableUsuarios($pdo) ?>
+                                    <?= GetTableUsuarios($pdo, $filterName, $filterDept) ?>
                                 </tbody>
                             </table>
 
@@ -357,42 +474,34 @@ $departamentos = GetDepartamento($pdo);
                             <!-- FIN DEL MODAL DE VACACIONES -->
 
                             <!-- MODAL NOTIFICACIÓN BORRADO -->
-                            <div class="modal fade" id="modal-notification" tabindex="-1" role="dialog"
-                                aria-labelledby="modal-notification" aria-hidden="true">
-                                <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                            <div class="modal fade" id="modal-notification" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <i class="material-symbols-rounded text-danger me-2">
-                                                warning
-                                            </i>
-                                            <h6 class="modal-title font-weight-normal" id="modal-title-notification">
-                                                Alerta</h6>
-                                            <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
-                                                aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
+                                            <i class="material-symbols-rounded text-danger me-2">warning</i>
+                                            <h6 class="modal-title">Alerta</h6>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <div class="modal-body">
-                                            <div class="py-3 text-center">
-                                                <i class="material-symbols-rounded h1 text-secondary">
-                                                    Borrar Usuario
-                                                </i>
+                                        <form id="form-delete-user">
+                                            <div class="modal-body text-center">
+                                                <i class="material-symbols-rounded h1 text-secondary">Eliminar
+                                                    Usuario</i>
                                                 <h4 class="text-gradient text-danger mt-4">Atención</h4>
-                                                <p>Está a punto de borrar a @Nombre_Usuario, ¿Está seguro que desea
-                                                    continuar?</p>
+                                                <p>Está a punto de borrar a <strong id="modal-username"></strong>,
+                                                    ¿desea continuar?</p>
+                                                <input type="hidden" name="delete_user_id" id="delete-user-id">
                                             </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn bg-gradient-primary toast-btn"
-                                                data-bs-dismiss="modal" data-target="warningToast">Sí,
-                                                continuar.</button>
-                                            <button type="button" class="btn btn-link text-primary ml-auto"
-                                                data-bs-dismiss="modal">Cancelar</button>
-                                        </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn bg-gradient-primary">Sí,
+                                                    continuar.</button>
+                                                <button type="button" class="btn btn-link text-primary"
+                                                    data-bs-dismiss="modal">Cancelar</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                            <!-- FIN DEL MODAL NOTIFICACIÓN BORRADO -->
+                            <!-- FIN DEL MODAL -->
                         </div>
                     </div>
                 </div>
@@ -438,9 +547,6 @@ $departamentos = GetDepartamento($pdo);
             </div>
             <hr class="horizontal dark my-1">
             <div class="card-body pt-sm-3 pt-0" style="max-height: 80vh; overflow-y: auto;">
-                <!-- Sidenav Type -->
-
-                <!-- Navbar Fixed -->
                 <div class="mt-3 d-flex">
                     <form method="POST">
                         <div class="input-group input-group-outline my-3">
@@ -457,7 +563,7 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                         <div class="input-group input-group-static mb-4 ">
                             <label for="exampleFormControlSelect1" class="ms-0">Tipo de Sangre</label>
-                            <select class="form-control" name="tipoSangre" id="exampleFormControlSelect1" required>
+                            <select class="form-control" name="tipoSangre" id="exampleFormControlSelect1">
                                 <option selected>Seleccionar</option>
                                 <option value="O-">O-</option>
                                 <option value="O+">O+</option>
@@ -491,7 +597,7 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Número celular</label>
-                            <input name="celular" type="tel" class="form-control" required>
+                            <input name="celular" type="tel" class="form-control">
                         </div>
                         <!-- Datos de contacto de emergencia -->
                         <div class="input-group input-group-outline my-3">
@@ -504,7 +610,7 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Número de emergencia</label>
-                            <input name="NumeroEmergencia" type="tel" class="form-control" required>
+                            <input name="NumeroEmergencia" type="tel" class="form-control">
                         </div>
                         <div class="input-group input-group-static mb-4 ">
                             <label for="exampleFormControlSelect1" class="ms-0">Base</label>
@@ -672,7 +778,6 @@ $departamentos = GetDepartamento($pdo);
                 formEdit.NumeroEmergencia.value = u.ContactoTelefono || '';
             });
 
-
             // 7) Al enviar el formulario, hacer POST AJAX a update_usuario.php
             formEdit.addEventListener('submit', async e => {
                 e.preventDefault();
@@ -754,6 +859,7 @@ $departamentos = GetDepartamento($pdo);
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
         }
     </script>
+
     <script>
         document.getElementById('departamento').addEventListener('change', function () {
             const departamentoId = this.value;
@@ -784,6 +890,50 @@ $departamentos = GetDepartamento($pdo);
                 });
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const deleteModal = document.getElementById('modal-notification');
+
+            // 1) Antes de mostrar el modal, le metemos ID y nombre
+            deleteModal.addEventListener('show.bs.modal', event => {
+                const trigger = event.relatedTarget;
+                const userId = trigger.getAttribute('data-user-id');
+                const userName = trigger.getAttribute('data-user-name');
+
+                deleteModal.querySelector('#modal-username').textContent = userName;
+                deleteModal.querySelector('#delete-user-id').value = userId;
+            });
+
+            // 2) Enviar la petición de borrado al servidor
+            document.getElementById('form-delete-user').addEventListener('submit', e => {
+                e.preventDefault();
+                const id = e.target.delete_user_id.value;
+
+                fetch('../controllers/delete_user.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: id })
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                        if (json.success) {
+                            // Cerrar modal
+                            bootstrap.Modal.getInstance(deleteModal).hide();
+                            // Recarga completa (o eliminar fila con JS)
+                            const row = trigger.closest('tr');
+                            row.parentNode.removeChild(row);
+                        } else {
+                            alert('Error al borrar: ' + json.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Error al comunicar con el servidor.');
+                    });
+            });
+        });
+    </script>
     <script src="../assets/js/settings.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
@@ -810,19 +960,20 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Apellido Materno</label>
-                            <input name="ApellidoMaterno" id="edit-ApellidoMaterno" type="text" class="form-control"
-                                >
+                            <input name="ApellidoMaterno" id="edit-ApellidoMaterno" type="text" class="form-control">
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <label>Departamento</label>
-                            <select name="DepartamentoId" id="edit-DepartamentoId" class="form-control">
-                                <!-- Opciones cargadas dinámicamente -->
+                            <select name="DepartamentoId" id="departamento" class="form-control" required>
+                                <option value="">Seleccionar</option>
+                                <?= GetListaDepartamentos($departamentos) ?>
                             </select>
                         </div>
+                        <!-- Selección dinámica de puesto -->
                         <div class="input-group input-group-static mb-4">
                             <label>Puesto</label>
-                            <select name="PuestoId" id="edit-PuestoId" class="form-control">
-                                <option value="">Seleccione un puesto</option>
+                            <select name="PuestoId" id="puesto" class="form-control" required>
+                                <option value="">Seleccionar</option>
                             </select>
                         </div>
                         <div class="input-group input-group-outline my-3">
@@ -831,7 +982,7 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Email</label>
-                            <input name="Email" id="edit-Email" type="email" class="form-control" required>
+                            <input name="Email" id="edit-Email" type="email" class="form-control">
                         </div>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Nombre contacto emergencia</label>
@@ -856,6 +1007,30 @@ $departamentos = GetDepartamento($pdo);
         </div>
     </div>
     <!-- FIN DEL MODAL DE EDITAR USUARIO -->
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <p>Estás a punto de cerrar sesión.</p>
+                        <p>¿Seguro que quieres continuar?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+                            sesión</button>
+                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--End logout modal-->
 </body>
 
 </html>

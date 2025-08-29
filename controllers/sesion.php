@@ -38,8 +38,7 @@ if (isset($_SESSION['user_id'])) {
  */
 function obtenerFotoUsuario(PDO $pdo, int $usuarioId): string
 {
-  $sql = "
-      SELECT FotoContenido
+  $sql = "SELECT FotoContenido
         FROM fotos
        WHERE EntidadTipo = :tipo
          AND EntidadId   = :id

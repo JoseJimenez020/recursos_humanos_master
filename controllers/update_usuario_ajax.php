@@ -1,4 +1,3 @@
-// controllers/update_usuario_ajax.php
 <?php
 require_once 'conn.php';
 require_once 'logica_usuario.php';
