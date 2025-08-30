@@ -9,8 +9,11 @@ if (isset($_SESSION['user_id'])) {
     u.NombreUsuario,
     u.ApellidoPaterno,
     u.ApellidoMaterno,
+    u.NumeroTelefono,
+    u.Email,
     u.DepartamentoId,
     d.DepartamentoNombre
+    
   FROM usuarios u
   LEFT JOIN departamento d 
     ON u.DepartamentoId = d.DepartamentoId

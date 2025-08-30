@@ -321,7 +321,7 @@ $departamentos = GetDepartamento($pdo);
                             <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                                 aria-labelledby="dropdownMenuButton">
                                 <li class="mb-2">
-                                    <a class="dropdown-item border-radius-md" href="../pages/profile.html">
+                                    <a class="dropdown-item border-radius-md" href="../pages/profile.php">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
                                                 <i class="material-symbols-rounded">user_attributes</i>
@@ -346,8 +346,6 @@ $departamentos = GetDepartamento($pdo);
                                             </div>
                                         </div>
                                     </a>
-                                </li>
-                                <li>
                                 </li>
                             </ul>
                         </li>
@@ -579,7 +577,7 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <label>Departamento</label>
-                            <select name="DepartamentoId" id="departamento" class="form-control" required>
+                            <select name="DepartamentoId" id="departamento-registro" class="form-control" required>
                                 <option value="">Seleccionar</option>
                                 <?= GetListaDepartamentos($departamentos) ?>
                             </select>
@@ -587,7 +585,7 @@ $departamentos = GetDepartamento($pdo);
                         <!-- Selección dinámica de puesto -->
                         <div class="input-group input-group-static mb-4">
                             <label>Puesto</label>
-                            <select name="PuestoId" id="puesto" class="form-control" required>
+                            <select name="PuestoId" id="puesto-registro" class="form-control">
                                 <option value="">Seleccionar</option>
                             </select>
                         </div>
@@ -634,7 +632,6 @@ $departamentos = GetDepartamento($pdo);
                                 <option>Tacotalpa</option>
                                 <option>Teapa</option>
                                 <option>Villahermosa</option>
-
                             </select>
                         </div>
                         <div class="input-group input-group-outline my-3">
@@ -739,9 +736,11 @@ $departamentos = GetDepartamento($pdo);
             const formEdit = document.getElementById('form-edit-usuario');
             const bsModal = new bootstrap.Modal(editModal);
 
+
             editModal.addEventListener('show.bs.modal', async e => {
                 const userId = e.relatedTarget.dataset.userId;
                 formEdit.UsuarioId.value = userId;
+                const tipoSangreSel = formEdit.TipoSangre;
 
                 // TRAEMOS JSON PURO, NUNCA HTML
                 const resp = await fetch(`../controllers/get_usuario_ajax.php?id=${userId}`);
@@ -753,10 +752,11 @@ $departamentos = GetDepartamento($pdo);
                 formEdit.ApellidoMaterno.value = u.ApellidoMaterno || '';
                 formEdit.NumeroTelefono.value = u.NumeroTelefono || '';
                 formEdit.Email.value = u.Email || '';
+                tipoSangreSel.value = u.TipoSangre || '';
                 // 4) Rellena departamento y puesto
                 const depSel = formEdit.DepartamentoId;
                 depSel.value = u.DepartamentoId || '';
-                // Carga puestos y marca
+                // Carga puestos
                 const loadPuestos = async (depId, selId) => {
                     const ps = formEdit.PuestoId;
                     ps.innerHTML = '<option>Cargando…</option>';
@@ -860,10 +860,11 @@ $departamentos = GetDepartamento($pdo);
         }
     </script>
 
+    <!--CARGAR PUESTOS FORMULARIO DE REGISTRO-->
     <script>
-        document.getElementById('departamento').addEventListener('change', function () {
+        document.getElementById('departamento-registro').addEventListener('change', function () {
             const departamentoId = this.value;
-            const puestoSelect = document.getElementById('puesto');
+            const puestoSelect = document.getElementById('puesto-registro');
 
             // Limpia opciones anteriores
             puestoSelect.innerHTML = '<option value="">Cargando puestos...</option>';
@@ -890,7 +891,7 @@ $departamentos = GetDepartamento($pdo);
                 });
         });
     </script>
-
+    <!--JS DEL MODAL DE BORRADO-->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const deleteModal = document.getElementById('modal-notification');
@@ -961,6 +962,18 @@ $departamentos = GetDepartamento($pdo);
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Apellido Materno</label>
                             <input name="ApellidoMaterno" id="edit-ApellidoMaterno" type="text" class="form-control">
+                        </div>
+                        <div class="input-group input-group-static mb-4 ">
+                            <label for="exampleFormControlSelect1" class="ms-0">Tipo de Sangre</label>
+                            <select class="form-control" name="TipoSangre" id="edit-TipoSangre">
+                                <option selected>Seleccionar</option>
+                                <option value="O-">O-</option>
+                                <option value="O+">O+</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                            </select>
                         </div>
                         <div class="input-group input-group-static mb-4">
                             <label>Departamento</label>

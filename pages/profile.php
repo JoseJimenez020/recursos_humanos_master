@@ -1,18 +1,6 @@
-<!--
-=========================================================
-* Material Dashboard 3 - v3.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
+<?php
+require_once '../controllers/dashboard.php';
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -35,12 +23,129 @@
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+  <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
 
-  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+  <?php
+  if ($sesion['EsAdmin'] === 1) {
+    echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
+            <i class="material-symbols-rounded opacity-5">dashboard</i>
+            <span class="nav-link-text ms-1">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/politicas.html">
+            <i class="material-symbols-rounded opacity-5">policy</i>
+            <span class="nav-link-text ms-1">Políticas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+            <i class="material-symbols-rounded opacity-5">rule</i>
+            <span class="nav-link-text ms-1">Reglamento Interno</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/procesos.html">
+            <i class="material-symbols-rounded opacity-5">receipt_long</i>
+            <span class="nav-link-text ms-1">Procesos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/organigrama.html">
+            <i class="material-symbols-rounded opacity-5">globe_book</i>
+            <span class="nav-link-text ms-1">Organigrama</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+            <i class="material-symbols-rounded opacity-5">public</i>
+            <span class="nav-link-text ms-1">Misión, Visión</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/valores.html">
+            <i class="material-symbols-rounded opacity-5">psychology</i>
+            <span class="nav-link-text ms-1">Valores</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Administrador</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/usuarios.php">
+            <i class="material-symbols-rounded opacity-5">groups</i>
+            <span class="nav-link-text ms-1">Usuarios</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/avisos.php">
+            <i class="material-symbols-rounded opacity-5">add_alert</i>
+            <span class="nav-link-text ms-1">Avisos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/felicitaciones.html">
+            <i class="material-symbols-rounded opacity-5">celebration</i>
+            <span class="nav-link-text ms-1">Felicitaciones</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/campanias.html">
+            <i class="material-symbols-rounded opacity-5">campaign</i>
+            <span class="nav-link-text ms-1">Campañas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+            adicional</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/manuales.html">
+            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/nom035.html">
+            <i class="material-symbols-rounded opacity-5">comment</i>
+            <span class="nav-link-text ms-1">NOM-35</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/sign-in.html">
+            <i class="material-symbols-rounded opacity-5">login</i>
+            <span class="nav-link-text ms-1">Salir</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>';
+  } elseif ($sesion['EsAdmin'] === 0) {
+    echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
     id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
@@ -139,7 +244,10 @@
         </a>
       </div>
     </div>
-  </aside>
+  </aside>';
+  }
+  ?>
+
   <div class="main-content position-relative max-height-vh-100 h-100">
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
@@ -168,11 +276,11 @@
             <li class="nav-item dropdown pe-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm  me-3 ">
+                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-sm  me-3 ">
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                 <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="../pages/profile.html">
+                  <a class="dropdown-item border-radius-md" href="../pages/profile.php">
                     <div class="d-flex py-1">
                       <div class="my-auto">
                         <i class="material-symbols-rounded">user_attributes</i>
@@ -186,15 +294,14 @@
                   </a>
                 </li>
                 <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="../pages/sign-in.html">
+                  <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                    data-bs-target="#logoutModal">
                     <div class="d-flex py-1">
                       <div class="my-auto">
                         <i class="material-symbols-rounded">logout</i>
                       </div>
                       <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          Salir
-                        </h6>
+                        <h6 class="text-sm font-weight-normal mb-1">Salir</h6>
                       </div>
                     </div>
                   </a>
@@ -218,17 +325,19 @@
         <div class="row gx-4 mb-2">
           <div class="col-auto">
             <div class="avatar avatar-xl position-relative">
-              <img src="../assets/img/small-logos/user.png" alt="profile_image"
+              <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> alt="profile_image"
                 class="w-100 border-radius-lg shadow-sm">
             </div>
           </div>
           <div class="col-auto my-auto">
             <div class="h-100">
               <h5 class="mb-1">
-                Nombre_usuario
+                <?php echo $sesion['NombreUsuario']; ?>
+                <?php echo $sesion['ApellidoPaterno']; ?>
+                <?php echo $sesion['ApellidoMaterno'] ?? ''; ?>
               </h5>
               <p class="mb-0 font-weight-normal text-sm">
-                Departamento
+                <?php echo $sesion['DepartamentoNombre'] ?? 'Sin departamento' ?>
               </p>
             </div>
           </div>
@@ -316,16 +425,17 @@
                   <ul class="list-group">
                     <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Nombre
                         completo:</strong>
-                      &nbsp; Alec M. Thompson II</li>
+                      &nbsp; <?php echo $sesion['NombreUsuario']; ?>
+                      <?php echo $sesion['ApellidoPaterno']; ?>
+                      <?php echo $sesion['ApellidoMaterno'] ?? ''; ?>
+                    </li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Número celular:</strong>
                       &nbsp;
-                      (44) 123 1234 123</li>
-                    <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Número
-                        alternativo:</strong>
-                      &nbsp;
-                      (44) 123 1234 123</li>
+                      <?php echo $sesion['NumeroTelefono']; ?>
+                    </li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Email:</strong> &nbsp;
-                      alecthompson@mail.com</li>
+                      <?php echo $sesion['Email'] ?? 'No disponible'; ?>
+                    </li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Contacto de
                         emergencia (Nombre):</strong>
                       &nbsp; Alec M. Thompson I</li>
@@ -340,67 +450,6 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="col-12 col-xl-4">
-              <div class="card card-plain h-100">
-                <div class="card-header pb-0 p-3">
-                  <h6 class="mb-0">Conversations</h6>
-                </div>
-                <div class="card-body p-3">
-                  <ul class="list-group">
-                    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2 pt-0">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/kal-visuals-square.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Sophie B.</h6>
-                        <p class="mb-0 text-xs">Hi! I need more information..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/marie.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Anne Marie</h6>
-                        <p class="mb-0 text-xs">Awesome work, can you..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/ivana-square.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Ivanna</h6>
-                        <p class="mb-0 text-xs">About files I can..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/team-4.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Peterson</h6>
-                        <p class="mb-0 text-xs">Have a great afternoon..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                    <li class="list-group-item border-0 d-flex align-items-center px-0">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/team-3.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Nick Daniel</h6>
-                        <p class="mb-0 text-xs">Hi! I need more information..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>-->
             <div class="col-12 mt-4">
               <div class="mb-5 ps-3">
                 <h6 class="mb-1">Avisos</h6>
@@ -672,6 +721,29 @@
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
   <script src="../assets/js/settings.js"></script>
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST">
+          <div class="modal-body">
+            <p>Estás a punto de cerrar sesión.</p>
+            <p>¿Seguro que quieres continuar?</p>
+          </div>
+          <div class="modal-footer">
+            <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+              sesión</button>
+            <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--End logout modal-->
 </body>
 
 </html>

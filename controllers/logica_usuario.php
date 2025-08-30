@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 session_start();
 require_once 'conn.php';
 
@@ -447,10 +447,14 @@ function actualizarUsuario(array $post, PDO $pdo): array
     $numeroTelefono = filter_var($post['NumeroTelefono'], FILTER_SANITIZE_STRING);
     $departamentoId = filter_var($post['DepartamentoId'], FILTER_VALIDATE_INT);
     $puestoId = filter_var($post['PuestoId'], FILTER_VALIDATE_INT);
-    $tipoSangre = filter_var($post['TipoSangre'], FILTER_VALIDATE_INT);
     $nombreContacto = filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING);
     $parentezco = filter_var($post['Parentezco'], FILTER_SANITIZE_STRING);
     $numeroEmergencia = filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING);
+    $tiposValidos = ['O-', 'O+', 'A+', 'A-', 'AB+', 'AB-'];
+    $tipoSangre = filter_var($post['TipoSangre'], FILTER_SANITIZE_STRING);
+    if (!in_array($tipoSangre, $tiposValidos, true)) {
+        throw new Exception('Tipo de sangre inválido.');
+    }
     // 2) Iniciar transacción
     $pdo->beginTransaction();
 

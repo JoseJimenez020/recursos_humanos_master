@@ -1,4 +1,5 @@
 <?php
+// update_usuario_ajax.php
 require_once 'conn.php';
 require_once 'logica_usuario.php';
 
