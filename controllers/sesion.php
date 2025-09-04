@@ -11,12 +11,17 @@ if (isset($_SESSION['user_id'])) {
     u.ApellidoMaterno,
     u.NumeroTelefono,
     u.Email,
+    u.TipoSangre,
     u.DepartamentoId,
-    d.DepartamentoNombre
-    
+    d.DepartamentoNombre,
+    ce.NombreContacto,
+    ce.Parentezco,
+    ce.NumeroTelefono AS contactoNumero
   FROM usuarios u
   LEFT JOIN departamento d 
     ON u.DepartamentoId = d.DepartamentoId
+  LEFT JOIN contacto_emergencia ce 
+    ON ce.UsuarioId = u.UsuarioId
   WHERE u.UsuarioId = :id
 ');
   $stmt->bindParam(':id', $_SESSION['user_id']);

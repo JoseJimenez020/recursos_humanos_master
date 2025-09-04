@@ -36,6 +36,4 @@ try {
     ];
 }
 
-// 4) Devuelve siempre JSON
-echo json_encode($result, JSON_UNESCAPED_UNICODE);
 exit;

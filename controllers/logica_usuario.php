@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 session_start();
 require_once 'conn.php';
 
@@ -23,7 +23,7 @@ require 'sesion.php';
 require 'logout.php';
 
 
-function GetFoto($id, $pdo)
+/*function GetFoto($id, $pdo)
 {
     $query = "SELECT FotoContenido FROM fotos WHERE EntidadTipo = 'usuario' AND EntidadId = :id";
     $result = $pdo->prepare($query);
@@ -36,12 +36,12 @@ function GetFoto($id, $pdo)
         ? 'data:image/jpeg;base64,' . base64_encode($fetch['AsesorFoto'])
         : '../assets/img/small-logos/user.png';
 }
-
+$usuarioFoto = GetFoto($id, $pdo);*/
 function GetTableUsuarios(PDO $pdo, string $nombre, string $departamento): string
 {
     $sql = "SELECT
         u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno,
-        u.Username, u.NumeroTelefono, d.DepartamentoNombre, p.PuestoNombre,
+        u.Username, u.NumeroTelefono, u.TipoSangre, d.DepartamentoNombre, p.PuestoNombre,
         ce.NombreContacto, ce.Parentezco, ce.NumeroTelefono AS CEtelefono,
         u.UsuarioActivo, u.FechaRegistro, f.FotoContenido
       FROM usuarios u
@@ -100,11 +100,20 @@ function GetTableUsuarios(PDO $pdo, string $nombre, string $departamento): strin
         $html .= '<tr>
                     <td>
                         <div class="d-flex px-2 py-1">
-                        <img src="' . $src . '" class="avatar avatar-sm me-3 border-radius-lg">
+                        <a href="#" class="edit-photo"
+                        data-bs-toggle="modal"
+                        data-bs-target="#fotoPerfilModal"
+                        data-user-id="' . $u['UsuarioId'] . '"
+                        data-photo-src="' . $src . '">
+                        <img src="' . $src . '"
+                            class="avatar avatar-sm me-3 border-radius-lg"
+                            style="cursor: pointer;">
+                        </a>
                         <div class="d-flex flex-column justify-content-center">
                             <h6 class="mb-0 text-sm">' . $full . '</h6>
                             <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['Username']) . '</p>
                             <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['NumeroTelefono'] ?? 'No disponible') . '</p>
+                            <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['TipoSangre'] ?? 'No disponible') . '</p>
                         </div>
                         </div>
                     </td>
@@ -135,6 +144,7 @@ function GetTableUsuarios(PDO $pdo, string $nombre, string $departamento): strin
                         </a>
                         <a href="" class="text-success font-weight-bold text-xs"
                         data-user-id="' . ($u['UsuarioId']) . '"
+                        data-user-name="' . htmlspecialchars($full) . '"
                         data-toggle="tooltip" data-original-title="Vacations" target="_blank"
                         data-bs-toggle="modal" data-bs-target="#modal-form">
                         <i class="material-symbols-rounded opacity-5">beach_access</i>
@@ -339,104 +349,6 @@ function alertScript(string $title, string $text, string $icon, string $redir = 
 HTML;
 }
 
-/*
-function actualizarUsuario(array $post, PDO $pdo): string
-{
-    $usuarioId = filter_var($post['UsuarioId'], FILTER_VALIDATE_INT);
-    $nombreUsuario = filter_var($post['NombreUsuario'], FILTER_SANITIZE_STRING);
-    $apellidoPaterno = filter_var($post['ApellidoPaterno'], FILTER_SANITIZE_STRING);
-    $apellidoMaterno = filter_var($post['ApellidoMaterno'], FILTER_SANITIZE_STRING);
-    $email = filter_var($post['Email'], FILTER_VALIDATE_EMAIL);
-    $numeroTelefono = filter_var($post['NumeroTelefono'], FILTER_SANITIZE_STRING);
-    $departamentoId = filter_var($post['DepartamentoId'], FILTER_VALIDATE_INT);
-    $puestoId = filter_var($post['PuestoId'], FILTER_VALIDATE_INT);
-    $nombreContacto = filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING);
-    $parentezco = filter_var($post['Parentezco'], FILTER_SANITIZE_STRING);
-    $numeroEmergencia = filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING);
-
-    try {
-        // 2) Iniciar transacción
-        $pdo->beginTransaction();
-
-        // 3) Actualizar tabla usuarios
-        $sqlUser = "UPDATE usuarios SET
-            NombreUsuario       = :nombreUsuario,
-            ApellidoPaterno     = :apellidoPaterno,
-            ApellidoMaterno     = :apellidoMaterno,
-            Email               = :email,
-            NumeroTelefono      = :numeroTelefono,
-            DepartamentoId      = :departamentoId,
-            PuestoId            = :puestoId
-          WHERE UsuarioId = :usuarioId
-        ";
-        $stmt = $pdo->prepare($sqlUser);
-        $stmt->execute([
-            'nombreUsuario' => $nombreUsuario,
-            'apellidoPaterno' => $apellidoPaterno,
-            'apellidoMaterno' => $apellidoMaterno,
-            'email' => $email,
-            'numeroTelefono' => $numeroTelefono,
-            'departamentoId' => $departamentoId,
-            'puestoId' => $puestoId,
-            'usuarioId' => $usuarioId
-        ]);
-
-        // 4) Verificar si ya existe un contacto de emergencia
-        $chk = $pdo->prepare(
-            "SELECT ContactoId 
-             FROM contacto_emergencia 
-            WHERE UsuarioId = :usuarioId"
-        );
-        $chk->execute(['usuarioId' => $usuarioId]);
-        $existe = (bool) $chk->fetchColumn();
-
-        if ($existe) {
-            // 4a) Actualizar contacto existente
-            $sqlCE = "UPDATE contacto_emergencia SET
-                NombreContacto = :nombreContacto,
-                Parentezco     = :parentezco,
-                NumeroTelefono = :numeroEmergencia
-              WHERE UsuarioId = :usuarioId
-            ";
-        } else {
-            // 4b) Insertar nuevo contacto
-            $sqlCE = "INSERT INTO contacto_emergencia
-                (NombreContacto, Parentezco, NumeroTelefono, UsuarioId)
-              VALUES
-                (:nombreContacto, :parentezco, :numeroEmergencia, :usuarioId)
-            ";
-        }
-        $stmt = $pdo->prepare($sqlCE);
-        $stmt->execute([
-            'nombreContacto' => $nombreContacto,
-            'parentezco' => $parentezco,
-            'numeroEmergencia' => $numeroEmergencia,
-            'usuarioId' => $usuarioId
-        ]);
-
-        // 5) Confirmar transacción
-        $pdo->commit();
-
-        return alertScript(
-            '¡Éxito!',
-            'Información actualizada correctamente.',
-            'success',
-            '../pages/usuarios.php'
-        );
-
-    } catch (PDOException $e) {
-        // 6) Revertir en caso de error
-        $pdo->rollBack();
-        // Opcional: log($e->getMessage());
-        return alertScript(
-            'Error',
-            'No se pudo actualizar: ' . $e->getMessage(),
-            'error'
-        );
-    }
-}
-*/
-
 function actualizarUsuario(array $post, PDO $pdo): array
 {
     $usuarioId = filter_var($post['UsuarioId'], FILTER_VALIDATE_INT);
@@ -450,7 +362,7 @@ function actualizarUsuario(array $post, PDO $pdo): array
     $nombreContacto = filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING);
     $parentezco = filter_var($post['Parentezco'], FILTER_SANITIZE_STRING);
     $numeroEmergencia = filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING);
-    $tiposValidos = ['O-', 'O+', 'A+', 'A-', 'AB+', 'AB-'];
+    $tiposValidos = ['O-', 'O+', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'];
     $tipoSangre = filter_var($post['TipoSangre'], FILTER_SANITIZE_STRING);
     if (!in_array($tipoSangre, $tiposValidos, true)) {
         throw new Exception('Tipo de sangre inválido.');
@@ -550,5 +462,229 @@ function eliminarUsuario(PDO $pdo, int $userId): array
             'success' => false,
             'message' => $e->getMessage()
         ];
+    }
+}
+
+/**
+ * Inserta o actualiza la foto de perfil de un usuario.
+ *
+ * @param resource $fotoContenido Contenido binario de la imagen
+ * @param int      $usuarioId     ID del usuario
+ * @param PDO      $pdo           Conexión PDO
+ * @return bool                   Verdadero si la operación fue exitosa
+ */
+function updateUsuarioFoto($fotoContenido, $usuarioId, $pdo)
+{
+    // 1. Buscamos si ya hay una foto asociada
+    $sql = "
+        SELECT FotoId
+          FROM fotos
+         WHERE EntidadTipo = 'usuario'
+           AND EntidadId    = :id
+        LIMIT 1
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':id' => $usuarioId]);
+
+    // 2. Si existe, actualizamos; si no, insertamos
+    if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $sql2 = "
+            UPDATE fotos
+               SET FotoContenido = :foto
+             WHERE FotoId        = :fotoId
+        ";
+        $stmt2 = $pdo->prepare($sql2);
+        $stmt2->bindParam(':foto', $fotoContenido, PDO::PARAM_LOB);
+        $stmt2->bindParam(':fotoId', $fila['FotoId'], PDO::PARAM_INT);
+        return $stmt2->execute();
+    } else {
+        $sql2 = "
+            INSERT INTO fotos (FotoContenido, EntidadTipo, EntidadId)
+            VALUES (:foto, 'usuario', :id)
+        ";
+        $stmt2 = $pdo->prepare($sql2);
+        $stmt2->bindParam(':foto', $fotoContenido, PDO::PARAM_LOB);
+        $stmt2->bindParam(':id', $usuarioId, PDO::PARAM_INT);
+        return $stmt2->execute();
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarFoto'])) {
+    // Validación subida
+    if (
+        isset($_FILES['foto']) &&
+        $_FILES['foto']['error'] === UPLOAD_ERR_OK &&
+        $_FILES['foto']['size'] <= 1_048_576   // 1 MB
+    ) {
+        // Leemos el binario
+        $fotoBinaria = file_get_contents($_FILES['foto']['tmp_name']);
+        $usuarioId = (int) $_POST['UsuarioId'];
+
+        // Ejecutamos inserción/actualización
+        if (updateUsuarioFoto($fotoBinaria, $usuarioId, $pdo)) {
+            echo "
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text:  'Foto actualizada correctamente.',
+                    icon:  'success'
+                }).then(function() {
+                    // recarga toda la página para refrescar la imagen
+                    window.location.href = window.location.pathname;
+                });
+            });
+            </script>
+            ";
+        } else {
+            // Error en la BD
+            echo "
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire('Error', 'No se pudo guardar la foto.', 'error');
+            });
+            </script>
+            ";
+        }
+    } else {
+        // Error en la subida
+        echo "
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire('Error', 'Asegúrate de subir un JPEG/jpg menor a 1 MB.', 'error');
+        });
+        </script>
+        ";
+    }
+}
+
+
+function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
+{
+
+    $password1 = filter_var($password1, FILTER_SANITIZE_STRING);
+    $password2 = filter_var($password2, FILTER_SANITIZE_STRING);
+
+    if ($password1 !== $password2) {
+        $error = "
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Las contraseñas no coinciden.',
+                        icon: 'error'
+                    }).then(() => {
+                    window.location.href = '../pages/usuarios.php';
+                });
+            });
+            </script>";
+        return $error;
+    }
+
+    $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
+
+
+    try {
+        // Inserción principal
+        $stmt = $pdo->prepare("UPDATE usuarios SET 
+            Contrasena = :password
+        WHERE UsuarioId = :id");
+
+        $stmt->execute([
+            ':password' => $hashed_password,
+            ':id' => $UsuarioId
+        ]);
+
+        $exito = "
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: 'Contraseña actualizada exitosamente.',
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = '../pages/usuarios.php';
+                    });
+                });
+            </script>";
+
+        return $exito;
+
+    } catch (PDOException $e) {
+        echo "Error al actualizar los datos: " . $e->getMessage();
+        $error = "
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrio un error inesperado.',
+                        icon: 'error'
+                    }).then(() => {
+                    window.location.href = '../pages/usuarios.php';
+                });
+            });
+            </script>";
+        return $error;
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizarPass'])) {
+    $password1 = $_POST['password1'];
+    $password2 = $_POST['password2'];
+
+    echo ActualizarPassword($password1, $password2, $_SESSION['user_id'], $pdo);
+
+}
+
+
+function RegistrarVacaciones(array $post, PDO $pdo): string
+{
+    // 1) Sanitizar fechas
+    $usuarioId = filter_var($post['usuarioId'], FILTER_VALIDATE_INT);
+    $fechaInicio = trim(strip_tags($post['fechaInicio']));
+    $fechaFin = trim(strip_tags($post['fechaFin']));
+
+    if (strtotime($fechaFin) <= strtotime($fechaInicio)) {
+        return alertScript('Error', 'La fecha de regreso debe ser mayor.', 'error');
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        // 2) Insertar en vacaciones
+        $stmt = $pdo->prepare(
+            "INSERT INTO vacaciones (FechaInicio, FechaFin, UsuarioId)
+           VALUES (:ini, :fin, :usrid)"
+        );
+        $stmt->execute([
+            'ini' => $fechaInicio,
+            'fin' => $fechaFin,
+            'usrid' => $usuarioId
+        ]);
+
+        // 3) Marcar al usuario como inactivo
+        $upd = $pdo->prepare(
+            "UPDATE usuarios
+              SET UsuarioActivo = 0
+            WHERE UsuarioId     = :usrid"
+        );
+        $upd->execute(['usrid' => $usuarioId]);
+
+        $pdo->commit();
+
+        return alertScript(
+            '¡Éxito!',
+            'Vacaciones registradas y usuario desactivado correctamente.',
+            'success',
+            'usuarios.php'
+        );
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        return alertScript(
+            'Error',
+            'No se pudo registrar: ' . $e->getMessage(),
+            'error'
+        );
     }
 }

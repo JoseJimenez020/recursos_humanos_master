@@ -151,12 +151,6 @@ require_once '../controllers/dashboard.php';
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/sign-in.html">
-            <i class="material-symbols-rounded opacity-5">login</i>
-            <span class="nav-link-text ms-1">Salir</span>
-          </a>
-        </li>
       </ul>
     </div>
   </aside>';
@@ -230,12 +224,6 @@ require_once '../controllers/dashboard.php';
           <a class="nav-link text-primary" href="../pages/nom035.html">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/sign-in.html">
-            <i class="material-symbols-rounded opacity-5">login</i>
-            <span class="nav-link-text ms-1">Salir</span>
           </a>
         </li>
       </ul>
@@ -515,77 +503,11 @@ require_once '../controllers/dashboard.php';
             </div>
             <div class="card-body p-3 timeline timeline-one-side scrollable-timeline">
               <div class="timeline timeline-one-side">
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-success text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-danger text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-info text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-warning text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-primary text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-dark text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
+                <?= GetTimelineVacaciones($pdo) ?>
               </div>
             </div>
           </div>
         </div>
-
       </div>
 
       <div class="row mb-4">
