@@ -1,12 +1,12 @@
 <?php
 // controllers/get_usuario_ajax.php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
 // controllers/get_usuario_ajax.php
 header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/conn.php';
+require_once 'conn.php';
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$id) {
@@ -24,6 +24,7 @@ $stmt = $pdo->prepare("
     u.DepartamentoId,
     u.PuestoId,
     u.NumeroTelefono,
+    u.TipoSangre,
     ce.NombreContacto,
     ce.Parentezco,
     ce.NumeroTelefono AS ContactoTelefono

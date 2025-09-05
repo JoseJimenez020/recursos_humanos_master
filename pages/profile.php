@@ -1,18 +1,8 @@
-<!--
-=========================================================
-* Material Dashboard 3 - v3.2.0
-=========================================================
+<?php
+//require_once '../controllers/dashboard.php';
+require_once '../controllers/logica_usuario.php';
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -36,11 +26,123 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
 
-  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+  <?php
+  if ($sesion['EsAdmin'] === 1) {
+    echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/dashboard.php">
+            <i class="material-symbols-rounded opacity-5">dashboard</i>
+            <span class="nav-link-text ms-1">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/politicas.html">
+            <i class="material-symbols-rounded opacity-5">policy</i>
+            <span class="nav-link-text ms-1">Políticas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+            <i class="material-symbols-rounded opacity-5">rule</i>
+            <span class="nav-link-text ms-1">Reglamento Interno</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/procesos.html">
+            <i class="material-symbols-rounded opacity-5">receipt_long</i>
+            <span class="nav-link-text ms-1">Procesos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/organigrama.html">
+            <i class="material-symbols-rounded opacity-5">globe_book</i>
+            <span class="nav-link-text ms-1">Organigrama</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+            <i class="material-symbols-rounded opacity-5">public</i>
+            <span class="nav-link-text ms-1">Misión, Visión</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/valores.html">
+            <i class="material-symbols-rounded opacity-5">psychology</i>
+            <span class="nav-link-text ms-1">Valores</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Administrador</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/usuarios.php">
+            <i class="material-symbols-rounded opacity-5">groups</i>
+            <span class="nav-link-text ms-1">Usuarios</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/avisos.php">
+            <i class="material-symbols-rounded opacity-5">add_alert</i>
+            <span class="nav-link-text ms-1">Avisos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/felicitaciones.html">
+            <i class="material-symbols-rounded opacity-5">celebration</i>
+            <span class="nav-link-text ms-1">Felicitaciones</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/campanias.html">
+            <i class="material-symbols-rounded opacity-5">campaign</i>
+            <span class="nav-link-text ms-1">Campañas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+            adicional</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/manuales.php">
+            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/nom035.html">
+            <i class="material-symbols-rounded opacity-5">comment</i>
+            <span class="nav-link-text ms-1">NOM-35</span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+  </aside>';
+  } elseif ($sesion['EsAdmin'] === 0) {
+    echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
     id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
@@ -100,7 +202,7 @@
             adicional</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/manuales.html">
+          <a class="nav-link text-primary" href="../pages/manuales.php">
             <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
             <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
           </a>
@@ -111,12 +213,7 @@
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/sign-in.html">
-            <i class="material-symbols-rounded opacity-5">login</i>
-            <span class="nav-link-text ms-1">Salir</span>
-          </a>
-        </li>
+
       </ul>
     </div>
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">
@@ -139,7 +236,10 @@
         </a>
       </div>
     </div>
-  </aside>
+  </aside>';
+  }
+  ?>
+
   <div class="main-content position-relative max-height-vh-100 h-100">
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
@@ -168,11 +268,11 @@
             <li class="nav-item dropdown pe-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm  me-3 ">
+                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-sm  me-3 ">
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                 <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="../pages/profile.html">
+                  <a class="dropdown-item border-radius-md" href="../pages/profile.php">
                     <div class="d-flex py-1">
                       <div class="my-auto">
                         <i class="material-symbols-rounded">user_attributes</i>
@@ -186,15 +286,14 @@
                   </a>
                 </li>
                 <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="../pages/sign-in.html">
+                  <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                    data-bs-target="#logoutModal">
                     <div class="d-flex py-1">
                       <div class="my-auto">
                         <i class="material-symbols-rounded">logout</i>
                       </div>
                       <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          Salir
-                        </h6>
+                        <h6 class="text-sm font-weight-normal mb-1">Salir</h6>
                       </div>
                     </div>
                   </a>
@@ -217,48 +316,30 @@
       <div class="card card-body mx-2 mx-md-2 mt-n6">
         <div class="row gx-4 mb-2">
           <div class="col-auto">
-            <div class="avatar avatar-xl position-relative">
-              <img src="../assets/img/small-logos/user.png" alt="profile_image"
-                class="w-100 border-radius-lg shadow-sm">
-            </div>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#fotoPerfilModal">
+              <div class="avatar avatar-xl position-relative">
+                <img <?php echo isset($sesion)
+                  ? obtenerFotoUsuario($pdo, $sesion['UsuarioId'])
+                  : 'src="../assets/img/small-logos/user.png"'
+                  ?> alt="profile_image"
+                  class="w-100 border-radius-lg shadow-sm">
+              </div>
+            </a>
+
+
           </div>
           <div class="col-auto my-auto">
             <div class="h-100">
               <h5 class="mb-1">
-                Nombre_usuario
+                <?php echo $sesion['NombreUsuario']; ?>
+                <?php echo $sesion['ApellidoPaterno']; ?>
+                <?php echo $sesion['ApellidoMaterno'] ?? ''; ?>
               </h5>
               <p class="mb-0 font-weight-normal text-sm">
-                Departamento
+                <?php echo $sesion['DepartamentoNombre'] ?? 'Sin departamento' ?>
               </p>
             </div>
           </div>
-          <!--<div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-            <div class="nav-wrapper position-relative end-0">
-              <ul class="nav nav-pills nav-fill p-1" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 active " data-bs-toggle="tab" href="javascript:;" role="tab"
-                    aria-selected="true">
-                    <i class="material-symbols-rounded text-lg position-relative">home</i>
-                    <span class="ms-1">App</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 " data-bs-toggle="tab" href="javascript:;" role="tab"
-                    aria-selected="false">
-                    <i class="material-symbols-rounded text-lg position-relative">email</i>
-                    <span class="ms-1">Messages</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link mb-0 px-0 py-1 " data-bs-toggle="tab" href="javascript:;" role="tab"
-                    aria-selected="false">
-                    <i class="material-symbols-rounded text-lg position-relative">settings</i>
-                    <span class="ms-1">Settings</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>-->
         </div>
         <div class="row">
           <div class="row">
@@ -299,6 +380,8 @@
                       onclick="sidebarType(this)">Blanca</button>
                   </div>
                   <p class="text-sm d-xl-none d-block mt-2">Puedes elegir igual que en la vista de escritorio</p>
+                  <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal"
+                    data-bs-target="#modal-form">Cambiar Contraseña</button>
                 </div>
               </div>
             </div>
@@ -306,8 +389,10 @@
               <div class="card card-plain h-100">
                 <div class="card-header pb-0 p-3">
                   <div class="row">
-                    <div class="col-md-8 d-flex align-items-center">
-                      <h6 class="mb-0">Información de Perfil</h6>
+                    <div class="col-md-10 d-flex align-items-center">
+                      <h6 class="mb-0">Información Personal</h6>&nbsp; &nbsp;
+                      <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                        data-bs-target="#modal-edit" data-user-id="<?php echo $sesion['UsuarioId']; ?>">Editar</button>
                     </div>
                   </div>
                 </div>
@@ -316,91 +401,37 @@
                   <ul class="list-group">
                     <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Nombre
                         completo:</strong>
-                      &nbsp; Alec M. Thompson II</li>
+                      &nbsp; <?php echo $sesion['NombreUsuario']; ?>
+                      <?php echo $sesion['ApellidoPaterno']; ?>
+                      <?php echo $sesion['ApellidoMaterno'] ?? ''; ?>
+                    </li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Número celular:</strong>
                       &nbsp;
-                      (44) 123 1234 123</li>
-                    <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Número
-                        alternativo:</strong>
-                      &nbsp;
-                      (44) 123 1234 123</li>
+                      <span id="tel-display"><?php echo $sesion['NumeroTelefono']; ?></span>
+                    </li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Email:</strong> &nbsp;
-                      alecthompson@mail.com</li>
+                      <span id="email-display"><?php echo $sesion['Email'] ?? 'No disponible'; ?> </span>
+                    </li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Contacto de
                         emergencia (Nombre):</strong>
-                      &nbsp; Alec M. Thompson I</li>
+                      &nbsp;
+                      <span id="contacto-display"> <?php echo $sesion['NombreContacto'] ?? 'No hay registro'; ?> </span>
+                    </li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Contacto de
                         emergencia (Parentesco):</strong>
-                      &nbsp; Padre</li>
+                      &nbsp;
+                      <span id="parentezco-display"> <?php echo $sesion['Parentezco'] ?? 'No hay registro'; ?> </span>
+                    </li>
                     <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Contacto de
                         emergencia (Número):</strong>
-                      &nbsp; (44) 123 1234 123</li>
+                      &nbsp;
+                      <span id="emer-display"> <?php echo $sesion['contactoNumero'] ?? 'No hay registro'; ?> </span>
+                    </li>
 
                   </ul>
                 </div>
               </div>
             </div>
-            <!-- <div class="col-12 col-xl-4">
-              <div class="card card-plain h-100">
-                <div class="card-header pb-0 p-3">
-                  <h6 class="mb-0">Conversations</h6>
-                </div>
-                <div class="card-body p-3">
-                  <ul class="list-group">
-                    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2 pt-0">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/kal-visuals-square.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Sophie B.</h6>
-                        <p class="mb-0 text-xs">Hi! I need more information..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/marie.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Anne Marie</h6>
-                        <p class="mb-0 text-xs">Awesome work, can you..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/ivana-square.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Ivanna</h6>
-                        <p class="mb-0 text-xs">About files I can..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                    <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/team-4.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Peterson</h6>
-                        <p class="mb-0 text-xs">Have a great afternoon..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                    <li class="list-group-item border-0 d-flex align-items-center px-0">
-                      <div class="avatar me-3">
-                        <img src="../assets/img/team-3.jpg" alt="kal" class="border-radius-lg shadow">
-                      </div>
-                      <div class="d-flex align-items-start flex-column justify-content-center">
-                        <h6 class="mb-0 text-sm">Nick Daniel</h6>
-                        <p class="mb-0 text-xs">Hi! I need more information..</p>
-                      </div>
-                      <a class="btn btn-link pe-3 ps-0 mb-0 ms-auto w-25 w-md-auto" href="javascript:;">Reply</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>-->
             <div class="col-12 mt-4">
               <div class="mb-5 ps-3">
                 <h6 class="mb-1">Avisos</h6>
@@ -574,85 +605,7 @@
         </div>
       </div>
     </footer>
-    <div class="fixed-plugin">
-      <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
-        <i class="material-symbols-rounded py-2">edit</i>
-      </a>
-      <div class="card shadow-lg">
-        <div class="card-header pb-0 pt-3">
-          <div class="float-start">
-            <h5 class="mt-3 mb-0">Editar Información</h5>
-            <p></p>
-          </div>
-          <div class="float-end mt-4">
-            <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-              <i class="material-symbols-rounded">clear</i>
-            </button>
-          </div>
-          <!-- End Toggle Button -->
-        </div>
-        <hr class="horizontal dark my-1">
-        <div class="card-body pt-sm-3 pt-0">
-          <!-- Sidebar Backgrounds -->
-          <div>
-            <h6 class="mb-0"></h6>
-          </div>
-          <!-- Sidenav Type -->
-          <form>
-            <div class="input-group input-group-outline my-3">
-              <label class="form-label">Número celular</label>
-              <input type="number" class="form-control">
-            </div>
-            <div class="input-group input-group-outline my-3">
-              <label class="form-label">Número alternativo</label>
-              <input type="number" class="form-control">
-            </div>
-            <div class="input-group input-group-outline my-3">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control">
-            </div>
-            <div class="input-group input-group-outline my-3">
-              <label class="form-label">Nombre Contacto de emergencia</label>
-              <input type="text" class="form-control">
-            </div>
-            <div class="input-group input-group-outline my-3">
-              <label class="form-label">Parentesco Contacto de emergencia</label>
-              <input type="text" class="form-control">
-            </div>
-            <div class="input-group input-group-outline my-3">
-              <label class="form-label">Número de teléfono</label>
-              <input type="number" class="form-control">
-            </div>
 
-            <div class="input-group input-group-static my-3">
-              <a class="btn bg-gradient-primary w-100" href="" target="_blank" data-bs-toggle="modal"
-                data-bs-target="#exampleModal">Actualizar</a>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Información</h5>
-          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          ¡La información se actualizó correctamente!
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn bg-gradient-primary" data-bs-dismiss="modal">Cerrar</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!--   Core JS Files   -->
@@ -669,9 +622,223 @@
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const editModalEl = document.getElementById('modal-edit');
+      const form = document.getElementById('form-edit-usuario');
+      const telDisplay = document.getElementById('tel-display');
+      const emailDisplay = document.getElementById('email-display');
+      const contactoDisplay = document.getElementById('contacto-display');
+      const parentezcoDisplay = document.getElementById('parentezco-display');
+      const emerDisplay = document.getElementById('emer-display');
+      const telInput = form.querySelector('input[name="NumeroTelefono"]');
+      const emailInput = form.querySelector('input[name="Email"]');
+      const contactoInput = form.querySelector('input[name="NombreContacto"]');
+      const parentescoInput = form.querySelector('input[name="Parentezco"]');
+      const emergInput = form.querySelector('input[name="NumeroEmergencia"]');
+
+      // Bootstrap 5 Modal instance
+      const bsModal = new bootstrap.Modal(editModalEl);
+
+      // 1) Cargar datos al abrir modal
+      editModalEl.addEventListener('show.bs.modal', async () => {
+        try {
+          const resp = await fetch('../controllers/get_perfil_ajax.php');
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const u = await resp.json();
+          telInput.value = u.NumeroTelefono || '';
+          emailInput.value = u.Email || '';
+          contactoInput.value = u.NombreContacto || '';
+          parentescoInput.value = u.Parentezco || '';
+          emergInput.value = u.ContactoTelefono || '';
+        } catch (err) {
+          console.error(err);
+          Swal.fire('Error', 'No se pudo cargar tu información', 'error');
+        }
+      });
+
+      // 2) Enviar cambios y actualizar DOM sin recargar
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        try {
+          const resp = await fetch('../controllers/update_perfil_ajax.php', {
+            method: 'POST',
+            body: new FormData(form)
+          });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const result = await resp.json();
+
+          await Swal.fire({
+            title: result.success ? '¡Listo!' : 'Error',
+            text: result.message,
+            icon: result.success ? 'success' : 'error'
+          });
+
+          if (result.success) {
+            bsModal.hide();
+
+            // Actualiza sólo si existen los nodos en la página
+            if (telDisplay) telDisplay.textContent = telInput.value;
+            if (emailDisplay) emailDisplay.textContent = emailInput.value;
+            if (contactoDisplay) contactoDisplay.textContent = contactoInput.value;
+            if (parentezcoDisplay) parentezcoDisplay.textContent = parentescoInput.value;
+            if (emerDisplay) emerDisplay.textContent = emergInput.value;
+          }
+        } catch (err) {
+          console.error(err);
+          Swal.fire('Error', 'Fallo de comunicación', 'error');
+        }
+      });
+    });
+  </script>
+
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
   <script src="../assets/js/settings.js"></script>
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST">
+          <div class="modal-body">
+            <p>Estás a punto de cerrar sesión.</p>
+            <p>¿Seguro que quieres continuar?</p>
+          </div>
+          <div class="modal-footer">
+            <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+              sesión</button>
+            <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+  <!--End logout modal-->
+
+  <!--MODAL CAMBIAR CONTRASEÑA-->
+  <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body p-0">
+          <div class="card card-plain">
+            <div class="card-header pb-0 text-left">
+              <h5 class="">Cambiar Contraseña</h5>
+            </div>
+            <div class="card-body">
+
+              <form role="form text-left" method="post">
+                <div class="input-group input-group-outline my-3">
+                  <label class="form-label">Nueva contraseña</label>
+                  <input type="password" name="password1" autocomplete="new-password" autofocus="" class="form-control"
+                    required="" id="id_password1" onfocus=" focused(this)" onfocusout="defocused(this)">
+                </div>
+                <div class="input-group input-group-outline my-3">
+                  <label class="form-label">Repetir contraseña</label>
+                  <input type="password" name="password2" autocomplete="new-password" class="form-control" required=""
+                    id="id_password2" onfocus="focused(this)" onfocusout="defocused(this)">
+                </div>
+                <div class="text-center">
+                  <button type="submit" name="actualizarPass"
+                    class="btn btn-round bg-gradient-primary btn-lg w-100 mt-4 mb-0">Cambiar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--FIN DEL MODAL PARA CAMBIAR CONTRASEÑA-->
+
+  <!--MODAL PARA EDITAR USUARIO-->
+  <div class="modal fade" id="modal-edit" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title">Editar información</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="form-edit-usuario">
+          <input type="hidden" name="UsuarioId" id="edit-UsuarioId">
+          <div class="modal-body">
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Teléfono celular</label>
+              <input name="NumeroTelefono" id="edit-NumeroTelefono" type="tel" class="form-control">
+            </div>
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Email</label>
+              <input name="Email" id="edit-Email" type="email" class="form-control">
+            </div>
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Nombre contacto emergencia</label>
+              <input name="NombreContacto" id="edit-NombreContacto" type="text" class="form-control">
+            </div>
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Parentesco contacto emergencia</label>
+              <input name="Parentezco" id="edit-Parentezco" type="text" class="form-control">
+            </div>
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Número contacto emergencia</label>
+              <input name="NumeroEmergencia" id="edit-NumeroEmergencia" type="tel" class="form-control">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn bg-gradient-primary w-100">Guardar
+              información</button>
+            <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- FIN DEL MODAL DE EDITAR USUARIO -->
+
+  <!--MODAL FOTO DE PERFIL-->
+  <div class="modal fade" id="fotoPerfilModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Cambiar foto de perfil</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="card bg-dark text-white border-0 mb-4">
+            <img <?php echo isset($sesion)
+              ? obtenerFotoUsuario($pdo, $sesion['UsuarioId'])
+              : 'src="../assets/img/small-logos/user.png"'
+              ?> alt="preview" class="card-img">
+          </div>
+
+          <!-- Formulario actualizado -->
+          <form id="foto_perfil_usuario" action="" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="UsuarioId" value="<?php echo $sesion['UsuarioId']; ?>">
+
+            <p class="text-sm"><em>(JPEG, JPG). Tamaño máximo: 1 MB.</em></p>
+
+            <div class="input-group input-group-outline mb-4">
+              <label class="form-label">Selecciona una imagen</label>
+              <input type="file" name="foto" accept="image/jpeg,image/jpg" class="form-control" required>
+            </div>
+
+            <button type="submit" name="guardarFoto" class="btn bg-gradient-primary">Guardar</button>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN DEL MODAL FOTO DE PERFIL -->
+
+
 </body>
 
 </html>

@@ -1,86 +1,88 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const monthYear = document.getElementById('month-year');
-    const daysContainer = document.getElementById('days');
-    // const prevButton = document.getElementById('prev');
-    // const nextButton = document.getElementById('next');
+document.addEventListener('DOMContentLoaded', async () => {
+  const monthYear     = document.getElementById('month-year');
+  const daysContainer = document.getElementById('days');
+  const months        = [
+    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+  ];
 
-    const months = [
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];
+  let currentDate = new Date();
+  let today       = new Date();
 
-    const fechasConFondo = [
-        { day: 5, month: 7, year: 2025 },  // 5 de agosto de 2025        
-        { day: 11, month: 7, year: 2025 }, // 15 de agosto de 2025
-        { day: 28, month: 7, year: 2025 }  // 28 de agosto de 2025
-    ];
+  // 1) Traer cumpleaños del servidor
+  async function fetchBirthdays(month) {
+    const resp = await fetch(`../controllers/get_cumple.php?month=${month + 1}`);
+    return resp.ok ? await resp.json() : {};
+  }
 
+  // 2) Renderizar calendario
+  async function renderCalendar(date) {
+    const year  = date.getFullYear();
+    const month = date.getMonth();
+    const first = new Date(year, month, 1).getDay();
+    const last  = new Date(year, month + 1, 0).getDate();
 
-    let currentDate = new Date();
-    let today = new Date();
+    const birthdays = await fetchBirthdays(month);
 
-    function renderCalendar(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDay = new Date(year, month, 1).getDay();
-        const lastDay = new Date(year, month + 1, 0).getDate();
+    monthYear.textContent = `${months[month]} ${year}`;
+    daysContainer.innerHTML = '';
 
-        monthYear.textContent = `${months[month]} ${year}`;
-
-        daysContainer.innerHTML = '';
-
-        //ultimos dias del mes anterior
-        const prevMonthLastDay = new Date(year, month, 0).getDate();
-        for (let i = firstDay; i > 0; i--) {
-            const dayDiv = document.createElement('div');
-            dayDiv.textContent = prevMonthLastDay - i + 1;
-            dayDiv.classList.add('fade');
-            daysContainer.appendChild(dayDiv);
-
-        }
-
-        //dias del mes actual
-        for (let i = 1; i <= lastDay; i++) {
-            const dayDiv = document.createElement('div');
-            dayDiv.textContent = i;
-
-            // Hoy
-            if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                dayDiv.classList.add('today');
-            }
-
-            // Fechas con fondo
-            const esFechaConFondo = fechasConFondo.some(fecha =>
-                fecha.day === i && fecha.month === month && fecha.year === year
-            );
-
-            if (esFechaConFondo) {
-                dayDiv.classList.add('fondo-especial');
-            }
-
-            daysContainer.appendChild(dayDiv);
-        }
-
-        //fechas del siguiente mes
-        const nextMontthStartDay = 7 - new Date(year, month + 1, 0).getDay() - 1;
-        for (let i = 1; i <= nextMontthStartDay; i++) {
-            const dayDiv = document.createElement('div');
-            dayDiv.textContent = i;
-            dayDiv.classList.add('fade');
-            daysContainer.appendChild(dayDiv);
-        }
-
-
+    // Días mes anterior (fade)
+    const prevLast = new Date(year, month, 0).getDate();
+    for (let i = first; i > 0; i--) {
+      const d = document.createElement('div');
+      d.textContent = prevLast - i + 1;
+      d.classList.add('fade');
+      daysContainer.appendChild(d);
     }
 
-    /* prevButton.addEventListener('click', function(){
-         currentDate.setMonth(currentDate.getMonth()-1);
-         renderCalendar(currentDate);
-     });
- 
-     nextButton.addEventListener('click', function(){
-         currentDate.setMonth(currentDate.getMonth()+1);
-         renderCalendar(currentDate);
-     });*/
+    // Días mes actual
+    for (let i = 1; i <= last; i++) {
+      const d = document.createElement('div');
+      d.textContent = i;
+      d.classList.add('day-cell');
 
-    renderCalendar(currentDate);
+      // Hoy
+      if (i === today.getDate()
+       && month === today.getMonth()
+       && year  === today.getFullYear()) {
+        d.classList.add('today');
+      }
+
+      // Cumpleaños
+      const pics = birthdays[i];
+      if (pics) {
+        // Tomamos hasta 2 fotos
+        const imgs = pics.slice(0, 2);
+
+        if (imgs.length === 1) {
+          d.style.backgroundImage   = `url(${imgs[0]})`;
+          d.style.backgroundSize    = 'cover';
+          d.style.backgroundRepeat  = 'no-repeat';
+        } else {
+          d.style.backgroundImage    = `url(${imgs[0]}), url(${imgs[1]})`;
+          d.style.backgroundSize     = '50% 100%, 50% 100%';
+          d.style.backgroundPosition = 'left center, right center';
+          d.style.backgroundRepeat   = 'no-repeat, no-repeat';
+        }
+
+        // Para que el número siga legible
+        d.style.color       = '#fff';
+        d.style.textShadow  = '0 0 3px rgba(0,0,0,0.7)';
+      }
+
+      daysContainer.appendChild(d);
+    }
+
+    // Días mes siguiente (fade)
+    const nextStart = 7 - new Date(year, month + 1, 0).getDay() - 1;
+    for (let i = 1; i <= nextStart; i++) {
+      const d = document.createElement('div');
+      d.textContent = i;
+      d.classList.add('fade');
+      daysContainer.appendChild(d);
+    }
+  }
+
+  renderCalendar(currentDate);
 });

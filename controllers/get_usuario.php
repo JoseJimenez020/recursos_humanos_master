@@ -9,11 +9,9 @@ if (!$id) {
     exit;
 }
 
-$sql = "
-  SELECT 
+$sql = "SELECT 
     u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno,
-    u.Email, u.NumeroTelefono, u.TelefonoAlternativo,
-    ce.NombreContacto, ce.Parentezco, ce.NumeroTelefono AS ContactoTelefono
+    u.Email, u.NumeroTelefono, ce.NombreContacto, ce.Parentezco, ce.NumeroTelefono AS ContactoTelefono
   FROM usuarios u
   LEFT JOIN contacto_emergencia ce ON u.UsuarioId = ce.UsuarioId
   WHERE u.UsuarioId = :id

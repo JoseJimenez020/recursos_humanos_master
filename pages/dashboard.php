@@ -112,7 +112,7 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/avisos.html">
+          <a class="nav-link text-primary" href="../pages/avisos.php">
             <i class="material-symbols-rounded opacity-5">add_alert</i>
             <span class="nav-link-text ms-1">Avisos</span>
           </a>
@@ -140,7 +140,7 @@ require_once '../controllers/dashboard.php';
             adicional</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/manuales.html">
+          <a class="nav-link text-primary" href="../pages/manuales.php">
             <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
             <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
           </a>
@@ -149,12 +149,6 @@ require_once '../controllers/dashboard.php';
           <a class="nav-link text-primary" href="../pages/nom035.html">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/sign-in.html">
-            <i class="material-symbols-rounded opacity-5">login</i>
-            <span class="nav-link-text ms-1">Salir</span>
           </a>
         </li>
       </ul>
@@ -221,7 +215,7 @@ require_once '../controllers/dashboard.php';
             adicional</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/manuales.html">
+          <a class="nav-link text-primary" href="../pages/manuales.php">
             <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
             <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
           </a>
@@ -230,12 +224,6 @@ require_once '../controllers/dashboard.php';
           <a class="nav-link text-primary" href="../pages/nom035.html">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/sign-in.html">
-            <i class="material-symbols-rounded opacity-5">login</i>
-            <span class="nav-link-text ms-1">Salir</span>
           </a>
         </li>
       </ul>
@@ -263,6 +251,7 @@ require_once '../controllers/dashboard.php';
   </aside>';
   }
   ?>
+
   <div class="main-content position-relative max-height-vh-100 h-100">
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
@@ -295,7 +284,7 @@ require_once '../controllers/dashboard.php';
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                 <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="../pages/profile.html">
+                  <a class="dropdown-item border-radius-md" href="../pages/profile.php">
                     <div class="d-flex py-1">
                       <div class="my-auto">
                         <i class="material-symbols-rounded">user_attributes</i>
@@ -364,7 +353,7 @@ require_once '../controllers/dashboard.php';
               <div class="row">
                 <div class="row">
                   <h6 class="mb-0">¡Sé bienvenid@!</h6>
-                  <h6 class="mb-0" id="fechaCompleta">¡Sé bienvenid@!</h6>
+                  <h6 class="mb-0" id="fechaCompleta"></h6>
                 </div>
               </div>
               <hr class="dark horizontal">
@@ -514,77 +503,11 @@ require_once '../controllers/dashboard.php';
             </div>
             <div class="card-body p-3 timeline timeline-one-side scrollable-timeline">
               <div class="timeline timeline-one-side">
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-success text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-danger text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-info text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-warning text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-primary text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
-                <div class="timeline-block">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-dark text-gradient">hotel</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Usuario_nombre</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Del fecha/de/inicio al
-                      fecha/de/vuelta
-                    </p>
-                  </div>
-                </div>
+                <?= GetTimelineVacaciones($pdo) ?>
               </div>
             </div>
           </div>
         </div>
-
       </div>
 
       <div class="row mb-4">

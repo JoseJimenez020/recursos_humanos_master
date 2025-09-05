@@ -1,5 +1,5 @@
-// controllers/update_usuario_ajax.php
 <?php
+// update_usuario_ajax.php
 require_once 'conn.php';
 require_once 'logica_usuario.php';
 
@@ -36,6 +36,4 @@ try {
     ];
 }
 
-// 4) Devuelve siempre JSON
-echo json_encode($result, JSON_UNESCAPED_UNICODE);
 exit;

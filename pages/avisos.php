@@ -13,6 +13,9 @@
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
+<?php
+require_once '../controllers/dashboard.php';
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -41,120 +44,214 @@
 
 <body class="g-sidenav-show bg-gray-100">
 
-    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
-        id="sidenav-main">
-        <div class="sidenav-header">
-            <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-                aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
-                <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
-                <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
-            </a>
-        </div>
-        <hr class="horizontal dark mt-0 mb-2">
-        <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/dashboard.php">
-                        <i class="material-symbols-rounded opacity-5">dashboard</i>
-                        <span class="nav-link-text ms-1">Home</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/politicas.html">
-                        <i class="material-symbols-rounded opacity-5">policy</i>
-                        <span class="nav-link-text ms-1">Políticas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
-                        <i class="material-symbols-rounded opacity-5">rule</i>
-                        <span class="nav-link-text ms-1">Reglamento Interno</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/procesos.html">
-                        <i class="material-symbols-rounded opacity-5">receipt_long</i>
-                        <span class="nav-link-text ms-1">Procesos</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/organigrama.html">
-                        <i class="material-symbols-rounded opacity-5">globe_book</i>
-                        <span class="nav-link-text ms-1">Organigrama</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/mision_vision.html">
-                        <i class="material-symbols-rounded opacity-5">public</i>
-                        <span class="nav-link-text ms-1">Misión, Visión</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/valores.html">
-                        <i class="material-symbols-rounded opacity-5">psychology</i>
-                        <span class="nav-link-text ms-1">Valores</span>
-                    </a>
-                </li>
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Administrador
-                    </h6>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/usuarios.php">
-                        <i class="material-symbols-rounded opacity-5">groups</i>
-                        <span class="nav-link-text ms-1">Usuarios</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active bg-gradient-primary text-white" href="../pages/avisos.html">
-                        <i class="material-symbols-rounded opacity-5">add_alert</i>
-                        <span class="nav-link-text ms-1">Avisos</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/felicitaciones.html">
-                        <i class="material-symbols-rounded opacity-5">celebration</i>
-                        <span class="nav-link-text ms-1">Felicitaciones</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/campanias.html">
-                        <i class="material-symbols-rounded opacity-5">campaign</i>
-                        <span class="nav-link-text ms-1">Campañas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/r_vacantes.html">
-                        <i class="material-symbols-rounded opacity-5">explore</i>
-                        <span class="nav-link-text ms-1">Vacantes</span>
-                    </a>
-                </li>
-                <li class="nav-item mt-3">
-                    <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
-                        adicional</h6>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/manuales.html">
-                        <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
-                        <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/nom035.html">
-                        <i class="material-symbols-rounded opacity-5">comment</i>
-                        <span class="nav-link-text ms-1">NOM-35</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/sign-in.html">
-                        <i class="material-symbols-rounded opacity-5">login</i>
-                        <span class="nav-link-text ms-1">Salir</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </aside>
+    <?php
+    if ($sesion['EsAdmin'] === 1) {
+        echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
+            <i class="material-symbols-rounded opacity-5">dashboard</i>
+            <span class="nav-link-text ms-1">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/politicas.html">
+            <i class="material-symbols-rounded opacity-5">policy</i>
+            <span class="nav-link-text ms-1">Políticas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+            <i class="material-symbols-rounded opacity-5">rule</i>
+            <span class="nav-link-text ms-1">Reglamento Interno</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/procesos.html">
+            <i class="material-symbols-rounded opacity-5">receipt_long</i>
+            <span class="nav-link-text ms-1">Procesos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/organigrama.html">
+            <i class="material-symbols-rounded opacity-5">globe_book</i>
+            <span class="nav-link-text ms-1">Organigrama</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+            <i class="material-symbols-rounded opacity-5">public</i>
+            <span class="nav-link-text ms-1">Misión, Visión</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/valores.html">
+            <i class="material-symbols-rounded opacity-5">psychology</i>
+            <span class="nav-link-text ms-1">Valores</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Administrador</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/usuarios.php">
+            <i class="material-symbols-rounded opacity-5">groups</i>
+            <span class="nav-link-text ms-1">Usuarios</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/avisos.php">
+            <i class="material-symbols-rounded opacity-5">add_alert</i>
+            <span class="nav-link-text ms-1">Avisos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/felicitaciones.html">
+            <i class="material-symbols-rounded opacity-5">celebration</i>
+            <span class="nav-link-text ms-1">Felicitaciones</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/campanias.php">
+            <i class="material-symbols-rounded opacity-5">campaign</i>
+            <span class="nav-link-text ms-1">Campañas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+            adicional</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/manuales.php">
+            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/nom035.html">
+            <i class="material-symbols-rounded opacity-5">comment</i>
+            <span class="nav-link-text ms-1">NOM-35</span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+  </aside>';
+    } elseif ($sesion['EsAdmin'] === 0) {
+        echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
+            <i class="material-symbols-rounded opacity-5">dashboard</i>
+            <span class="nav-link-text ms-1">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/politicas.html">
+            <i class="material-symbols-rounded opacity-5">policy</i>
+            <span class="nav-link-text ms-1">Políticas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+            <i class="material-symbols-rounded opacity-5">rule</i>
+            <span class="nav-link-text ms-1">Reglamento Interno</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/procesos.html">
+            <i class="material-symbols-rounded opacity-5">receipt_long</i>
+            <span class="nav-link-text ms-1">Procesos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/organigrama.html">
+            <i class="material-symbols-rounded opacity-5">globe_book</i>
+            <span class="nav-link-text ms-1">Organigrama</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+            <i class="material-symbols-rounded opacity-5">public</i>
+            <span class="nav-link-text ms-1">Misión, Visión</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/valores.html">
+            <i class="material-symbols-rounded opacity-5">psychology</i>
+            <span class="nav-link-text ms-1">Valores</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+            adicional</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/manuales.php">
+            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/nom035.html">
+            <i class="material-symbols-rounded opacity-5">comment</i>
+            <span class="nav-link-text ms-1">NOM-35</span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+      <div class="mx-3">
+        <a class="btn btn-outline mt-4 w-100 text-primary">
+          <i class="material-symbols-rounded opacity-5">explore</i>
+          <span class="nav-link-text ms-1">Vacantes</span>
+        </a>
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+          <span class="nav-link-text ms-1">Comercial</span>
+          <i class="material-symbols-rounded opacity-5">groups</i>
+          <span id="contador_vacantes">4</span>
+          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
+        </a>
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+          <span class="nav-link-text ms-1">Técnico</span>
+          <i class="material-symbols-rounded opacity-5">groups</i>
+          <span id="contador_vacantes">4</span>
+          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
+        </a>
+      </div>
+    </div>
+  </aside>';
+    }
+    ?>
 
     <div class="main-content position-relative max-height-vh-100 h-100">
         <!-- Navbar -->
@@ -190,7 +287,7 @@
                             <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                                 aria-labelledby="dropdownMenuButton">
                                 <li class="mb-2">
-                                    <a class="dropdown-item border-radius-md" href="../pages/profile.html">
+                                    <a class="dropdown-item border-radius-md" href="../pages/profile.php">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
                                                 <i class="material-symbols-rounded">user_attributes</i>
