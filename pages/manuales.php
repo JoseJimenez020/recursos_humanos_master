@@ -3,6 +3,14 @@ require '../controllers/logica_usuario.php';
 // 1) Inicializamos la variable donde guardaremos el <script> de SweetAlert
 $alertHtml = '';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['download'])) {
+    // Asegúrate de usar el nombre correcto del input: manualId
+    $manualId = (int) ($_POST['manualId'] ?? 0);
+    if ($manualId > 0) {
+        DescargarDocumento($manualId, $pdo);
+    }
+}
+
 $filterDept = $_GET['departamento'] ?? '';
 // 3) Traemos departamentos para poblar ambos selects
 $departamentos = GetDepartamento($pdo);
@@ -209,7 +217,7 @@ $isAdmin = $sesion['EsAdmin'] === 1;
             adicional</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/manuales.php">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/manuales.php">
             <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
             <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
           </a>
