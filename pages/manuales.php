@@ -1,0 +1,587 @@
+<?php
+require '../controllers/logica_usuario.php';
+// 1) Inicializamos la variable donde guardaremos el <script> de SweetAlert
+$alertHtml = '';
+
+$filterDept = $_GET['departamento'] ?? '';
+// 3) Traemos departamentos para poblar ambos selects
+$departamentos = GetDepartamento($pdo);
+$isAdmin = $sesion['EsAdmin'] === 1;
+
+?>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="../assets/img/favicon.ico">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>
+        RH | Manuales
+    </title>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Material Icons -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+</head>
+
+<body class="g-sidenav-show bg-gray-100 ">
+
+    <?php
+    if ($sesion['EsAdmin'] === 1) {
+        echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/dashboard.php">
+            <i class="material-symbols-rounded opacity-5">dashboard</i>
+            <span class="nav-link-text ms-1">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/politicas.html">
+            <i class="material-symbols-rounded opacity-5">policy</i>
+            <span class="nav-link-text ms-1">Políticas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+            <i class="material-symbols-rounded opacity-5">rule</i>
+            <span class="nav-link-text ms-1">Reglamento Interno</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/procesos.html">
+            <i class="material-symbols-rounded opacity-5">receipt_long</i>
+            <span class="nav-link-text ms-1">Procesos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/organigrama.html">
+            <i class="material-symbols-rounded opacity-5">globe_book</i>
+            <span class="nav-link-text ms-1">Organigrama</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+            <i class="material-symbols-rounded opacity-5">public</i>
+            <span class="nav-link-text ms-1">Misión, Visión</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/valores.html">
+            <i class="material-symbols-rounded opacity-5">psychology</i>
+            <span class="nav-link-text ms-1">Valores</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Administrador</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/usuarios.php">
+            <i class="material-symbols-rounded opacity-5">groups</i>
+            <span class="nav-link-text ms-1">Usuarios</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/avisos.php">
+            <i class="material-symbols-rounded opacity-5">add_alert</i>
+            <span class="nav-link-text ms-1">Avisos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/felicitaciones.html">
+            <i class="material-symbols-rounded opacity-5">celebration</i>
+            <span class="nav-link-text ms-1">Felicitaciones</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/campanias.html">
+            <i class="material-symbols-rounded opacity-5">campaign</i>
+            <span class="nav-link-text ms-1">Campañas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+            adicional</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/manuales.php">
+            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/nom035.html">
+            <i class="material-symbols-rounded opacity-5">comment</i>
+            <span class="nav-link-text ms-1">NOM-35</span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+  </aside>';
+    } elseif ($sesion['EsAdmin'] === 0) {
+        echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+    id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
+      </a>
+    </div>
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/dashboard.php">
+            <i class="material-symbols-rounded opacity-5">dashboard</i>
+            <span class="nav-link-text ms-1">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/politicas.html">
+            <i class="material-symbols-rounded opacity-5">policy</i>
+            <span class="nav-link-text ms-1">Políticas</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+            <i class="material-symbols-rounded opacity-5">rule</i>
+            <span class="nav-link-text ms-1">Reglamento Interno</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/procesos.html">
+            <i class="material-symbols-rounded opacity-5">receipt_long</i>
+            <span class="nav-link-text ms-1">Procesos</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/organigrama.html">
+            <i class="material-symbols-rounded opacity-5">globe_book</i>
+            <span class="nav-link-text ms-1">Organigrama</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+            <i class="material-symbols-rounded opacity-5">public</i>
+            <span class="nav-link-text ms-1">Misión, Visión</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/valores.html">
+            <i class="material-symbols-rounded opacity-5">psychology</i>
+            <span class="nav-link-text ms-1">Valores</span>
+          </a>
+        </li>
+        <li class="nav-item mt-3">
+          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+            adicional</h6>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/manuales.php">
+            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/nom035.html">
+            <i class="material-symbols-rounded opacity-5">comment</i>
+            <span class="nav-link-text ms-1">NOM-35</span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+      <div class="mx-3">
+        <a class="btn btn-outline mt-4 w-100 text-primary">
+          <i class="material-symbols-rounded opacity-5">explore</i>
+          <span class="nav-link-text ms-1">Vacantes</span>
+        </a>
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+          <span class="nav-link-text ms-1">Comercial</span>
+          <i class="material-symbols-rounded opacity-5">groups</i>
+          <span id="contador_vacantes">4</span>
+          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
+        </a>
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+          <span class="nav-link-text ms-1">Técnico</span>
+          <i class="material-symbols-rounded opacity-5">groups</i>
+          <span id="contador_vacantes">4</span>
+          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
+        </a>
+      </div>
+    </div>
+  </aside>';
+    }
+    ?>
+
+    <div class="main-content position-relative max-height-vh-100 h-100">
+        <!-- Navbar -->
+        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
+            data-scroll="true">
+            <div class="container-fluid py-1 px-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
+                        </li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Manuales</li>
+                    </ol>
+                </nav>
+                <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                    <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+
+                    </div>
+                    <ul class="navbar-nav d-flex align-items-center  justify-content-end">
+                        <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                            <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                                <div class="sidenav-toggler-inner">
+                                    <i class="sidenav-toggler-line"></i>
+                                    <i class="sidenav-toggler-line"></i>
+                                    <i class="sidenav-toggler-line"></i>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown pe-3 d-flex align-items-center">
+                            <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <img class="avatar avatar-sm  me-3" <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?>>
+                            </a>
+                            <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
+                                aria-labelledby="dropdownMenuButton">
+                                <li class="mb-2">
+                                    <a class="dropdown-item border-radius-md" href="../pages/profile.php">
+                                        <div class="d-flex py-1">
+                                            <div class="my-auto">
+                                                <i class="material-symbols-rounded">user_attributes</i>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="text-sm font-weight-normal mb-1">
+                                                    Perfil
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#logoutModal">
+                                        <div class="d-flex py-1">
+                                            <div class="my-auto">
+                                                <i class="material-symbols-rounded">logout</i>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="text-sm font-weight-normal mb-1">Salir</h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="container-fluid px-2 px-md-4">
+            <div class="page-header min-height-300 border-radius-xl mt-4"
+                style="background-image: url('../assets/img/illustrations/banner-manuales.jpg');">
+                <span class="mask  bg-gradient-dark  opacity-6"></span>
+            </div>
+            <div class="card card-body mx-2 mx-md-2 mt-n6">
+                <div class="row gx-4 mb-2">
+                    <div class="col-auto my-auto">
+                        <div class="h-100">
+                            <h3 class="mb-0 h3 font-weight-bolder">
+                                Manuales
+                            </h3>
+                            <p class="mb-0 font-weight-normal text-sm">
+                                Consulta los manuales de procedimientos aquí.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="table-responsive p-0">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Nombre</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Departamento</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Opciones</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Última modificación</th>
+                                        <?php if (($_SESSION['EsAdmin'] ?? 0) == 1): ?>
+                                            <th></th>
+                                        <?php endif; ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?= GetTableManuales($pdo, $sesion['DepartamentoId'], $isAdmin) ?>
+                                </tbody>
+
+                            </table>
+                            <!-- Script para ver los documentos en la misma página -->
+                            <script>
+                                function verPDFSweetAlert(url) {
+                                    Swal.fire({
+                                        title: 'Vista previa del manual',
+                                        html: `<iframe src="${url}" width="100%" height="700px" style="border:none;"></iframe>`,
+                                        width: '70%',
+                                        showCloseButton: true,
+                                        showConfirmButton: false,
+                                        customClass: {
+                                            popup: 'swal2-pdf-modal'
+                                        }
+                                    });
+                                }
+                            </script>
+                            <!--Fin del script para ver documentos-->
+
+                            <!-- Script para validar la descarga -->
+                            <script>
+                                function descargarPDF(url, nombreArchivo) {
+                                    const enlace = document.createElement('a');
+                                    enlace.href = url;
+                                    enlace.download = nombreArchivo;
+                                    document.body.appendChild(enlace);
+                                    enlace.click();
+                                    document.body.removeChild(enlace);
+                                }
+                            </script>
+                            <!--Fin del script para validar la descarga-->
+
+                        </div>
+
+                        <!-- MODAL NOTIFICACIÓN BORRADO -->
+                        <div class="modal fade" id="modal-notification" tabindex="-1" role="dialog"
+                            aria-labelledby="modal-notification" aria-hidden="true">
+                            <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <i class="material-symbols-rounded text-danger me-2">
+                                            warning
+                                        </i>
+                                        <h6 class="modal-title font-weight-normal" id="modal-title-notification">
+                                            Mensaje de confirmación</h6>
+                                        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
+                                            aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="py-3 text-center">
+                                            <i class="material-symbols-rounded h1 text-secondary">
+                                                Borrar manual
+                                            </i>
+                                            <h4 class="text-gradient text-danger mt-4">Atención</h4>
+                                            <p>Está a punto de borrar el manual "Nombre del manual", ¿Está seguro que
+                                                desea
+                                                continuar?</p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn bg-gradient-primary toast-btn"
+                                            data-bs-dismiss="modal" data-target="warningToast">Sí,
+                                            continuar.</button>
+                                        <button type="button" class="btn btn-link text-primary ml-auto"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- FIN DEL MODAL NOTIFICACIÓN BORRADO -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <footer class="footer py-4  ">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="copyright text-center text-sm text-muted text-lg-start">
+                            ©
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>,
+                            Powered by
+                            <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">Fast-net</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <?php if ($sesion['EsAdmin'] === 1): ?>
+        <div class="fixed-plugin">
+            <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+                <i class="material-symbols-rounded py-2">note_add</i>
+            </a>
+            <div class="card shadow-lg">
+                <div class="card-header pb-0 pt-3">
+                    <div class="float-start">
+                        <h5 class="mt-3 mb-0">Agregar nuevo manual</h5>
+                    </div>
+                    <div class="float-end mt-4">
+                        <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+                            <i class="material-symbols-rounded">clear</i>
+                        </button>
+                    </div>
+                    <!-- End Toggle Button -->
+                </div>
+                <hr class="horizontal dark my-1">
+                <div class="card-body pt-sm-3 pt-0">
+                    <!-- Sidebar Backgrounds -->
+                    <div>
+                        <p>A continuación ingrese la información que se solicita</p>
+                    </div>
+                    <!-- Sidenav Type -->
+
+                    <!-- Navbar Fixed -->
+                    <div class="mt-3 d-flex">
+                        <form method="POST" enctype="multipart/form-data" id="user_profile_documento_form">
+                            <div class="input-group input-group-outline my-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" name="nombreDocumento" class="form-control">
+                            </div>
+                            <div class="input-group input-group-outline my-3">
+                                <label class="form-label">Documento</label>
+                                <input type="file" name="archivo" accept=".pdf" class="form-control">
+                            </div>
+                            <div class="input-group input-group-static mb-4">
+                                <label>Departamento</label>
+                                <select name="DepartamentoId" id="departamento-registro" class="form-control" required>
+                                    <option value="">Seleccionar</option>
+                                    <?= GetListaDepartamentos($departamentos) ?>
+                                </select>
+                            </div>
+                            <hr class="horizontal dark my-3">
+                            <button type="submit" name="guardarDocumentos" class="btn bg-gradient-primary w-100">
+                                Guardar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+    <!--   Core JS Files   -->
+    <script src="../assets/js/core/popper.min.js"></script>
+    <script src="../assets/js/core/bootstrap.min.js"></script>
+    <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
+    <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+    <script>
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
+            var options = {
+                damping: '0.5'
+            }
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
+    </script>
+    <script src="../assets/js/settings.js"></script>
+
+    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <p>Estás a punto de cerrar sesión.</p>
+                        <p>¿Seguro que quieres continuar?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+                            sesión</button>
+                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--End logout modal-->
+    <!-- SCRIPT BORRADO -->
+    <script>
+        let manualToDelete = { id: null, name: '' };
+
+        // Cuando se abre el modal
+        document.querySelectorAll('.btn-delete-manual').forEach(btn => {
+            btn.addEventListener('click', () => {
+                manualToDelete.id = btn.getAttribute('data-manual-id');
+                manualToDelete.name = btn.getAttribute('data-manual-name');
+
+                // Inyectar nombre en el <p> del modal
+                document.querySelector('#modal-notification .modal-body p')
+                    .textContent = `Está a punto de borrar ${manualToDelete.name}, ¿Está seguro?`;
+            });
+        });
+
+        // Al confirmar borrado
+        document.querySelector('#modal-notification .toast-btn')
+            .addEventListener('click', () => {
+                if (!manualToDelete.id) return;
+                window.location.href = '../controllers/eliminar_manual.php?id=' + encodeURIComponent(manualToDelete.id);
+            });
+    </script>
+    <?php if (isset($_GET['msg']) && $_GET['msg'] === 'eliminado'): ?>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Listo!',
+                text: 'El manual fue borrado exitosamente.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    <?php endif; ?>
+    <!-- FIN SCRIPT BORRADO -->
+</body>
+
+</html>

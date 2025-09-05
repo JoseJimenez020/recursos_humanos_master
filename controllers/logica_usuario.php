@@ -22,7 +22,6 @@ if (!isset($_SESSION['user_id'])) {
 require 'sesion.php';
 require 'logout.php';
 
-
 /*function GetFoto($id, $pdo)
 {
     $query = "SELECT FotoContenido FROM fotos WHERE EntidadTipo = 'usuario' AND EntidadId = :id";
@@ -636,7 +635,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizarPass'])) {
 
 }
 
-
 function RegistrarVacaciones(array $post, PDO $pdo): string
 {
     // 1) Sanitizar fechas
@@ -687,4 +685,201 @@ function RegistrarVacaciones(array $post, PDO $pdo): string
             'error'
         );
     }
+}
+
+function InsertDocumentacion($nombreDocumento, $contenidoArchivo, $departamentoId, PDO $pdo)
+{
+    try {
+        // Iniciamos transacción para garantizar atomicidad
+        $pdo->beginTransaction();
+
+        // 1. Insertar en tabla documentos
+        $sqlDoc = "
+            INSERT INTO documentos (NombreDocumento, DocumentoContenido)
+            VALUES (:nombre, :contenido)
+        ";
+        $stmtDoc = $pdo->prepare($sqlDoc);
+        $stmtDoc->bindParam(':nombre', $nombreDocumento, PDO::PARAM_STR);
+        $stmtDoc->bindParam(':contenido', $contenidoArchivo, PDO::PARAM_LOB);
+        $stmtDoc->execute();
+
+        // Recuperamos el ID recién insertado
+        $documentoId = $pdo->lastInsertId();
+
+        // 2. Insertar en tabla manuales con fecha de PHP
+        $fechaHoy = date('Y-m-d');
+        $sqlMan = "
+            INSERT INTO manuales (DepartamentoId, DocumentoId, FechaModificacion)
+            VALUES (:depId, :docId, :fecha)
+        ";
+        $stmtMan = $pdo->prepare($sqlMan);
+        $stmtMan->bindParam(':depId', $departamentoId, PDO::PARAM_INT);
+        $stmtMan->bindParam(':docId', $documentoId, PDO::PARAM_INT);
+        $stmtMan->bindParam(':fecha', $fechaHoy, PDO::PARAM_STR);
+        $stmtMan->execute();
+
+        // Confirmamos cambios
+        $pdo->commit();
+        return true;
+
+    } catch (PDOException $e) {
+        // Deshacemos si hay error
+        $pdo->rollBack();
+        error_log('Error en al subir documentación: ' . $e->getMessage());
+        return false;
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarDocumentos'])) {
+    $nombreDocumento = trim($_POST['nombreDocumento']);
+    $departamentoId = (int) $_POST['DepartamentoId'];
+
+    if (empty($nombreDocumento) || $departamentoId <= 0) {
+        echo "<script>Swal.fire('Error', 'Faltan datos obligatorios.', 'error');</script>";
+        exit;
+    }
+
+    if (
+        isset($_FILES['archivo']) &&
+        $_FILES['archivo']['error'] === UPLOAD_ERR_OK
+    ) {
+        $fileTmp = $_FILES['archivo']['tmp_name'];
+        $fileName = $_FILES['archivo']['name'];
+        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $size = $_FILES['archivo']['size'];
+        $mimeType = mime_content_type($fileTmp);
+        $blob = file_get_contents($fileTmp);
+
+        $allowedExt = ['pdf'];
+        $maxSize = 5 * 1024 * 1024;  // 5MB
+
+        if (!in_array($ext, $allowedExt)) {
+            echo "<script>Swal.fire('Error', 'Sólo se permiten PDFs.', 'error');</script>";
+        } elseif ($size > $maxSize) {
+            echo "<script>Swal.fire('Error', 'El archivo supera 5MB.', 'error');</script>";
+        } else {
+            if (InsertDocumentacion($nombreDocumento, $blob, $departamentoId, $pdo)) {
+                echo "
+                <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire('¡Éxito!','Documento guardado.','success')
+                      .then(() => window.location.href='manuales.php');
+                  });
+                </script>";
+            } else {
+                echo "<script>Swal.fire('Error','No se pudo guardar el documento.','error');</script>";
+            }
+        }
+    } else {
+        echo "<script>Swal.fire('Error','No se seleccionó archivo.','error');</script>";
+    }
+}
+/**
+ * Devuelve las filas HTML de la tabla de manuales
+ * para un departamento dado.
+ *
+ * @param PDO   $pdo             Conexión PDO
+ * @param int   $departamentoId  ID del departamento
+ * @return string                HTML de las filas (<tr>…</tr>)
+ */
+function GetTableManuales(PDO $pdo, int $departamentoId, bool $isAdmin): string
+{
+    // Consulta: nombre de manual, departamento y fecha de modificación
+    $sql = "
+        SELECT
+            m.ManualId,
+            doc.NombreDocumento,
+            d.DepartamentoNombre,
+            m.FechaModificacion
+        FROM manuales m
+        LEFT JOIN documentos doc
+            ON m.DocumentoId = doc.DocumentoId
+        LEFT JOIN departamento d
+            ON m.DepartamentoId = d.DepartamentoId
+        WHERE m.DepartamentoId = :departamento
+        ORDER BY m.FechaModificacion DESC
+    ";
+
+    // Ejecutar
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['departamento' => $departamentoId]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Si no hay manuales para este departamento
+    if (empty($rows)) {
+        return '<tr>
+                    <td colspan="5" class="text-center">
+                        No hay manuales disponibles
+                    </td>
+                </tr>';
+    }
+
+    // Construir filas
+    $html = '';
+    foreach ($rows as $m) {
+        // Ruta al icono PDF
+        $icon = '../assets/img/icons/pdf-logo.png';
+
+        // Links para descargar/ver; deberás crear estos endpoints
+        $downloadUrl = "descarga_manual.php?id={$m['ManualId']}";
+        $viewUrl = "ver_manual.php?id={$m['ManualId']}";
+
+        // Nombre limpio para el download
+        $safeName = rawurlencode($m['NombreDocumento'] . '.pdf');
+
+        // Formatear fecha
+        $fecha = date('d/m/Y', strtotime($m['FechaModificacion']));
+
+        $html .= '<tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div>
+                          <img src="' . $icon . '"
+                               class="avatar avatar-sm me-3 border-radius-lg"
+                               alt="pdf">
+                        </div>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">'
+            . htmlspecialchars($m['NombreDocumento']) .
+            '</h6>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">'
+            . htmlspecialchars($m['DepartamentoNombre'] ?? 'Sin departamento') .
+            '</p>
+                    </td>
+                    <td class="text-center text-sm">
+                      <span class="badge badge-sm bg-gradient-success"
+                            onclick="descargarPDF(\'' . $downloadUrl . '\', \'' . $safeName . '\')">
+                        Descargar
+                      </span>
+                      <span class="badge badge-sm bg-gradient-secondary"
+                            onclick="verPDFSweetAlert(\'' . $viewUrl . '\')">
+                        Ver
+                      </span>
+                    </td>
+                    <td class="align-middle text-center text-xs">'
+            . $fecha .
+            '</td>';
+
+        if ($isAdmin) {
+            $safeName = htmlspecialchars($m['NombreDocumento'], ENT_QUOTES);
+            $html .= '<td class="align-middle text-center">
+                        <a href="#"
+                           class="btn btn-link text-danger border-0 btn-delete-manual"
+                           data-manual-id="' . $m['ManualId'] . '"
+                           data-manual-name="' . $safeName . '"
+                           data-bs-toggle="modal"
+                           data-bs-target="#modal-notification">
+                          <i class="material-symbols-rounded text-lg">delete</i>
+                        </a>
+                      </td>';
+        }
+
+        $html .= '</tr>';
+    }
+
+    return $html;
 }

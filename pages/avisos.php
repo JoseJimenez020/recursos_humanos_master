@@ -139,7 +139,7 @@ require_once '../controllers/dashboard.php';
             adicional</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/manuales.html">
+          <a class="nav-link text-primary" href="../pages/manuales.php">
             <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
             <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
           </a>
@@ -215,7 +215,7 @@ require_once '../controllers/dashboard.php';
             adicional</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/manuales.html">
+          <a class="nav-link text-primary" href="../pages/manuales.php">
             <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
             <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
           </a>
