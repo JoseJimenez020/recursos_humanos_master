@@ -1,18 +1,4 @@
-<!--
-=========================================================
-* Material Dashboard 3 - v3.2.0
-=========================================================
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <?php
 require_once '../controllers/dashboard.php';
 ?>
@@ -128,7 +114,7 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+          <a class="nav-link text-primary" href="../pages/panel_vacantes.php">
             <i class="material-symbols-rounded opacity-5">explore</i>
             <span class="nav-link-text ms-1">Vacantes</span>
           </a>
@@ -234,13 +220,13 @@ require_once '../controllers/dashboard.php';
           <i class="material-symbols-rounded opacity-5">explore</i>
           <span class="nav-link-text ms-1">Vacantes</span>
         </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
           <span class="nav-link-text ms-1">Comercial</span>
           <i class="material-symbols-rounded opacity-5">groups</i>
           <span id="contador_vacantes">4</span>
           <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
         </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
           <span class="nav-link-text ms-1">Técnico</span>
           <i class="material-symbols-rounded opacity-5">groups</i>
           <span id="contador_vacantes">4</span>

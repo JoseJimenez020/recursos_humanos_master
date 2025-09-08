@@ -36,6 +36,7 @@ require_once '../controllers/dashboard.php';
     <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Material Icons -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -61,7 +62,7 @@ require_once '../controllers/dashboard.php';
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
+          <a class="nav-link text-primary" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
             <span class="nav-link-text ms-1">Home</span>
           </a>
@@ -124,13 +125,13 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/campanias.php">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/campanias.php">
             <i class="material-symbols-rounded opacity-5">campaign</i>
             <span class="nav-link-text ms-1">Campañas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+          <a class="nav-link text-primary" href="../pages/panel_vacantes.php">
             <i class="material-symbols-rounded opacity-5">explore</i>
             <span class="nav-link-text ms-1">Vacantes</span>
           </a>
@@ -151,8 +152,16 @@ require_once '../controllers/dashboard.php';
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
         </li>
-
       </ul>
+    </div>
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+      <div class="mx-3">
+        <a class="btn btn-outline mt-4 w-100 text-primary">
+          <i class="material-symbols-rounded opacity-5">explore</i>
+          <span class="nav-link-text ms-1">Vacantes</span>
+        </a>
+        ' . mostrarContador($pdo) . '
+      </div>
     </div>
   </aside>';
     } elseif ($sesion['EsAdmin'] === 0) {
@@ -236,13 +245,13 @@ require_once '../controllers/dashboard.php';
           <i class="material-symbols-rounded opacity-5">explore</i>
           <span class="nav-link-text ms-1">Vacantes</span>
         </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
           <span class="nav-link-text ms-1">Comercial</span>
           <i class="material-symbols-rounded opacity-5">groups</i>
           <span id="contador_vacantes">4</span>
           <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
         </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
           <span class="nav-link-text ms-1">Técnico</span>
           <i class="material-symbols-rounded opacity-5">groups</i>
           <span id="contador_vacantes">4</span>
@@ -283,7 +292,7 @@ require_once '../controllers/dashboard.php';
                         <li class="nav-item dropdown pe-3 d-flex align-items-center">
                             <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm  me-3 ">
+                                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-sm  me-3 ">
                             </a>
                             <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                                 aria-labelledby="dropdownMenuButton">
@@ -302,15 +311,14 @@ require_once '../controllers/dashboard.php';
                                     </a>
                                 </li>
                                 <li class="mb-2">
-                                    <a class="dropdown-item border-radius-md" href="../pages/sign-in.html">
+                                    <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#logoutModal">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
                                                 <i class="material-symbols-rounded">logout</i>
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-sm font-weight-normal mb-1">
-                                                    Salir
-                                                </h6>
+                                                <h6 class="text-sm font-weight-normal mb-1">Salir</h6>
                                             </div>
                                         </div>
                                     </a>
@@ -718,7 +726,29 @@ require_once '../controllers/dashboard.php';
     <script src="../assets/js/settings.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
-
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <p>Estás a punto de cerrar sesión.</p>
+                        <p>¿Seguro que quieres continuar?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+                            sesión</button>
+                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--End logout modal-->
 </body>
 
 </html>

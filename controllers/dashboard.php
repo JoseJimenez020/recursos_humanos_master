@@ -89,3 +89,20 @@ HTML;
 
     return $html;
 }
+
+function mostrarContador($pdo): string
+{
+    $sql = "SELECT COUNT(*) FROM `vacantes` WHERE `Status` = 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $contador = $stmt->fetchColumn(); // Obtiene directamente el número
+
+    $html = '<a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
+                <span class="nav-link-text ms-1">Activas</span>
+                <i class="material-symbols-rounded opacity-5">groups</i>
+                <span id="contador_vacantes">' . $contador . '</span>
+                <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
+            </a>';
+
+    return $html;
+}

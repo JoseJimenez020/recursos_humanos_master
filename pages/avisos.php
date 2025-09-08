@@ -1,18 +1,3 @@
-<!--
-=========================================================
-* Material Dashboard 3 - v3.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <?php
 require_once '../controllers/dashboard.php';
 ?>
@@ -35,6 +20,8 @@ require_once '../controllers/dashboard.php';
     <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Material Icons -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -60,7 +47,7 @@ require_once '../controllers/dashboard.php';
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
+          <a class="nav-link text-primary" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
             <span class="nav-link-text ms-1">Home</span>
           </a>
@@ -111,7 +98,7 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/avisos.php">
+          <a class="nav-link active bg-gradient-primary text-white" href="../pages/avisos.php">
             <i class="material-symbols-rounded opacity-5">add_alert</i>
             <span class="nav-link-text ms-1">Avisos</span>
           </a>
@@ -129,7 +116,7 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+          <a class="nav-link text-primary" href="../pages/panel_vacantes.php">
             <i class="material-symbols-rounded opacity-5">explore</i>
             <span class="nav-link-text ms-1">Vacantes</span>
           </a>
@@ -152,6 +139,15 @@ require_once '../controllers/dashboard.php';
         </li>
 
       </ul>
+    </div>
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+      <div class="mx-3">
+        <a class="btn btn-outline mt-4 w-100 text-primary">
+          <i class="material-symbols-rounded opacity-5">explore</i>
+          <span class="nav-link-text ms-1">Vacantes</span>
+        </a>
+        ' . mostrarContador($pdo) . '
+      </div>
     </div>
   </aside>';
     } elseif ($sesion['EsAdmin'] === 0) {
@@ -235,18 +231,7 @@ require_once '../controllers/dashboard.php';
           <i class="material-symbols-rounded opacity-5">explore</i>
           <span class="nav-link-text ms-1">Vacantes</span>
         </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
-          <span class="nav-link-text ms-1">Comercial</span>
-          <i class="material-symbols-rounded opacity-5">groups</i>
-          <span id="contador_vacantes">4</span>
-          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
-        </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
-          <span class="nav-link-text ms-1">Técnico</span>
-          <i class="material-symbols-rounded opacity-5">groups</i>
-          <span id="contador_vacantes">4</span>
-          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
-        </a>
+        ' . mostrarContador($pdo) . '
       </div>
     </div>
   </aside>';
@@ -282,7 +267,7 @@ require_once '../controllers/dashboard.php';
                         <li class="nav-item dropdown pe-3 d-flex align-items-center">
                             <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm  me-3 ">
+                                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-sm  me-3 ">
                             </a>
                             <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                                 aria-labelledby="dropdownMenuButton">
@@ -301,15 +286,14 @@ require_once '../controllers/dashboard.php';
                                     </a>
                                 </li>
                                 <li class="mb-2">
-                                    <a class="dropdown-item border-radius-md" href="../pages/sign-in.html">
+                                    <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#logoutModal">
                                         <div class="d-flex py-1">
                                             <div class="my-auto">
                                                 <i class="material-symbols-rounded">logout</i>
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-sm font-weight-normal mb-1">
-                                                    Salir
-                                                </h6>
+                                                <h6 class="text-sm font-weight-normal mb-1">Salir</h6>
                                             </div>
                                         </div>
                                     </a>
@@ -672,71 +656,6 @@ require_once '../controllers/dashboard.php';
             </footer>
         </div>
     </div>
-    <!-- NOTIFICACIONES A UN COSTADO DE LA PANTALLA-->
-    <div class="position-fixed bottom-1 end-1 z-index-2">
-        <div class="toast fade hide p-2 bg-white" role="alert" aria-live="assertive" id="successToast"
-            aria-atomic="true">
-            <div class="toast-header border-0">
-                <i class="material-symbols-rounded text-success me-2">
-                    check
-                </i>
-                <span class="me-auto font-weight-bold">¡Éxito! </span>
-                <small class="text-body">Justo Ahora</small>
-                <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
-            </div>
-            <hr class="horizontal dark m-0">
-            <div class="toast-body">
-                información registrada correctamente
-            </div>
-        </div>
-        <div class="toast fade hide p-2 mt-2 bg-gradient-info" role="alert" aria-live="assertive" id="infoToast"
-            aria-atomic="true">
-            <div class="toast-header bg-transparent border-0">
-                <i class="material-symbols-rounded text-white me-2">
-                    notifications
-                </i>
-                <span class="me-auto text-white font-weight-bold">Material Dashboard </span>
-                <small class="text-white">11 mins ago</small>
-                <i class="fas fa-times text-md text-white ms-3 cursor-pointer" data-bs-dismiss="toast"
-                    aria-label="Close"></i>
-            </div>
-            <hr class="horizontal light m-0">
-            <div class="toast-body text-white">
-                Hello, world! This is a notification message.
-            </div>
-        </div>
-        <div class="toast fade hide p-2 mt-2 bg-white" role="alert" aria-live="assertive" id="warningToast"
-            aria-atomic="true">
-            <div class="toast-header border-0">
-                <i class="material-symbols-rounded text-warning me-2">
-                    warning
-                </i>
-                <span class="me-auto font-weight-bold">¡Alerta! </span>
-                <small class="text-body">Justo Ahora</small>
-                <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
-            </div>
-            <hr class="horizontal dark m-0">
-            <div class="toast-body">
-                información eliminada correctamente.
-            </div>
-        </div>
-        <div class="toast fade hide p-2 mt-2 bg-white" role="alert" aria-live="assertive" id="dangerToast"
-            aria-atomic="true">
-            <div class="toast-header border-0">
-                <i class="material-symbols-rounded text-danger me-2">
-                    dangerous
-                </i>
-                <span class="me-auto text-gradient text-danger font-weight-bold">¡Error! </span>
-                <small class="text-body">Justo Ahora</small>
-                <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
-            </div>
-            <hr class="horizontal dark m-0">
-            <div class="toast-body">
-                Hubo un error al procesar la información.
-            </div>
-        </div>
-    </div>
-    <!-- FIN DE LAS NOTIFICACIONES -->
     <!--   Core JS Files   -->
     <script src="../assets/js/core/popper.min.js"></script>
     <script src="../assets/js/core/bootstrap.min.js"></script>
@@ -755,7 +674,29 @@ require_once '../controllers/dashboard.php';
     <script src="../assets/js/settings.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
-
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST">
+                    <div class="modal-body">
+                        <p>Estás a punto de cerrar sesión.</p>
+                        <p>¿Seguro que quieres continuar?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+                            sesión</button>
+                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--End logout modal-->
 </body>
 
 </html>

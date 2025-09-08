@@ -130,7 +130,7 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+          <a class="nav-link text-primary" href="../pages/panel_vacantes.php">
             <i class="material-symbols-rounded opacity-5">explore</i>
             <span class="nav-link-text ms-1">Vacantes</span>
           </a>
@@ -152,6 +152,15 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
       </ul>
+    </div>
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+        <div class="mx-3">
+            <a class="btn btn-outline mt-4 w-100 text-primary">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+            </a>
+            ' . mostrarContador($pdo) . '
+        </div>
     </div>
   </aside>';
   } elseif ($sesion['EsAdmin'] === 0) {
@@ -229,24 +238,13 @@ require_once '../controllers/dashboard.php';
       </ul>
     </div>
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-      <div class="mx-3">
-        <a class="btn btn-outline mt-4 w-100 text-primary">
-          <i class="material-symbols-rounded opacity-5">explore</i>
-          <span class="nav-link-text ms-1">Vacantes</span>
-        </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
-          <span class="nav-link-text ms-1">Comercial</span>
-          <i class="material-symbols-rounded opacity-5">groups</i>
-          <span id="contador_vacantes">4</span>
-          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
-        </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
-          <span class="nav-link-text ms-1">Técnico</span>
-          <i class="material-symbols-rounded opacity-5">groups</i>
-          <span id="contador_vacantes">4</span>
-          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
-        </a>
-      </div>
+        <div class="mx-3">
+            <a class="btn btn-outline mt-4 w-100 text-primary">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+            </a>
+            ' . mostrarContador($pdo) . '
+        </div>
     </div>
   </aside>';
   }
@@ -777,7 +775,115 @@ require_once '../controllers/dashboard.php';
       </footer>
     </div>
   </div>
-  <div class="fixed-plugin">
+
+  <?php
+  if ($sesion['DepartamentoId'] === 11) {
+    echo '<div class="fixed-plugin">
+    <a class="fixed-plugin-button text-dark position-fixed px-4 py-2">
+      <i class="material-symbols-rounded py-3">local_post_office</i>
+    </a>
+    <div class="card shadow-lg">
+      <div class="card-header pb-0 pt-3">
+        <div class="float-start">
+          <h5 class="mt-3 mb-0">Buzón de quejas</h5>
+          <!--<p>¿Tienes alguna inconformidad?</p>-->
+        </div>
+        <div class="float-end mt-4">
+          <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+            <i class="material-symbols-rounded">clear</i>
+          </button>
+        </div>
+        <!-- End Toggle Button -->
+      </div>
+      <hr class="horizontal dark my-1">
+      <div class="card-body pt-sm-3 pt-0">
+        <!-- Sidenav Type -->
+        <div class="mt-3 timeline timeline-one-side scrollable-timeline1">
+          <ul class="list-group">
+            <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+              <div class="d-flex flex-column">
+                <h6 class="mb-3 text-sm">Oliver Liam</h6>
+                <span class="mb-2 text-xs">Departamento: <span
+                    class="text-dark font-weight-bold ms-sm-2">Departamento</span></span>
+                <span class="mb-2 text-xs">Email: <span
+                    class="text-dark ms-sm-2 font-weight-bold">oliver@burrito.com</span></span>
+                <span class="text-xs">Fecha del mensaje: <span
+                    class="text-dark ms-sm-2 font-weight-bold">30/07/2025</span></span>
+              </div>
+              <div class="ms-auto text-end">
+                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="" target="_blank"
+                  data-bs-toggle="modal" data-bs-target="#modal-notification"><i
+                    class="material-symbols-rounded text-sm me-2">delete</i>Eliminar</a>
+                <a class="btn btn-link text-dark px-3 mb-0" href="" target="_blank" data-bs-toggle="modal"
+                  data-bs-target="#exampleModalLong"><i
+                    class="material-symbols-rounded text-sm me-2">visibility</i>Ver</a>
+              </div>
+            </li>
+            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
+              <div class="d-flex flex-column">
+                <h6 class="mb-3 text-sm">Lucas Harper</h6>
+                <span class="mb-2 text-xs">Departamento: <span
+                    class="text-dark font-weight-bold ms-sm-2">Departamento</span></span>
+                <span class="mb-2 text-xs">Email: <span
+                    class="text-dark ms-sm-2 font-weight-bold">lucas@stone-tech.com</span></span>
+                <span class="text-xs">Fecha del mensaje: <span
+                    class="text-dark ms-sm-2 font-weight-bold">28/07/2025</span></span>
+              </div>
+              <div class="ms-auto text-end">
+                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i
+                    class="material-symbols-rounded text-sm me-2">delete</i>Eliminar</a>
+                <a class="btn btn-link text-dark px-3 mb-0" href="" target="_blank" data-bs-toggle="modal"
+                  data-bs-target="#exampleModalLong"><i
+                    class="material-symbols-rounded text-sm me-2">visibility</i>Ver</a>
+              </div>
+            </li>
+            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
+              <div class="d-flex flex-column">
+                <h6 class="mb-3 text-sm">Ethan James</h6>
+                <span class="mb-2 text-xs">Departamento: <span
+                    class="text-dark font-weight-bold ms-sm-2">Departamento</span></span>
+                <span class="mb-2 text-xs">Email: <span
+                    class="text-dark ms-sm-2 font-weight-bold">ethan@fiber.com</span></span>
+                <span class="text-xs">Fecha del mensaje: <span
+                    class="text-dark ms-sm-2 font-weight-bold">27/07/2025</span></span>
+              </div>
+              <div class="ms-auto text-end">
+                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i
+                    class="material-symbols-rounded text-sm me-2">delete</i>Eliminar</a>
+                <a class="btn btn-link text-dark px-3 mb-0" href="" target="_blank" data-bs-toggle="modal"
+                  data-bs-target="#exampleModalLong"><i
+                    class="material-symbols-rounded text-sm me-2">visibility</i>Ver</a>
+              </div>
+            </li>
+            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
+              <div class="d-flex flex-column">
+                <h6 class="mb-3 text-sm">John Connor</h6>
+                <span class="mb-2 text-xs">Departamento: <span
+                    class="text-dark font-weight-bold ms-sm-2">Departamento</span></span>
+                <span class="mb-2 text-xs">Email: <span
+                    class="text-dark ms-sm-2 font-weight-bold">john@fiber.com</span></span>
+                <span class="text-xs">Fecha del mensaje: <span
+                    class="text-dark ms-sm-2 font-weight-bold">26/07/2025</span></span>
+              </div>
+              <div class="ms-auto text-end">
+                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i
+                    class="material-symbols-rounded text-sm me-2">delete</i>Eliminar</a>
+                <a class="btn btn-link text-dark px-3 mb-0" href="" target="_blank" data-bs-toggle="modal"
+                  data-bs-target="#exampleModalLong"><i
+                    class="material-symbols-rounded text-sm me-2">visibility</i>Ver</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- Navbar Fixed -->
+        <hr class="horizontal dark my-sm-4">
+        <div class="w-100 text-center">
+        </div>
+      </div>
+    </div>
+  </div>';
+  } else {
+    echo '<div class="fixed-plugin">
     <a class="fixed-plugin-button text-dark position-fixed px-4 py-2">
       <i class="material-symbols-rounded py-3">mail</i>
     </a>
@@ -818,7 +924,9 @@ require_once '../controllers/dashboard.php';
         </div>
       </div>
     </div>
-  </div>
+  </div>';
+  }
+  ?>
 
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -915,6 +1023,95 @@ require_once '../controllers/dashboard.php';
     </div>
   </div>
   <!--End logout modal-->
+
+  <!-- Modal Ver Queja -->
+  <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-normal" id="exampleModalLongTitle">Mensaje enviado por: Nombre_Usuario</h5>
+          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body font-weight-light">
+          I always felt like I could do anything. That’s the main thing people are controlled by! Thoughts- their
+          perception of themselves! They're slowed down by their perception of themselves. If you're taught you can’t do
+          anything, you won’t do anything. I was taught I could do everything.
+          <br /><br />
+          As we live, our hearts turn colder. Cause pain is what we go through as we become older. We get insulted by
+          others, lose trust for those others. We get back stabbed by friends. It becomes harder for us to give others a
+          hand. We get our heart broken by people we love, even that we give them all we have. Then we lose family over
+          time. What else could rust the heart more over time? Blackgold.
+          <br /><br />
+
+
+          We’re not always in the position that we want to be at. We’re constantly growing. We’re constantly making
+          mistakes. We’re constantly trying to express ourselves and actualize our dreams. If you have the opportunity
+          to play this game of life you need to appreciate every moment. A lot of people don’t appreciate the moment
+          until it’s passed.
+          <br /><br />
+
+
+          There’s nothing I really wanted to do in life that I wasn’t able to get good at. That’s my skill. I’m not
+          really specifically talented at anything except for the ability to learn. That’s what I do. That’s what I’m
+          here for. Don’t be afraid to be wrong because you can’t learn anything from a compliment.
+          <br /><br />
+
+          It really matters and then like it really doesn’t matter. What matters is the people who are sparked by it.
+          And the people who are like offended by it, it doesn’t matter. Because it's about motivating the doers.
+          Because I’m here to follow my dreams and inspire other people to follow their dreams, too.
+          <br /><br />
+
+          The time is now for it to be okay to be great. People in this world shun people for being great. For being a
+          bright color. For standing out. But the time is now to be okay to be the greatest you. Would you believe in
+          what you believe in, if you were the only one who believed it?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn bg-gradient-primary"
+            onclick="window.location.href='mailto:jimenezjose308@gmail.com'">Enviar Correo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--FIN DEL MODAL VER QUEJA-->
+  <!-- MODAL NOTIFICACIÓN BORRADO -->
+  <div class="modal fade" id="modal-notification" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
+    aria-hidden="true">
+    <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <i class="material-symbols-rounded text-danger me-2">
+            warning
+          </i>
+          <h6 class="modal-title font-weight-normal" id="modal-title-notification">
+            Alerta</h6>
+          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="py-3 text-center">
+            <i class="material-symbols-rounded h1 text-secondary">
+              Borrar Mensaje
+            </i>
+            <h4 class="text-gradient text-danger mt-4">Atención</h4>
+            <p>Está a punto de borrar el mensaje @Nombre_Usuario, ¿Está seguro que desea
+              continuar?</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-gradient-primary toast-btn" data-bs-dismiss="modal"
+            data-target="warningToast">Sí,
+            continuar.</button>
+          <button type="button" class="btn btn-link text-primary ml-auto" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN DEL MODAL NOTIFICACIÓN BORRADO -->
 </body>
 
 </html>

@@ -22,20 +22,6 @@ if (!isset($_SESSION['user_id'])) {
 require 'sesion.php';
 require 'logout.php';
 
-/*function GetFoto($id, $pdo)
-{
-    $query = "SELECT FotoContenido FROM fotos WHERE EntidadTipo = 'usuario' AND EntidadId = :id";
-    $result = $pdo->prepare($query);
-    $result->bindParam(':id', $id, PDO::PARAM_INT);
-    $result->execute();
-    $fetch = $result->fetch(PDO::FETCH_ASSOC);
-
-
-    return ($fetch && !empty($fetch['AsesorFoto']))
-        ? 'data:image/jpeg;base64,' . base64_encode($fetch['AsesorFoto'])
-        : '../assets/img/small-logos/user.png';
-}
-$usuarioFoto = GetFoto($id, $pdo);*/
 function GetTableUsuarios(PDO $pdo, string $nombre, string $departamento): string
 {
     $sql = "SELECT
@@ -785,18 +771,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarDocumentos']))
 function GetTableManuales(PDO $pdo, int $departamentoId, bool $isAdmin): string
 {
     // Consulta: nombre de manual, departamento y fecha de modificación
-     $sql = "
+    $sql = "
       SELECT m.ManualId, doc.NombreDocumento, d.DepartamentoNombre, m.FechaModificacion
       FROM manuales m
       JOIN documentos doc ON m.DocumentoId = doc.DocumentoId
       JOIN departamento d ON m.DepartamentoId = d.DepartamentoId
-      WHERE 1=1 ";   
+      WHERE 1=1 ";
 
     $params = [];
     //Si usuario es Admin entonces verá todos los manuales
-    if (! $isAdmin) {
-        $sql      .= "AND m.DepartamentoId = ? ";
-        $params[]  = $departamentoId;
+    if (!$isAdmin) {
+        $sql .= "AND m.DepartamentoId = ? ";
+        $params[] = $departamentoId;
     }
 
     $sql .= "ORDER BY m.FechaModificacion DESC";
@@ -921,4 +907,21 @@ function DescargarDocumento(int $manualId, PDO $pdo)
 
     echo $contenido;
     exit;
+}
+
+function mostrarContador($pdo): string
+{
+    $sql = "SELECT COUNT(*) FROM `vacantes` WHERE `Status` = 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $contador = $stmt->fetchColumn(); // Obtiene directamente el número
+
+    $html = '<a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
+                <span class="nav-link-text ms-1">Activas</span>
+                <i class="material-symbols-rounded opacity-5">groups</i>
+                <span id="contador_vacantes">' . $contador . '</span>
+                <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
+            </a>';
+
+    return $html;
 }
