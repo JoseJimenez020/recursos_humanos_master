@@ -3,7 +3,7 @@ session_start();
 require_once 'conn.php';
 
 if (!isset($_SESSION['user_id'])) {
-    echo "
+  echo "
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
@@ -19,6 +19,33 @@ if (!isset($_SESSION['user_id'])) {
 
 require 'sesion.php';
 require 'logout.php';
+function alertScript(string $title, string $text, string $icon, string $redir = null): string
+{
+  // 1) Preparamos el objeto de opciones de Swal
+  $swalOptions = [
+    'title' => $title,
+    'text' => $text,
+    'icon' => $icon
+  ];
+  // 2) Codificamos a JSON para JS (escapa comillas, barras, tildes, etc.)
+  $jsonOpts = json_encode($swalOptions, JSON_UNESCAPED_UNICODE);
+
+  // 3) Si hay redirección, la añadimos como JS puro pero escapada
+  $jsRedir = $redir
+    ? 'window.location.href = ' . json_encode($redir, JSON_UNESCAPED_UNICODE) . ';'
+    : '';
+
+  // 4) Devolvemos un único <script> con código limpio
+  return <<<HTML
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    Swal.fire($jsonOpts).then(function() {
+      $jsRedir
+    });
+  });
+</script>
+HTML;
+}
 
 /**
  * Devuelve bloques HTML para el timeline de vacaciones activas.
@@ -28,11 +55,11 @@ require 'logout.php';
  */
 function GetTimelineVacaciones(PDO $pdo): string
 {
-    // 1) Fecha de hoy para filtro
-    $hoy = date('Y-m-d');
+  // 1) Fecha de hoy para filtro
+  $hoy = date('Y-m-d');
 
-    // 2) Consulta uniendo usuarios con vacaciones activas
-    $sql = "
+  // 2) Consulta uniendo usuarios con vacaciones activas
+  $sql = "
       SELECT 
         u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno,
         v.FechaInicio, v.FechaFin
@@ -41,38 +68,38 @@ function GetTimelineVacaciones(PDO $pdo): string
       WHERE v.FechaFin >= :hoy
       ORDER BY v.FechaInicio ASC
     ";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['hoy' => $hoy]);
-    $vacaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(['hoy' => $hoy]);
+  $vacaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 3) Si no hay vacaciones activas
-    if (empty($vacaciones)) {
-        return <<<HTML
+  // 3) Si no hay vacaciones activas
+  if (empty($vacaciones)) {
+    return <<<HTML
 <div class="text-center text-secondary py-3">
   No hay nadie de vacaciones por el momento
 </div>
 HTML;
-    }
+  }
 
-    // 4) Clases posibles para el icono
-    $clases = ['text-success', 'text-danger', 'text-info', 'text-warning', 'text-primary'];
+  // 4) Clases posibles para el icono
+  $clases = ['text-success', 'text-danger', 'text-info', 'text-warning', 'text-primary'];
 
-    // 5) Generar bloques
-    $html = '';
-    foreach ($vacaciones as $v) {
-        // Nombre completo
-        $nombre = htmlspecialchars(
-            "{$v['NombreUsuario']} {$v['ApellidoPaterno']} {$v['ApellidoMaterno']}"
-        );
+  // 5) Generar bloques
+  $html = '';
+  foreach ($vacaciones as $v) {
+    // Nombre completo
+    $nombre = htmlspecialchars(
+      "{$v['NombreUsuario']} {$v['ApellidoPaterno']} {$v['ApellidoMaterno']}"
+    );
 
-        // Formato dd/mm/yy
-        $inicio = date('d/m/y', strtotime($v['FechaInicio']));
-        $fin = date('d/m/y', strtotime($v['FechaFin']));
+    // Formato dd/mm/yy
+    $inicio = date('d/m/y', strtotime($v['FechaInicio']));
+    $fin = date('d/m/y', strtotime($v['FechaFin']));
 
-        // Selección aleatoria de color
-        $colorIcono = $clases[array_rand($clases)];
+    // Selección aleatoria de color
+    $colorIcono = $clases[array_rand($clases)];
 
-        $html .= <<<HTML
+    $html .= <<<HTML
 <div class="timeline-block mb-3">
   <span class="timeline-step">
     <i class="material-symbols-rounded {$colorIcono} text-gradient">hotel</i>
@@ -85,24 +112,593 @@ HTML;
   </div>
 </div>
 HTML;
-    }
+  }
 
-    return $html;
+  return $html;
 }
 
 function mostrarContador($pdo): string
 {
-    $sql = "SELECT COUNT(*) FROM `vacantes` WHERE `Status` = 1";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $contador = $stmt->fetchColumn(); // Obtiene directamente el número
+  $sql = "SELECT COUNT(*) FROM `vacantes` WHERE `Status` = 1";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute();
+  $contador = $stmt->fetchColumn(); // Obtiene directamente el número
 
-    $html = '<a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
+  $html = '<a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
                 <span class="nav-link-text ms-1">Activas</span>
                 <i class="material-symbols-rounded opacity-5">groups</i>
                 <span id="contador_vacantes">' . $contador . '</span>
                 <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
             </a>';
 
-    return $html;
+  return $html;
+}
+
+function registrarQueja(array $data, PDO $pdo): string
+{
+  $userId = filter_var($data['UsuarioId'], FILTER_SANITIZE_STRING);
+  $mensajeContenido = filter_var($data['mensajeContenido'], FILTER_SANITIZE_STRING);
+  try {
+    $pdo->beginTransaction();
+    $sqlM = "INSERT INTO quejas 
+            (UsuarioId, FechaMensaje, Mensaje)
+            VALUES
+            (:usuario, CURDATE(), :mensaje)";
+
+    $stM = $pdo->prepare($sqlM);
+    $stM->execute([
+      ':usuario' => $userId,
+      'mensaje' => $mensajeContenido
+    ]);
+
+    $pdo->commit();
+
+    return alertScript(
+      '¡Éxito!',
+      'Mensaje enviado correctamente.',
+      'success',
+      '../pages/dashboard.php'
+    );
+
+  } catch (PDOException $e) {
+    $pdo->rollBack();
+    return alertScript(
+      'Error',
+      'No se pudo registrar: ' . $e->getMessage(),
+      'error'
+    );
+  }
+}
+
+function GetBuzonQuejas($pdo): string
+{
+  $sql = "
+      SELECT
+        q.QuejaId,
+        q.FechaMensaje,
+        q.Mensaje,
+        u.NombreUsuario,
+        u.ApellidoPaterno,
+        u.ApellidoMaterno,
+        u.Email,
+        u.NumeroTelefono,
+        d.DepartamentoNombre
+      FROM quejas q
+      LEFT JOIN usuarios u ON q.UsuarioId = u.UsuarioId
+      LEFT JOIN departamento d ON u.DepartamentoId = d.DepartamentoId
+      ORDER BY q.FechaMensaje DESC
+    ";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute();
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if (empty($rows)) {
+    return '<li class="list-group-item">No hay mensajes disponibles.</li>';
+  }
+
+  $html = '';
+  foreach ($rows as $me) {
+    // Nombre completo
+    $full = htmlspecialchars("{$me['NombreUsuario']} {$me['ApellidoPaterno']} {$me['ApellidoMaterno']}", ENT_QUOTES);
+    $fecha = date('d/m/Y', strtotime($me['FechaMensaje']));
+    $mensaje = htmlspecialchars($me['Mensaje'], ENT_QUOTES);
+    $email = htmlspecialchars($me['Email'], ENT_QUOTES);
+    $telefono = htmlspecialchars($me['NumeroTelefono'], ENT_QUOTES);
+    $quejaid = htmlspecialchars($me['QuejaId'], ENT_QUOTES);
+
+    $html .= <<<HTML
+<li class="list-group-item d-flex">
+  <div class="flex-grow-1">
+    <h6>$full</h6>
+    <p class="small">Departamento: {$me['DepartamentoNombre']}</p>
+    <p class="small">Fecha: $fecha</p>
+  </div>
+  <div class="text-end">
+    <a
+      href="javascript:;"
+      class="btn btn-link text-dark px-2"
+      data-bs-toggle="modal"
+      data-bs-target="#exampleModalLong"
+      data-nombre="$full"
+      data-mensaje="$mensaje"
+      data-email="$email"
+      data-telefono="$telefono"
+    ><i class="material-symbols-rounded">visibility</i></a>
+    <a
+      href="javascript:;"
+      class="btn btn-link text-danger px-2"
+      data-bs-toggle="modal"
+      data-bs-target="#modal-notification"
+      data-nombre="$full"
+      data-quejaid="$quejaid"
+    ><i class="material-symbols-rounded">delete</i></a>
+  </div>
+</li>
+HTML;
+  }
+
+  return $html;
+}
+
+/**
+ * Elimina una queja de la base de datos y devuelve un script SweetAlert.
+ *
+ * @param  array   $data Datos del POST, debe incluir 'QuejaId'
+ * @param  PDO     $pdo  Conexión PDO
+ * @return string        Un <script> con la llamada a alertScript()
+ */
+function borrarQueja(array $data, PDO $pdo): string
+{
+  // 1) Sanitizar y validar el ID
+  $quejaId = filter_var($data['QuejaId'] ?? null, FILTER_VALIDATE_INT);
+
+  try {
+    // 2) Iniciar transacción
+    $pdo->beginTransaction();
+
+    // 3) Ejecutar borrado
+    $sql = "DELETE FROM quejas WHERE QuejaId = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':id' => $quejaId]);
+
+    // 4) Confirmar cambios
+    $pdo->commit();
+
+    // 5) Retornar alerta de éxito y redirigir
+    return alertScript(
+      '¡Éxito!',
+      'Mensaje eliminado correctamente.',
+      'success',
+      '../pages/dashboard.php'
+    );
+
+  } catch (PDOException $e) {
+    // 6) Revertir en caso de error y notificar
+    $pdo->rollBack();
+    return alertScript(
+      'Error',
+      'No se pudo eliminar el mensaje: ' . $e->getMessage(),
+      'error'
+    );
+  }
+}
+
+function registrarAviso(array $post, PDO $pdo): string
+{
+  // 1. Sanitizar inputs
+  $titulo = trim(filter_var($post['avisoTitulo'], FILTER_SANITIZE_STRING));
+  $descrip = trim(filter_var($post['avisoDesc'], FILTER_SANITIZE_STRING));
+  $esAviso = (int) filter_var($post['esAviso'], FILTER_SANITIZE_NUMBER_INT);
+  $usuarioId = (int) $_SESSION['user_id'];
+
+  try {
+    $pdo->beginTransaction();
+
+    // 2. Insertar el aviso sin foto
+    $sqlAviso = "INSERT INTO avisos
+            (TituloAviso, Fecha, DescripcionAviso, EsCampana, UsuarioId)
+            VALUES
+            (:titulo, NOW(), :descrip, :esAviso, :usuarioId)";
+    $stmtAviso = $pdo->prepare($sqlAviso);
+    $stmtAviso->execute([
+      ':titulo' => $titulo,
+      ':descrip' => $descrip,
+      ':esAviso' => $esAviso,
+      ':usuarioId' => $usuarioId,
+    ]);
+    $avisoId = $pdo->lastInsertId();
+
+    // 3. Verificar que el array $_FILES venga poblado
+    if (!isset($_FILES['avisoFoto'])) {
+      throw new Exception('$_FILES["avisoFoto"] no existe. Verifica el name y enctype del form.');
+    }
+
+    $file = $_FILES['avisoFoto'];
+
+    // 4. Depuración: ¿qué error reporta PHP?
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+      // Puedes comentar esta línea para ver el código de error en pantalla
+      throw new Exception("Error en la subida de archivo: código {$file['error']}");
+    }
+
+    // 5. Validar que sea realmente un upload
+    if (!is_uploaded_file($file['tmp_name'])) {
+      throw new Exception('El archivo no se reconoció como subida HTTP válida.');
+    }
+
+    // 6. Validar tipo de imagen de forma más laxa
+    $info = getimagesize($file['tmp_name']);
+    if ($info === false) {
+      throw new Exception('El archivo no es una imagen válida.');
+    }
+    // $info[2] es IMAGETYPE_XXX
+    $allowedTypes = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF];
+    if (!in_array($info[2], $allowedTypes, true)) {
+      throw new Exception('Formato de imagen no admitido. Solo JPG, PNG o GIF.');
+    }
+
+    // 7. Leer contenido binario
+    $contenido = file_get_contents($file['tmp_name']);
+
+    // 8. Insertar en fotos
+    $sqlFoto = "INSERT INTO fotos
+            (FotoContenido, EntidadTipo, EntidadId)
+            VALUES
+            (:contenido, 'aviso', :entidadId)";
+    $stmtFoto = $pdo->prepare($sqlFoto);
+    $stmtFoto->execute([
+      ':contenido' => $contenido,
+      ':entidadId' => $avisoId,
+    ]);
+    $fotoId = $pdo->lastInsertId();
+
+    // 9. Actualizar avisos con FotoId
+    $sqlUpd = "UPDATE avisos
+            SET FotoId = :fotoId
+            WHERE AvisoId = :avisoId";
+    $stmtUpd = $pdo->prepare($sqlUpd);
+    $stmtUpd->execute([
+      ':fotoId' => $fotoId,
+      ':avisoId' => $avisoId,
+    ]);
+
+    $pdo->commit();
+
+    return alertScript(
+      '¡Éxito!',
+      'Información registrada correctamente.',
+      'success',
+      'avisos.php'
+    );
+
+  } catch (Exception $e) {
+    if ($pdo->inTransaction()) {
+      $pdo->rollBack();
+    }
+    // En producción podrías loguear $e->getMessage() y mostrar un mensaje más genérico
+    return alertScript(
+      'Error',
+      'No se pudo registrar el aviso: ' . $e->getMessage(),
+      'error'
+    );
+  }
+}
+
+function getAvisosPanel(PDO $pdo, $tipo)
+{
+  $sql = "SELECT 
+        a.AvisoId, a.TituloAviso, a.Fecha, a.DescripcionAviso, 
+        a.EsCampana, f.FotoContenido, u.NombreUsuario, u.ApellidoPaterno
+        FROM avisos a
+        LEFT JOIN usuarios u ON u.UsuarioId = a.UsuarioId
+        LEFT JOIN fotos f ON f.EntidadTipo = 'aviso'
+                         AND f.EntidadId = a.AvisoId
+        WHERE EsCampana=" . $tipo . " ";
+
+  $params = [];
+
+  // Preparar y ejecutar
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute($params);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if (empty($rows)) {
+    return '<div class="col-md-4 mb-4">
+          <div class="card" data-animation="false">
+              <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                  <a class="d-block blur-shadow-image">
+                  </a>
+              </div>
+              <div class="card-body text-center">
+                  <h5 class="font-weight-normal mt-3">
+                      <a href="">Sin registros</a>
+                  </h5>
+                  <p class="mb-0">Por el momento no hay información registrada disponible
+                  </p>
+              </div>
+              <hr class="dark horizontal my-0">
+              <div class="card-footer d-flex">
+              </div>
+          </div>
+      </div>';
+  }
+
+  $html = '';
+  foreach ($rows as $a) {
+    $src = $a['FotoContenido']
+      ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
+      : '../assets/img/small-logos/alerta.png';
+    $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
+
+    $html .= '<div class="col-md-4 mb-4">
+    <div class="card" data-animation="true">
+        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+            <a class="d-block blur-shadow-image">
+                <img src="' . $src . '"
+                    alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
+            </a>
+            <div class="colored-shadow"
+                style="background-image: url(&quot;' . $src . '&quot;);">
+            </div>
+        </div>
+        <div class="card-body text-center">
+            <div class="d-flex mt-n6 mx-auto">
+                <a class="btn btn-link text-primary ms-auto border-0" data-toggle="tooltip" data-bs-toggle="modal"
+                    data-bs-placement="bottom" title="Borrar" data-aviso-name="' . $a['TituloAviso'] . '" data-aviso-id="' . $a['AvisoId'] . '" data-bs-target="#modal-notification">
+                    <i class="material-symbols-rounded text-lg">delete</i>
+                </a>
+                <button class="btn btn-link text-info me-auto border-0" data-toggle="tooltip" data-bs-toggle="modal"
+                    data-bs-placement="bottom" title="Editar" data-aviso-id="' . $a['AvisoId'] . '" data-bs-target="#modal-edit">
+                    <i class="material-symbols-rounded text-lg">edit</i>
+                </button>
+            </div>
+            <h5 class="font-weight-normal mt-3">
+                <a href="">' . $a['TituloAviso'] . '</a>
+            </h5>
+            <p class="mb-0">' . $a['DescripcionAviso'] . '
+            </p>
+        </div>';
+    if ($a['EsCampana'] === 0) {
+      $html .= '<hr class="dark horizontal my-0">
+        <div class="card-footer d-flex">
+            <p class="font-weight-normal my-auto">' . date('d/m/Y', strtotime($a['Fecha'])) . '</p>
+            <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
+            <p class="text-sm my-auto">' . $full . '</p>
+        </div>';
+    }
+    $html .= '</div>
+  </div>';
+  }
+  return $html;
+}
+
+function getAvisosDash(PDO $pdo): string
+{
+  $sql = "SELECT 
+        a.AvisoId, a.TituloAviso, a.Fecha, a.DescripcionAviso, 
+        a.EsCampana, f.FotoContenido, u.NombreUsuario, u.ApellidoPaterno
+        FROM avisos a
+        LEFT JOIN usuarios u ON u.UsuarioId = a.UsuarioId
+        LEFT JOIN fotos f ON f.EntidadTipo = 'aviso'
+                         AND f.EntidadId = a.AvisoId
+        WHERE EsCampana = 0";
+
+  $params = [];
+
+  // Preparar y ejecutar
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute($params);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if (empty($rows)) {
+    return '<div class="col-md-4 mb-4">
+          <div class="card" data-animation="false">
+              <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                  <a class="d-block blur-shadow-image">
+                  </a>
+              </div>
+              <div class="card-body text-center">
+                  <h5 class="font-weight-normal mt-3">
+                      <a href="">Sin registros</a>
+                  </h5>
+                  <p class="mb-0">Por el momento no hay información registrada disponible
+                  </p>
+              </div>
+              <hr class="dark horizontal my-0">
+              <div class="card-footer d-flex">
+              </div>
+          </div>
+      </div>';
+  }
+
+  $html = '';
+  foreach ($rows as $a) {
+    $src = $a['FotoContenido']
+      ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
+      : '../assets/img/small-logos/alerta.png';
+    $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
+
+    $html .= '<div class="card" data-animation="true">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <a class="d-block blur-shadow-image">
+            <img src="' . $src . '"
+                alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
+        </a>
+        <div class="colored-shadow"
+            style="background-image: url(&quot;' . $src . '&quot;);">
+        </div>
+    </div>
+    <div class="card-body text-center">
+        <div class="d-flex mt-n6 mx-auto">
+            <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                title="">
+            </a>
+            <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                title="">
+            </button>
+        </div>
+        <h5 class="font-weight-normal mt-3">
+            <a href="javascript:;">' . $a['TituloAviso'] . '</a>
+        </h5>
+        <p class="mb-0">
+            ' . $a['DescripcionAviso'] . '
+        </p>
+    </div>
+    <hr class="dark horizontal my-0">
+    <div class="card-footer d-flex">
+        <p class="font-weight-normal my-auto">' . date('d/m/Y', strtotime($a['Fecha'])) . '</p>
+        <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
+        <p class="text-sm my-auto">' . $full . '</p>
+    </div>
+</div>';
+  }
+  return $html;
+}
+
+function borrarAviso(array $data, PDO $pdo): string
+{
+  // 1) Sanitizar y validar el ID
+  $avisoId = filter_var($data['AvisoId'] ?? null, FILTER_VALIDATE_INT);
+
+  try {
+    // 2) Iniciar transacción
+    $pdo->beginTransaction();
+
+    // 3) Obtener FotoId asociada (si existe)
+    $stmt = $pdo->prepare("
+            SELECT f.FotoId
+            FROM fotos f
+            WHERE f.EntidadTipo = 'aviso'
+              AND f.EntidadId   = :id
+        ");
+    $stmt->execute([':id' => $avisoId]);
+    $fotoId = $stmt->fetchColumn();
+
+    // 4) Borrar la foto para evitar registros huérfanos
+    if ($fotoId) {
+      $pdo->prepare("DELETE FROM fotos WHERE FotoId = :f")
+        ->execute([':f' => $fotoId]);
+    }
+
+    // 5) Borrar el aviso
+    $pdo->prepare("DELETE FROM avisos WHERE AvisoId = :id")
+      ->execute([':id' => $avisoId]);
+
+    // 6) Confirmar transacción
+    $pdo->commit();
+
+    // 7) Retornar alerta de éxito y redirigir
+    return alertScript(
+      '¡Éxito!',
+      'Aviso eliminado correctamente.',
+      'success',
+      'avisos.php'
+    );
+
+  } catch (Exception $e) {
+    // En caso de error, revertir y notificar
+    if ($pdo->inTransaction()) {
+      $pdo->rollBack();
+    }
+    return alertScript(
+      'Error',
+      'No se pudo eliminar el aviso: ' . $e->getMessage(),
+      'error'
+    );
+  }
+}
+
+function getCarouselAvisos(PDO $pdo, int $tipo): string
+{
+  // 1) Fetch all campana-type avisos
+  $sql = "
+        SELECT 
+            a.AvisoId,
+            a.TituloAviso,
+            a.Fecha,
+            a.DescripcionAviso,
+            f.FotoContenido
+        FROM avisos a
+        LEFT JOIN fotos f
+          ON f.EntidadTipo = 'aviso'
+         AND f.EntidadId   = a.AvisoId
+        WHERE a.EsCampana = :tipo
+        ORDER BY a.Fecha DESC
+    ";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(['tipo' => $tipo]);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  // 2) If no records, render a placeholder
+  if (empty($rows)) {
+    return <<<HTML
+<div class="alert alert-info text-center">
+    No hay campañas activas en este momento.
+</div>
+HTML;
+  }
+
+  // 3) Begin carousel container
+  $carouselId = "avisosCarousel";
+  $html = '<div id="' . $carouselId . '" class="carousel slide" data-bs-ride="carousel">';
+  $html .= '<div class="carousel-inner mb-4">';
+
+  // 4) Build each slide
+  foreach ($rows as $i => $a) {
+    // make first slide active
+    $activeClass = $i === 0 ? ' active' : '';
+
+    // thumbnail (base64 or fallback)
+    if (!empty($a['FotoContenido'])) {
+      $imgSrc = 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido']);
+    } else {
+      $imgSrc = '../assets/img/small-logos/alerta.png';
+    }
+
+    // truncate to 152 chars
+    $desc = strip_tags($a['DescripcionAviso']);
+    if (mb_strlen($desc) > 150) {
+      $desc = mb_substr($desc, 0, 150) . '…';
+    }
+
+    // safely escape title
+    $title = htmlspecialchars($a['TituloAviso'], ENT_QUOTES, 'UTF-8');
+
+    // build slide
+    $html .= <<<HTML
+    <div class="carousel-item{$activeClass}">
+        <a href="../pages/campania_ext.php?avisoId={$a['AvisoId']}">
+            <div 
+                class="page-header min-vh-45 m-3 border-radius-md"
+                style="background-image: url('{$imgSrc}'); background-size: cover;">
+                <span class="mask bg-gradient-dark"></span>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 my-auto">
+                            <h4 class="text-white fadeIn2 fadeInBottom">{$title}</h4>
+                            <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">{$desc}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+HTML;
+  }
+
+  // 5) Close inner and add controls
+  $html .= <<<HTML
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#{$carouselId}" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#{$carouselId}" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+HTML;
+
+  return $html;
 }

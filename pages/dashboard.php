@@ -14,7 +14,21 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 <?php
-require_once '../controllers/dashboard.php';
+require '../controllers/dashboard.php';
+
+$alertHtml = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // Registro de usuario (formulario principal flotante) 
+  if (isset($_POST['mandarMensaje'])) {
+    $alertHtml = registrarQueja($_POST, $pdo);
+  }
+
+  if (isset($_POST['borrarQueja'])) {
+    $alertHtml = borrarQueja($_POST, $pdo);
+  }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -124,7 +138,7 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/campanias.html">
+          <a class="nav-link text-primary" href="../pages/campanias.php">
             <i class="material-symbols-rounded opacity-5">campaign</i>
             <span class="nav-link-text ms-1">Campañas</span>
           </a>
@@ -364,12 +378,9 @@ require_once '../controllers/dashboard.php';
                           <div class="card" data-animation="false"
                             style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
                             <div class="card-body d-flex align-items-center w-100">
-                              <!-- Imagen al lado izquierdo -->
                               <div class="me-3">
                                 <img src="../assets/img/bruce-mars.jpg" alt="usuario" class="avatar-sm2">
                               </div>
-
-                              <!-- Contenido textual centrado verticalmente -->
                               <div class="text-start flex-grow-1">
                                 <h6 class="font-weight-bold text-primary mb-1">
                                   <a href="#" class="text-primary">¡Felicidades! Oliver Liam
@@ -518,148 +529,7 @@ require_once '../controllers/dashboard.php';
                   <br><br>
                 </div>
                 <div class="card-group">
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Aquí va información adicional a la imagen del aviso que se quiera agregar.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">25 de enero del 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Alejandra Sánchez</p>
-                    </div>
-                  </div>
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">30 de abril del 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Administrador</p>
-                    </div>
-                  </div>
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">30 de julio del 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Admin</p>
-                    </div>
-                  </div>
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">25 de julio de 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Juan Pérez</p>
-                    </div>
-                  </div>
+                  <?= getAvisosDash($pdo) ?>
                 </div>
               </div>
             </div>
@@ -673,82 +543,7 @@ require_once '../controllers/dashboard.php';
             <div class="card-body p-3">
               <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner mb-4">
-                  <div class="carousel-item">
-                    <a href="../pages/campania_ext.html">
-                      <div class="page-header min-vh-45 m-3 border-radius-md"
-                        style="background-image: url('../assets/img/campania_acoso.jpg');">
-                        <span class="mask bg-gradient-dark"></span>
-                        <div class="container">
-                          <div class="row">
-                            <div class="col-lg-8 my-auto">
-                              <h4 class="text-white fadeIn2 fadeInBottom">Acoso Laboral</h4>
-                              <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">¿Qué hacer en caso de? Acudir
-                                con el departamento de Recursos Humanos, RH, de manera presencial o al correo
-                                electrónico: recursoshumuanos@fast-net.com.mx</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                  <div class="carousel-item">
-                    <a href="../pages/campania_ext.html">
-                      <div class="page-header min-vh-45 m-3 border-radius-md"
-                        style="background-image: url('../assets/img/campania1.jpg');">
-                        <span class="mask bg-gradient-dark"></span>
-                        <div class="container">
-                          <div class="row">
-                            <div class="col-lg-6 my-auto">
-                              <h4 class="text-white fadeIn2 fadeInBottom">Work with the rockets</h4>
-                              <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">Wealth creation is an
-                                evolutionarily recent positive-sum game. Status is an old zero-sum game. </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </a>
-                  </div>
-                  <div class="carousel-item">
-                    <div class="page-header min-vh-45 m-3 border-radius-md"
-                      style="background-image: url('../assets/img/campania2.JPG');">
-                      <span class="mask bg-gradient-dark"></span>
-                      <div class="container">
-                        <div class="row">
-                          <div class="col-lg-8 my-auto">
-                            <h4 class="text-white fadeIn2 fadeInBottom">Work with the best</h4>
-                            <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">Free people make free choices.
-                              Free choices mean you get unequal outcomes. </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="carousel-item active">
-                    <div class="page-header min-vh-45 m-3 border-radius-md"
-                      style="background-image: url('https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-2-min.jpg');">
-                      <span class="mask bg-gradient-dark"></span>
-                      <div class="container">
-                        <div class="row">
-                          <div class="col-lg-8 my-auto">
-                            <h4 class="text-white fadeIn2 fadeInBottom">Work from home</h4>
-                            <p class="lead text-white opacity-8 fadeIn3 fadeInBottom">You’re spending time to save
-                              money
-                              when you should be spending money to save time.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="min-vh-45 position-absolute w-100 top-0">
-                  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon position-absolute bottom-50" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                  </a>
-                  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-bs-slide="next">
-                    <span class="carousel-control-next-icon position-absolute bottom-50" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                  </a>
+                  <?= getCarouselAvisos($pdo, "1") ?>
                 </div>
               </div>
             </div>
@@ -800,79 +595,7 @@ require_once '../controllers/dashboard.php';
         <!-- Sidenav Type -->
         <div class="mt-3 timeline timeline-one-side scrollable-timeline1">
           <ul class="list-group">
-            <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
-              <div class="d-flex flex-column">
-                <h6 class="mb-3 text-sm">Oliver Liam</h6>
-                <span class="mb-2 text-xs">Departamento: <span
-                    class="text-dark font-weight-bold ms-sm-2">Departamento</span></span>
-                <span class="mb-2 text-xs">Email: <span
-                    class="text-dark ms-sm-2 font-weight-bold">oliver@burrito.com</span></span>
-                <span class="text-xs">Fecha del mensaje: <span
-                    class="text-dark ms-sm-2 font-weight-bold">30/07/2025</span></span>
-              </div>
-              <div class="ms-auto text-end">
-                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="" target="_blank"
-                  data-bs-toggle="modal" data-bs-target="#modal-notification"><i
-                    class="material-symbols-rounded text-sm me-2">delete</i>Eliminar</a>
-                <a class="btn btn-link text-dark px-3 mb-0" href="" target="_blank" data-bs-toggle="modal"
-                  data-bs-target="#exampleModalLong"><i
-                    class="material-symbols-rounded text-sm me-2">visibility</i>Ver</a>
-              </div>
-            </li>
-            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
-              <div class="d-flex flex-column">
-                <h6 class="mb-3 text-sm">Lucas Harper</h6>
-                <span class="mb-2 text-xs">Departamento: <span
-                    class="text-dark font-weight-bold ms-sm-2">Departamento</span></span>
-                <span class="mb-2 text-xs">Email: <span
-                    class="text-dark ms-sm-2 font-weight-bold">lucas@stone-tech.com</span></span>
-                <span class="text-xs">Fecha del mensaje: <span
-                    class="text-dark ms-sm-2 font-weight-bold">28/07/2025</span></span>
-              </div>
-              <div class="ms-auto text-end">
-                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i
-                    class="material-symbols-rounded text-sm me-2">delete</i>Eliminar</a>
-                <a class="btn btn-link text-dark px-3 mb-0" href="" target="_blank" data-bs-toggle="modal"
-                  data-bs-target="#exampleModalLong"><i
-                    class="material-symbols-rounded text-sm me-2">visibility</i>Ver</a>
-              </div>
-            </li>
-            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
-              <div class="d-flex flex-column">
-                <h6 class="mb-3 text-sm">Ethan James</h6>
-                <span class="mb-2 text-xs">Departamento: <span
-                    class="text-dark font-weight-bold ms-sm-2">Departamento</span></span>
-                <span class="mb-2 text-xs">Email: <span
-                    class="text-dark ms-sm-2 font-weight-bold">ethan@fiber.com</span></span>
-                <span class="text-xs">Fecha del mensaje: <span
-                    class="text-dark ms-sm-2 font-weight-bold">27/07/2025</span></span>
-              </div>
-              <div class="ms-auto text-end">
-                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i
-                    class="material-symbols-rounded text-sm me-2">delete</i>Eliminar</a>
-                <a class="btn btn-link text-dark px-3 mb-0" href="" target="_blank" data-bs-toggle="modal"
-                  data-bs-target="#exampleModalLong"><i
-                    class="material-symbols-rounded text-sm me-2">visibility</i>Ver</a>
-              </div>
-            </li>
-            <li class="list-group-item border-0 d-flex p-4 mb-2 mt-3 bg-gray-100 border-radius-lg">
-              <div class="d-flex flex-column">
-                <h6 class="mb-3 text-sm">John Connor</h6>
-                <span class="mb-2 text-xs">Departamento: <span
-                    class="text-dark font-weight-bold ms-sm-2">Departamento</span></span>
-                <span class="mb-2 text-xs">Email: <span
-                    class="text-dark ms-sm-2 font-weight-bold">john@fiber.com</span></span>
-                <span class="text-xs">Fecha del mensaje: <span
-                    class="text-dark ms-sm-2 font-weight-bold">26/07/2025</span></span>
-              </div>
-              <div class="ms-auto text-end">
-                <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="javascript:;"><i
-                    class="material-symbols-rounded text-sm me-2">delete</i>Eliminar</a>
-                <a class="btn btn-link text-dark px-3 mb-0" href="" target="_blank" data-bs-toggle="modal"
-                  data-bs-target="#exampleModalLong"><i
-                    class="material-symbols-rounded text-sm me-2">visibility</i>Ver</a>
-              </div>
-            </li>
+            ' . GetBuzonQuejas($pdo) . '
           </ul>
         </div>
         <!-- Navbar Fixed -->
@@ -897,57 +620,36 @@ require_once '../controllers/dashboard.php';
           <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
             <i class="material-symbols-rounded">clear</i>
           </button>
-        </div>
-        <!-- End Toggle Button -->
+        </div>        
       </div>
       <hr class="horizontal dark my-1">
       <div class="card-body pt-sm-3 pt-0">
-        <!-- Sidebar Backgrounds -->
+        <form method="POST">
+         <input type="hidden" name="UsuarioId" id="mensaje-UsuarioId" value="' . $_SESSION['user_id'] . '">
         <div>
           <h6 class="mb-0">Deja tu comentario aquí</h6>
         </div>
-        <!-- Sidenav Type -->
         <div class="mt-3">
           <div class="input-group input-group-dynamic">
-            <textarea class="input-group input-group-outline mb-4" rows="12"
+            <textarea name="mensajeContenido" class="input-group input-group-outline mb-4" rows="12"
               placeholder="Describe cuál es la situación y nos pondremos en contacto contigo, recuerda que es confidencial."
               spellcheck="false"></textarea>
           </div>
-        </div>
-        <!-- Navbar Fixed -->
-
+        </div>        
         <hr class="horizontal dark my-sm-4">
         <div class="w-100 text-center">
-          <a href="" class="btn btn-dark mb-0 me-2" target="_blank" data-bs-toggle="modal"
-            data-bs-target="#exampleModal">Enviar
-          </a>
+          <button type="submit" name="mandarMensaje" class="btn btn-dark mb-0 me-2">
+            Enviar
+          </button>
         </div>
+      </form>
+      ' . $alertHtml . '
       </div>
     </div>
   </div>';
   }
   ?>
 
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Mensaje enviado correctamente</h5>
-          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          Gracias por compartir tus comentarios, nos pondremos en contacto contigo tan pronto como nos sea posible.
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn bg-gradient-primary" data-bs-dismiss="modal">Cerrar</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
@@ -1030,88 +732,106 @@ require_once '../controllers/dashboard.php';
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title font-weight-normal" id="exampleModalLongTitle">Mensaje enviado por: Nombre_Usuario</h5>
+          <h5 class="modal-title font-weight-normal" id="exampleModalLongTitle">Mensaje enviado por: </h5>
           <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body font-weight-light">
-          I always felt like I could do anything. That’s the main thing people are controlled by! Thoughts- their
-          perception of themselves! They're slowed down by their perception of themselves. If you're taught you can’t do
-          anything, you won’t do anything. I was taught I could do everything.
-          <br /><br />
-          As we live, our hearts turn colder. Cause pain is what we go through as we become older. We get insulted by
-          others, lose trust for those others. We get back stabbed by friends. It becomes harder for us to give others a
-          hand. We get our heart broken by people we love, even that we give them all we have. Then we lose family over
-          time. What else could rust the heart more over time? Blackgold.
-          <br /><br />
 
-
-          We’re not always in the position that we want to be at. We’re constantly growing. We’re constantly making
-          mistakes. We’re constantly trying to express ourselves and actualize our dreams. If you have the opportunity
-          to play this game of life you need to appreciate every moment. A lot of people don’t appreciate the moment
-          until it’s passed.
-          <br /><br />
-
-
-          There’s nothing I really wanted to do in life that I wasn’t able to get good at. That’s my skill. I’m not
-          really specifically talented at anything except for the ability to learn. That’s what I do. That’s what I’m
-          here for. Don’t be afraid to be wrong because you can’t learn anything from a compliment.
-          <br /><br />
-
-          It really matters and then like it really doesn’t matter. What matters is the people who are sparked by it.
-          And the people who are like offended by it, it doesn’t matter. Because it's about motivating the doers.
-          Because I’m here to follow my dreams and inspire other people to follow their dreams, too.
-          <br /><br />
-
-          The time is now for it to be okay to be great. People in this world shun people for being great. For being a
-          bright color. For standing out. But the time is now to be okay to be the greatest you. Would you believe in
-          what you believe in, if you were the only one who believed it?
         </div>
         <div class="modal-footer">
           <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cerrar</button>
-          <button type="button" class="btn bg-gradient-primary"
-            onclick="window.location.href='mailto:jimenezjose308@gmail.com'">Enviar Correo</button>
+          <button type="button" class="btn btn-icon btn-2 btn-primary btn-mail">
+            <i class="material-symbols-rounded">mail</i>
+          </button>
+          <button type="button" class="btn btn-icon btn-2 btn-primary btn-phone">
+            <i class="material-symbols-rounded">phone_enabled</i>
+          </button>
+
         </div>
       </div>
     </div>
   </div>
   <!--FIN DEL MODAL VER QUEJA-->
   <!-- MODAL NOTIFICACIÓN BORRADO -->
-  <div class="modal fade" id="modal-notification" tabindex="-1" role="dialog" aria-labelledby="modal-notification"
-    aria-hidden="true">
-    <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+  <div class="modal fade" id="modal-notification" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <i class="material-symbols-rounded text-danger me-2">
-            warning
-          </i>
-          <h6 class="modal-title font-weight-normal" id="modal-title-notification">
-            Alerta</h6>
-          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
+          <i class="material-symbols-rounded text-danger me-2">warning</i>
+          <h6 class="modal-title">Alerta</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
-          <div class="py-3 text-center">
-            <i class="material-symbols-rounded h1 text-secondary">
-              Borrar Mensaje
-            </i>
-            <h4 class="text-gradient text-danger mt-4">Atención</h4>
-            <p>Está a punto de borrar el mensaje @Nombre_Usuario, ¿Está seguro que desea
-              continuar?</p>
-          </div>
+        <div class="modal-body text-center">
+          <i class="material-symbols-rounded h1 text-secondary">Borrar Mensaje</i>
+          <h4 class="text-danger mt-4">Atención</h4>
+          <p>
+            Está a punto de borrar el mensaje
+            <strong><span id="modal-username">@Nombre_usuario</span></strong>,
+            ¿Está seguro que desea continuar?
+          </p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn bg-gradient-primary toast-btn" data-bs-dismiss="modal"
-            data-target="warningToast">Sí,
-            continuar.</button>
-          <button type="button" class="btn btn-link text-primary ml-auto" data-bs-dismiss="modal">Cancelar</button>
+          <form id="deleteForm" method="POST">
+            <input type="hidden" name="QuejaId" id="delete-quejaid" value="">
+            <button type="submit" name="borrarQueja" class="btn bg-gradient-primary">Sí, continuar</button>
+          </form>
+          <button type="button" class="btn btn-link text-primary" data-bs-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>
   </div>
   <!-- FIN DEL MODAL NOTIFICACIÓN BORRADO -->
+  <script>
+    // Espera a que el DOM y Bootstrap estén listos
+    document.addEventListener('DOMContentLoaded', function () {
+      var modalEl = document.getElementById('exampleModalLong');
+
+      modalEl.addEventListener('show.bs.modal', function (event) {
+        var btn = event.relatedTarget;
+        var nombre = btn.getAttribute('data-nombre');
+        var mensaje = btn.getAttribute('data-mensaje');
+        var email = btn.getAttribute('data-email');
+        var telefono = btn.getAttribute('data-telefono');
+
+        // Elementos del modal
+        var tituloEl = modalEl.querySelector('.modal-title');
+        var bodyEl = modalEl.querySelector('.modal-body');
+        var btnMail = modalEl.querySelector('.btn-mail');
+        var btnPhone = modalEl.querySelector('.btn-phone');
+
+        // Actualizar contenido
+        tituloEl.textContent = 'Mensaje enviado por: ' + nombre;
+        bodyEl.textContent = mensaje;
+
+        // Mostrar u ocultar botones según datos
+        btnMail.style.display = email ? '' : 'none';
+        btnPhone.style.display = telefono ? '' : 'none';
+
+        // Asignar acciones
+        btnMail.onclick = () => window.location.href = 'mailto:' + email;
+        btnPhone.onclick = () => window.location.href = 'https://wa.me/' + telefono;
+      });
+    });
+  </script>
+  <script>
+    // Captura el modal y escucha cuando se abre
+    var deleteModal = document.getElementById('modal-notification');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+      // El botón que disparó el modal
+      var btn = event.relatedTarget;
+      // Extraemos los data-attributes
+      var nombre = btn.getAttribute('data-nombre');
+      var quejaId = btn.getAttribute('data-quejaid');
+
+      // Actualizamos el texto del nombre
+      deleteModal.querySelector('#modal-username').textContent = nombre;
+
+      // Asignamos el ID al campo oculto del formulario
+      document.getElementById('delete-quejaid').value = quejaId;
+    });
+  </script>
 </body>
 
 </html>

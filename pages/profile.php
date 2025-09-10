@@ -110,7 +110,7 @@ require_once '../controllers/logica_usuario.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/campanias.html">
+          <a class="nav-link text-primary" href="../pages/campanias.php">
             <i class="material-symbols-rounded opacity-5">campaign</i>
             <span class="nav-link-text ms-1">Campañas</span>
           </a>

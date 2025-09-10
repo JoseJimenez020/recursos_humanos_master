@@ -1,22 +1,16 @@
-<!--
-=========================================================
-* Material Dashboard 3 - v3.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <?php
-require_once '../controllers/dashboard.php';
-?>
+require '../controllers/dashboard.php';
+$alertHtml = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['regAviso'])) {
+        $alertHtml = registrarAviso($_POST, $pdo);
+    }
 
+    if (isset($_POST['borrarAviso'])) {
+        $alertHtml = borrarAviso($_POST, $pdo);
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -352,151 +346,7 @@ require_once '../controllers/dashboard.php';
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-4 mb-4">
-                                            <div class="card" data-animation="true">
-                                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                                    <a class="d-block blur-shadow-image">
-                                                        <img src="../assets/img/campania1.jpg" alt="img-blur-shadow"
-                                                            class="img-fluid shadow border-radius-lg">
-                                                    </a>
-                                                    <div class="colored-shadow"
-                                                        style="background-image: url(&quot;../assets/img/campania1.jpg&quot;);">
-                                                    </div>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <div class="d-flex mt-n6 mx-auto">
-                                                        <a class="btn btn-link text-primary ms-auto border-0"
-                                                            data-toggle="tooltip" data-bs-toggle="modal"
-                                                            data-bs-placement="bottom" title="Borrar"
-                                                            data-bs-target="#modal-notification">
-                                                            <i class="material-symbols-rounded text-lg">delete</i>
-                                                        </a>
-                                                        <button class="btn btn-link text-info me-auto border-0"
-                                                            data-toggle="tooltip" data-bs-toggle="modal"
-                                                            data-bs-placement="bottom" title="Editar"
-                                                            data-bs-target="#modal-edit">
-                                                            <i class="material-symbols-rounded text-lg">edit</i>
-                                                        </button>
-                                                    </div>
-                                                    <h5 class="font-weight-normal mt-3">
-                                                        <a href="">Work with the best</a>
-                                                    </h5>
-                                                    <p class="mb-0">Free people make free choices.
-                                                        Free choices mean you get unequal outcomes.
-                                                    </p>
-                                                </div>
-                                                <hr class="dark horizontal my-0">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mb-4">
-                                            <div class="card" data-animation="true">
-                                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                                    <a class="d-block blur-shadow-image">
-                                                        <img src="../assets/img/campania2.JPG" alt="img-blur-shadow"
-                                                            class="img-fluid shadow border-radius-lg">
-                                                    </a>
-                                                    <div class="colored-shadow"
-                                                        style="background-image: url(&quot;../assets/img/campania2.JPG&quot;);">
-                                                    </div>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <div class="d-flex mt-n6 mx-auto">
-                                                        <a class="btn btn-link text-primary ms-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Borrar">
-                                                            <i class="material-symbols-rounded text-lg">delete</i>
-                                                        </a>
-                                                        <button class="btn btn-link text-info me-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Editar">
-                                                            <i class="material-symbols-rounded text-lg">edit</i>
-                                                        </button>
-                                                    </div>
-                                                    <h5 class="font-weight-normal mt-3">
-                                                        <a href="javascript:;">Work from home</a>
-                                                    </h5>
-                                                    <p class="mb-0">
-                                                        You’re spending time to save money when you should be spending
-                                                        money to save time.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mb-4">
-                                            <div class="card" data-animation="true">
-                                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                                    <a class="d-block blur-shadow-image">
-                                                        <img src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-3-min.jpg"
-                                                            alt="img-blur-shadow"
-                                                            class="img-fluid shadow border-radius-lg">
-                                                    </a>
-                                                    <div class="colored-shadow"
-                                                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-3-min.jpg&quot;);">
-                                                    </div>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <div class="d-flex mt-n6 mx-auto">
-                                                        <a class="btn btn-link text-primary ms-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Borrar">
-                                                            <i class="material-symbols-rounded text-lg">delete</i>
-                                                        </a>
-                                                        <button class="btn btn-link text-info me-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Editar">
-                                                            <i class="material-symbols-rounded text-lg">edit</i>
-                                                        </button>
-                                                    </div>
-                                                    <h5 class="font-weight-normal mt-3">
-                                                        <a href="javascript:;">Work with the rockets</a>
-                                                    </h5>
-                                                    <p class="mb-0">
-                                                        Wealth creation is an
-                                                        evolutionarily recent positive-sum game. Status is an old
-                                                        zero-sum game.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mb-4">
-                                            <div class="card" data-animation="true">
-                                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                                    <a class="d-block blur-shadow-image">
-                                                        <img src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-4-min.jpg"
-                                                            alt="img-blur-shadow"
-                                                            class="img-fluid shadow border-radius-lg">
-                                                    </a>
-                                                    <div class="colored-shadow"
-                                                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-4-min.jpg&quot;);">
-                                                    </div>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <div class="d-flex mt-n6 mx-auto">
-                                                        <a class="btn btn-link text-primary ms-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Borrar">
-                                                            <i class="material-symbols-rounded text-lg">delete</i>
-                                                        </a>
-                                                        <button class="btn btn-link text-info me-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Editar">
-                                                            <i class="material-symbols-rounded text-lg">edit</i>
-                                                        </button>
-                                                    </div>
-                                                    <h5 class="font-weight-normal mt-3">
-                                                        <a href="javascript:;">Título de la campaña</a>
-                                                    </h5>
-                                                    <p class="mb-0">
-                                                        Duis aute irure dolor in reprehenderit in
-                                                        voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                                                        Excepteur sint occaecat cupidatat
-                                                        non proident, sunt in culpa qui officia deserunt mollit anim id
-                                                        est laborum.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Puedes seguir agregando más tarjetas -->
+                                        <?= getAvisosPanel($pdo, '1') ?>
                                     </div>
                                 </div>
                             </div>
@@ -509,26 +359,28 @@ require_once '../controllers/dashboard.php';
                             <h6>Agregar campaña</h6>
                         </div>
                         <div class="card-body p-3">
-                            <form>
+                            <form method="POST" enctype="multipart/form-data">
                                 <div class="input-group input-group-outline my-3">
                                     <label class="form-label">Título</label>
-                                    <input type="text" class="form-control">
+                                    <input type="text" name="avisoTitulo" class="form-control">
                                 </div>
                                 <div class="input-group input-group-dynamic">
-                                    <textarea class="form-control" rows="5"
-                                        placeholder="Escribe una pequeña descripción de lo que trata la campaña, tamaño recomendado de la imagen es de 800 x 533 px."
+                                    <textarea class="form-control" name="avisoDesc" rows="5"
+                                        placeholder="Escribe una pequeña de lo que trata la campaña. El tamaño recomendado de la imagen es de 800 x 533 px."
                                         spellcheck="false"></textarea>
                                 </div>
                                 <div class="input-group input-group-outline my-3">
                                     <label class="form-label">Foto</label>
-                                    <input type="file" class="form-control">
+                                    <input type="file" name="avisoFoto" class="form-control">
                                 </div>
+                                <input type="hidden" name="esAviso" value="1">
                                 <div class="text-center">
-                                    <button type="button"
+                                    <button type="submit" name="regAviso"
                                         class="btn btn-round bg-gradient-primary btn-lg w-100 mt-4 mb-0 toast-btn"
                                         data-target="successToast">Registrar
                                         campaña</button>
                                 </div>
+                                <?= $alertHtml ?>
                             </form>
                         </div>
                     </div>
@@ -600,20 +452,29 @@ require_once '../controllers/dashboard.php';
                             <div class="modal-body">
                                 <div class="py-3 text-center">
                                     <i class="material-symbols-rounded h1 text-secondary">
-                                        Borrar Campaña
+                                        Borrar Aviso
                                     </i>
                                     <h4 class="text-gradient text-danger mt-4">Atención</h4>
-                                    <p>Está a punto de borrar la campaña "Nombre de la campaña", ¿Está seguro que desea
-                                        continuar?</p>
+                                    <p>Estás a punto de borrar la campaña
+                                        "<span id="aviso-name"></span>".
+                                        ¿Estás seguro de continuar?
+                                    </p>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn bg-gradient-primary toast-btn" data-bs-dismiss="modal"
-                                    data-target="warningToast">Sí,
-                                    continuar.</button>
-                                <button type="button" class="btn btn-link text-primary ml-auto"
-                                    data-bs-dismiss="modal">Cancelar</button>
+                                <form method="POST">
+                                    <input type="hidden" name="AvisoId" id="aviso-id">
+                                    <button type="submit" name="borrarAviso" class="btn bg-gradient-primary"
+                                        data-bs-dismiss="modal" data-target="warningToast">
+                                        Sí, continuar
+                                    </button>
+                                    <?= $alertHtml ?>
+                                </form>
+                                <button type="button" class="btn btn-link text-primary" data-bs-dismiss="modal">
+                                    Cancelar
+                                </button>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -643,71 +504,6 @@ require_once '../controllers/dashboard.php';
             </footer>
         </div>
     </div>
-    <!-- NOTIFICACIONES A UN COSTADO DE LA PANTALLA-->
-    <div class="position-fixed bottom-1 end-1 z-index-2">
-        <div class="toast fade hide p-2 bg-white" role="alert" aria-live="assertive" id="successToast"
-            aria-atomic="true">
-            <div class="toast-header border-0">
-                <i class="material-symbols-rounded text-success me-2">
-                    check
-                </i>
-                <span class="me-auto font-weight-bold">¡Éxito! </span>
-                <small class="text-body">Justo Ahora</small>
-                <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
-            </div>
-            <hr class="horizontal dark m-0">
-            <div class="toast-body">
-                información registrada correctamente
-            </div>
-        </div>
-        <div class="toast fade hide p-2 mt-2 bg-gradient-info" role="alert" aria-live="assertive" id="infoToast"
-            aria-atomic="true">
-            <div class="toast-header bg-transparent border-0">
-                <i class="material-symbols-rounded text-white me-2">
-                    notifications
-                </i>
-                <span class="me-auto text-white font-weight-bold">Material Dashboard </span>
-                <small class="text-white">11 mins ago</small>
-                <i class="fas fa-times text-md text-white ms-3 cursor-pointer" data-bs-dismiss="toast"
-                    aria-label="Close"></i>
-            </div>
-            <hr class="horizontal light m-0">
-            <div class="toast-body text-white">
-                Hello, world! This is a notification message.
-            </div>
-        </div>
-        <div class="toast fade hide p-2 mt-2 bg-white" role="alert" aria-live="assertive" id="warningToast"
-            aria-atomic="true">
-            <div class="toast-header border-0">
-                <i class="material-symbols-rounded text-warning me-2">
-                    warning
-                </i>
-                <span class="me-auto font-weight-bold">¡Alerta! </span>
-                <small class="text-body">Justo Ahora</small>
-                <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
-            </div>
-            <hr class="horizontal dark m-0">
-            <div class="toast-body">
-                información eliminada correctamente.
-            </div>
-        </div>
-        <div class="toast fade hide p-2 mt-2 bg-white" role="alert" aria-live="assertive" id="dangerToast"
-            aria-atomic="true">
-            <div class="toast-header border-0">
-                <i class="material-symbols-rounded text-danger me-2">
-                    dangerous
-                </i>
-                <span class="me-auto text-gradient text-danger font-weight-bold">¡Error! </span>
-                <small class="text-body">Justo Ahora</small>
-                <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
-            </div>
-            <hr class="horizontal dark m-0">
-            <div class="toast-body">
-                Hubo un error al procesar la información.
-            </div>
-        </div>
-    </div>
-    <!-- FIN DE LAS NOTIFICACIONES -->
     <!--   Core JS Files   -->
     <script src="../assets/js/core/popper.min.js"></script>
     <script src="../assets/js/core/bootstrap.min.js"></script>
@@ -749,6 +545,17 @@ require_once '../controllers/dashboard.php';
         </div>
     </div>
     <!--End logout modal-->
+    <script>
+        const modal = document.getElementById('modal-notification');
+        modal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const avisoId = button.getAttribute('data-aviso-id');
+            const avisoName = button.getAttribute('data-aviso-name');
+
+            document.getElementById('aviso-id').value = avisoId;
+            document.getElementById('aviso-name').textContent = avisoName;
+        });
+    </script>
 </body>
 
 </html>

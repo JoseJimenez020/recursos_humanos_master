@@ -1,5 +1,15 @@
 <?php
-require_once '../controllers/dashboard.php';
+require '../controllers/dashboard.php';
+$alertHtml = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['regAviso'])) {
+        $alertHtml = registrarAviso($_POST, $pdo);
+    }
+
+    if (isset($_POST['borrarAviso'])) {
+        $alertHtml = borrarAviso($_POST, $pdo);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -323,190 +333,11 @@ require_once '../controllers/dashboard.php';
                             <div class="row">
                                 <div class="col-lg-6 col-7">
                                     <h6>Avisos activos</h6>
-                                    <br><br>
+                                    <br>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-md-4 mb-4">
-                                            <div class="card" data-animation="true">
-                                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                                    <a class="d-block blur-shadow-image">
-                                                        <img src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                                                            alt="img-blur-shadow"
-                                                            class="img-fluid shadow border-radius-lg">
-                                                    </a>
-                                                    <div class="colored-shadow"
-                                                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                                                    </div>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <div class="d-flex mt-n6 mx-auto">
-                                                        <a class="btn btn-link text-primary ms-auto border-0"
-                                                            data-toggle="tooltip" data-bs-toggle="modal"
-                                                            data-bs-placement="bottom" title="Borrar"
-                                                            data-bs-target="#modal-notification">
-                                                            <i class="material-symbols-rounded text-lg">delete</i>
-                                                        </a>
-                                                        <button class="btn btn-link text-info me-auto border-0"
-                                                            data-toggle="tooltip" data-bs-toggle="modal"
-                                                            data-bs-placement="bottom" title="Editar"
-                                                            data-bs-target="#modal-edit">
-                                                            <i class="material-symbols-rounded text-lg">edit</i>
-                                                        </button>
-                                                    </div>
-                                                    <h5 class="font-weight-normal mt-3">
-                                                        <a href="">Título del aviso</a>
-                                                    </h5>
-                                                    <p class="mb-0">Aquí va información adicional a la imagen del aviso
-                                                        que se quiera agregar. El tamaño recomendado de la imagen es de
-                                                        800 x 533 px.
-                                                    </p>
-                                                </div>
-                                                <hr class="dark horizontal my-0">
-                                                <div class="card-footer d-flex">
-                                                    <p class="font-weight-normal my-auto">25 de enero del 2025</p>
-                                                    <i
-                                                        class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                                                    <p class="text-sm my-auto">Alejandra Sánchez</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mb-4">
-                                            <div class="card" data-animation="true">
-                                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                                    <a class="d-block blur-shadow-image">
-                                                        <img src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                                                            alt="img-blur-shadow"
-                                                            class="img-fluid shadow border-radius-lg">
-                                                    </a>
-                                                    <div class="colored-shadow"
-                                                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                                                    </div>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <div class="d-flex mt-n6 mx-auto">
-                                                        <a class="btn btn-link text-primary ms-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Borrar">
-                                                            <i class="material-symbols-rounded text-lg">delete</i>
-                                                        </a>
-                                                        <button class="btn btn-link text-info me-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Editar">
-                                                            <i class="material-symbols-rounded text-lg">edit</i>
-                                                        </button>
-                                                    </div>
-                                                    <h5 class="font-weight-normal mt-3">
-                                                        <a href="javascript:;">Título del aviso</a>
-                                                    </h5>
-                                                    <p class="mb-0">
-                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                                        eiusmod tempor incididunt ut
-                                                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                                                        nostrud exercitation ullamco
-                                                        laboris nisi ut aliquip ex ea commodo consequat.
-                                                    </p>
-                                                </div>
-                                                <hr class="dark horizontal my-0">
-                                                <div class="card-footer d-flex">
-                                                    <p class="font-weight-normal my-auto">30 de abril del 2025</p>
-                                                    <i
-                                                        class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                                                    <p class="text-sm my-auto">Administrador</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mb-4">
-                                            <div class="card" data-animation="true">
-                                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                                    <a class="d-block blur-shadow-image">
-                                                        <img src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                                                            alt="img-blur-shadow"
-                                                            class="img-fluid shadow border-radius-lg">
-                                                    </a>
-                                                    <div class="colored-shadow"
-                                                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                                                    </div>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <div class="d-flex mt-n6 mx-auto">
-                                                        <a class="btn btn-link text-primary ms-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Borrar">
-                                                            <i class="material-symbols-rounded text-lg">delete</i>
-                                                        </a>
-                                                        <button class="btn btn-link text-info me-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Editar">
-                                                            <i class="material-symbols-rounded text-lg">edit</i>
-                                                        </button>
-                                                    </div>
-                                                    <h5 class="font-weight-normal mt-3">
-                                                        <a href="javascript:;">Título del aviso</a>
-                                                    </h5>
-                                                    <p class="mb-0">
-                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                                        eiusmod tempor incididunt ut
-                                                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                                                        nostrud exercitation ullamco
-                                                        laboris nisi ut aliquip ex ea commodo consequat.
-                                                    </p>
-                                                </div>
-                                                <hr class="dark horizontal my-0">
-                                                <div class="card-footer d-flex">
-                                                    <p class="font-weight-normal my-auto">30 de julio del 2025</p>
-                                                    <i
-                                                        class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                                                    <p class="text-sm my-auto">Admin</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 mb-4">
-                                            <div class="card" data-animation="true">
-                                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                                                    <a class="d-block blur-shadow-image">
-                                                        <img src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                                                            alt="img-blur-shadow"
-                                                            class="img-fluid shadow border-radius-lg">
-                                                    </a>
-                                                    <div class="colored-shadow"
-                                                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                                                    </div>
-                                                </div>
-                                                <div class="card-body text-center">
-                                                    <div class="d-flex mt-n6 mx-auto">
-                                                        <a class="btn btn-link text-primary ms-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Borrar">
-                                                            <i class="material-symbols-rounded text-lg">delete</i>
-                                                        </a>
-                                                        <button class="btn btn-link text-info me-auto border-0"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="Editar">
-                                                            <i class="material-symbols-rounded text-lg">edit</i>
-                                                        </button>
-                                                    </div>
-                                                    <h5 class="font-weight-normal mt-3">
-                                                        <a href="javascript:;">Título del aviso</a>
-                                                    </h5>
-                                                    <p class="mb-0">
-                                                        Duis aute irure dolor in reprehenderit in
-                                                        voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                                                        Excepteur sint occaecat cupidatat
-                                                        non proident, sunt in culpa qui officia deserunt mollit anim id
-                                                        est laborum.
-                                                    </p>
-                                                </div>
-                                                <hr class="dark horizontal my-0">
-                                                <div class="card-footer d-flex">
-                                                    <p class="font-weight-normal my-auto">25 de julio de 2025</p>
-                                                    <i
-                                                        class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                                                    <p class="text-sm my-auto">Juan Pérez</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Puedes seguir agregando más tarjetas -->
+                                        <?= getAvisosPanel($pdo, '0') ?>
                                     </div>
                                 </div>
                             </div>
@@ -519,36 +350,34 @@ require_once '../controllers/dashboard.php';
                             <h6>Agregar avisos</h6>
                         </div>
                         <div class="card-body p-3">
-                            <form>
+                            <form method="POST" enctype="multipart/form-data">
                                 <div class="input-group input-group-outline my-3">
                                     <label class="form-label">Título</label>
-                                    <input type="text" class="form-control">
+                                    <input type="text" name="avisoTitulo" class="form-control">
                                 </div>
                                 <div class="input-group input-group-dynamic">
-                                    <textarea class="form-control" rows="5"
+                                    <textarea class="form-control" name="avisoDesc" rows="5"
                                         placeholder="Escribe una pequeña descripción del aviso. El tamaño recomendado de la imagen es de 800 x 533 px."
                                         spellcheck="false"></textarea>
                                 </div>
                                 <div class="input-group input-group-outline my-3">
                                     <label class="form-label">Foto</label>
-                                    <input type="file" class="form-control">
+                                    <input type="file" name="avisoFoto" class="form-control">
                                 </div>
-                                <div class="input-group input-group-static my-3">
-                                    <label>Fecha</label>
-                                    <input type="date" class="form-control">
-                                </div>
+                                <input type="hidden" name="esAviso" value="0">
                                 <div class="text-center">
-                                    <button type="button"
+                                    <button type="submit" name="regAviso"
                                         class="btn btn-round bg-gradient-primary btn-lg w-100 mt-4 mb-0 toast-btn"
                                         data-target="successToast">Registrar
                                         aviso</button>
                                 </div>
+                                <?= $alertHtml ?>
                             </form>
                         </div>
                     </div>
                 </div>
 
-                <!--MODAL PARA EDITAR USUARIO-->
+                <!--MODAL PARA EDITAR AVISO-->
                 <div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal-default"
                     aria-hidden="true">
                     <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
@@ -616,25 +445,33 @@ require_once '../controllers/dashboard.php';
                                         Borrar Aviso
                                     </i>
                                     <h4 class="text-gradient text-danger mt-4">Atención</h4>
-                                    <p>Está a punto de borrar el aviso "Nombre del aviso", ¿Está seguro que desea
-                                        continuar?</p>
+                                    <p>Estás a punto de borrar el aviso
+                                        "<span id="aviso-name"></span>".
+                                        ¿Estás seguro de continuar?
+                                    </p>
+
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn bg-gradient-primary toast-btn" data-bs-dismiss="modal"
-                                    data-target="warningToast">Sí,
-                                    continuar.</button>
-                                <button type="button" class="btn btn-link text-primary ml-auto"
-                                    data-bs-dismiss="modal">Cancelar</button>
+                                <form method="POST">
+                                    <input type="hidden" name="AvisoId" id="aviso-id">
+                                    <button type="submit" name="borrarAviso" class="btn bg-gradient-primary"
+                                        data-bs-dismiss="modal" data-target="warningToast">
+                                        Sí, continuar
+                                    </button>
+                                    <?= $alertHtml ?>
+                                </form>
+                                <button type="button" class="btn btn-link text-primary" data-bs-dismiss="modal">
+                                    Cancelar
+                                </button>
                             </div>
+
                         </div>
                     </div>
                 </div>
                 <!-- FIN DEL MODAL NOTIFICACIÓN BORRADO -->
 
             </div>
-
-
 
             <!-- FOOTER -->
             <footer class="footer py-4  ">
@@ -654,6 +491,7 @@ require_once '../controllers/dashboard.php';
                     </div>
                 </div>
             </footer>
+
         </div>
     </div>
     <!--   Core JS Files   -->
@@ -697,6 +535,17 @@ require_once '../controllers/dashboard.php';
         </div>
     </div>
     <!--End logout modal-->
+    <script>
+        const modal = document.getElementById('modal-notification');
+        modal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const avisoId = button.getAttribute('data-aviso-id');
+            const avisoName = button.getAttribute('data-aviso-name');
+
+            document.getElementById('aviso-id').value = avisoId;
+            document.getElementById('aviso-name').textContent = avisoName;
+        });
+    </script>
 </body>
 
 </html>
