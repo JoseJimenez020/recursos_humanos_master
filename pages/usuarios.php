@@ -81,37 +81,37 @@ $departamentos = GetDepartamento($pdo);
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -160,7 +160,7 @@ $departamentos = GetDepartamento($pdo);
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
@@ -198,37 +198,37 @@ $departamentos = GetDepartamento($pdo);
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -244,7 +244,7 @@ $departamentos = GetDepartamento($pdo);
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
@@ -609,9 +609,8 @@ $departamentos = GetDepartamento($pdo);
                         <button type="submit" name="registrarU" class="btn bg-gradient-primary w-100">
                             Registrar Usuario
                         </button>
-
-                    </form>
                     <?= $alertHtml ?>
+                    </form>                    
                 </div>
             </div>
         </div>
@@ -641,6 +640,7 @@ $departamentos = GetDepartamento($pdo);
 
                 // Rellenas los inputs
                 formEdit.NombreUsuario.value = u.NombreUsuario || '';
+                document.getElementById('edit-EsAdmin').checked = u.EsAdmin == 1;
                 formEdit.ApellidoPaterno.value = u.ApellidoPaterno || '';
                 formEdit.ApellidoMaterno.value = u.ApellidoMaterno || '';
                 formEdit.NumeroTelefono.value = u.NumeroTelefono || '';
@@ -906,6 +906,10 @@ $departamentos = GetDepartamento($pdo);
                             <label class="form-label">Número contacto emergencia</label>
                             <input name="NumeroEmergencia" id="edit-NumeroEmergencia" type="tel" class="form-control">
                         </div>
+                        <div class="input-group input-group-static mb-4 ">
+                            <input type="checkbox" name="EsAdmin" id="edit-EsAdmin" value="1">
+                            <label class="ms-0">¿Dar permisos de Administrador?</label>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn bg-gradient-primary w-100">Guardar
@@ -976,6 +980,7 @@ $departamentos = GetDepartamento($pdo);
         </div>
     </div>
     <!-- FIN DEL MODAL FOTO DE PERFIL -->
+
     <!-- SCRIPT FOTO DE PERFIL-->
     <script>
         const fotoModal = document.getElementById('fotoPerfilModal');
@@ -1029,6 +1034,7 @@ $departamentos = GetDepartamento($pdo);
         </div>
     </div>
     <!-- FIN DEL MODAL DE VACACIONES -->
+
     <!--SCRIPT MODAL VACACIONES-->
     <script>
         document.addEventListener('DOMContentLoaded', function () {

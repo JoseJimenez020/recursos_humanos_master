@@ -77,37 +77,37 @@ $date = date('d/m/Y', strtotime($aviso['Fecha']));
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -156,7 +156,7 @@ $date = date('d/m/Y', strtotime($aviso['Fecha']));
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
@@ -194,37 +194,37 @@ $date = date('d/m/Y', strtotime($aviso['Fecha']));
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -240,7 +240,7 @@ $date = date('d/m/Y', strtotime($aviso['Fecha']));
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>

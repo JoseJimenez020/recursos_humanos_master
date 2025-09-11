@@ -349,6 +349,7 @@ function actualizarUsuario(array $post, PDO $pdo): array
     $numeroEmergencia = filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING);
     $tiposValidos = ['O-', 'O+', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'];
     $tipoSangre = filter_var($post['TipoSangre'], FILTER_SANITIZE_STRING);
+    $esAdmin = !empty($post['EsAdmin']) ? 1 : 0;
     if (!in_array($tipoSangre, $tiposValidos, true)) {
         throw new Exception('Tipo de sangre inválido.');
     }
@@ -364,7 +365,8 @@ function actualizarUsuario(array $post, PDO $pdo): array
             TipoSangre          = :tipoSangre,
             NumeroTelefono      = :numeroTelefono,
             DepartamentoId      = :departamentoId,
-            PuestoId            = :puestoId
+            PuestoId            = :puestoId,
+            EsAdmin             = :esAdmin
           WHERE UsuarioId = :usuarioId
         ";
     $stmt = $pdo->prepare($sqlUser);
@@ -377,6 +379,7 @@ function actualizarUsuario(array $post, PDO $pdo): array
         'numeroTelefono' => $numeroTelefono,
         'departamentoId' => $departamentoId,
         'puestoId' => $puestoId,
+        'esAdmin' => $esAdmin,
         'usuarioId' => $usuarioId
     ]);
 
@@ -1015,23 +1018,26 @@ function getPanelFelicitaciones(PDO $pdo): string
             : '../assets/img/small-logos/user.png';
 
         $full = "{$fe['NombreUsuario']} {$fe['ApellidoPaterno']} {$fe['ApellidoMaterno']}";
-        $html.='<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+        $html .= '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
     <div class="me-3">
-        <img src="'.$src.'" alt="usuario" class="avatar-sm2">
+        <img src="' . $src . '" alt="usuario" class="avatar-sm2">
     </div>
     <div class="d-flex flex-column">
-        <h6 class="mb-3 text-sm">'.$full.'</h6>
-        <span class="mb-2 text-xs">Mensaje de felicitación: <span class="text-dark font-weight-bold ms-sm-2">'.$fe['MensajeFelicitacion'].'
+        <h6 class="mb-3 text-sm">' . $full . '</h6>
+        <span class="mb-2 text-xs">Mensaje de felicitación: <span class="text-dark font-weight-bold ms-sm-2">' . $fe['MensajeFelicitacion'] . '
             </span></span>
     </div>
     <div class="ms-auto text-end">
-        <a class="btn btn-link text-danger text-gradient px-3 mb-0" 
-        data-felicitacion-id:"'.$fe['FelicitacionId'].'"
+        <a class="btn btn-link text-danger text-gradient px-3 mb-0 btn-delete-felic" 
+        data-fe-id="' . $fe['FelicitacionId'] . '"
+        data-nombre="' . $full . '"
         href="javascript:;" target="_blank"
             data-bs-toggle="modal" data-bs-target="#modal-notification"><i
                 class="material-symbols-rounded text-sm me-2">delete</i>Borrar</a>
+        
         <a class="btn btn-link text-dark px-3 mb-0" 
-        data-felicitacion-id:"'.$fe['FelicitacionId'].'"
+        data-felicitacion-id="' . $fe['FelicitacionId'] . '"
+        data-contenido="' . $fe['MensajeFelicitacion'] . '"
         href="javascript:;" target="_blank" data-bs-toggle="modal"
             data-bs-target="#modal-edit"><i class="material-symbols-rounded text-sm me-2">edit</i>Editar</a>
     </div>
@@ -1040,4 +1046,154 @@ function getPanelFelicitaciones(PDO $pdo): string
     return $html;
 
 
+}
+
+function borrarFelicitacion(array $post, PDO $pdo): string
+{
+    $feliId = filter_var($post['FelicitacionId'] ?? null, FILTER_VALIDATE_INT);
+
+    try {
+        $pdo->beginTransaction();
+
+        $stmt = $pdo->prepare("DELETE FROM felicitaciones WHERE FelicitacionId = :id");
+        $stmt->execute([':id' => $feliId]);
+
+        $pdo->commit();
+
+        return alertScript(
+            '¡Éxito!',
+            'Mensaje eliminado correctamente.',
+            'success'
+        );
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        return alertScript(
+            'Error',
+            'No se pudo eliminar: ' . $e->getMessage(),
+            'error'
+        );
+    }
+}
+
+function editarFelicitacion(array $post, PDO $pdo): string
+{
+    $feliId = filter_var($post['feliId'] ?? null, FILTER_VALIDATE_INT);
+    $mensaje = filter_var($post['mensajeFeli'] ?? '', FILTER_SANITIZE_STRING);
+
+    try {
+        $pdo->beginTransaction();
+        $sql = "UPDATE felicitaciones 
+              SET MensajeFelicitacion = :msj
+              WHERE FelicitacionId = :idf";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            ':msj' => $mensaje,
+            ':idf' => $feliId,
+        ]);
+
+        $pdo->commit();
+
+        return alertScript(
+            '¡Éxito!',
+            'Información actualizada correctamente.',
+            'success'
+        );
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        return alertScript(
+            'Error',
+            'No se pudo actualizar la información: ' . $e->getMessage(),
+            'error'
+        );
+    }
+}
+function getAvisosDash(PDO $pdo): string
+{
+  $sql = "SELECT 
+        a.AvisoId, a.TituloAviso, a.Fecha, a.DescripcionAviso, 
+        a.EsCampana, f.FotoContenido, u.NombreUsuario, u.ApellidoPaterno
+        FROM avisos a
+        LEFT JOIN usuarios u ON u.UsuarioId = a.UsuarioId
+        LEFT JOIN fotos f ON f.EntidadTipo = 'aviso'
+                         AND f.EntidadId = a.AvisoId
+        WHERE EsCampana = 0";
+
+  $params = [];
+
+  // Preparar y ejecutar
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute($params);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  if (empty($rows)) {
+    return '<div class="col-md-4 mb-4">
+          <div class="card" data-animation="false">
+              <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                  <a class="d-block blur-shadow-image">
+                  </a>
+              </div>
+              <div class="card-body text-center">
+                  <h5 class="font-weight-normal mt-3">
+                      <a href="">Sin registros</a>
+                  </h5>
+                  <p class="mb-0">Por el momento no hay información disponible
+                  </p>
+              </div>
+              <hr class="dark horizontal my-0">
+              <div class="card-footer d-flex">
+              </div>
+          </div>
+      </div>';
+  }
+
+  $html = '';
+  foreach ($rows as $a) {
+    $src = $a['FotoContenido']
+      ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
+      : '../assets/img/small-logos/alerta.png';
+    $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
+
+    // truncate to 152 chars
+    $desc = strip_tags($a['DescripcionAviso']);
+    if (mb_strlen($desc) > 150) {
+      $desc = mb_substr($desc, 0, 150) . '…';
+    }
+
+    $html .= '<div class="card" data-animation="true">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <a class="d-block blur-shadow-image">
+            <img src="' . $src . '"
+                alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
+        </a>
+        <div class="colored-shadow"
+            style="background-image: url(&quot;' . $src . '&quot;);">
+        </div>
+    </div>
+    <div class="card-body text-center">
+        <div class="d-flex mt-n6 mx-auto">
+            <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                title="">
+            </a>
+            <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                title="">
+            </button>
+        </div>
+        <h5 class="font-weight-normal mt-3">
+            <a href="javascript:;">' . $a['TituloAviso'] . '</a>
+        </h5>
+        <p class="mb-0">
+            ' . $desc . '
+        </p>
+    </div>
+    <hr class="dark horizontal my-0">
+    <div class="card-footer d-flex">
+        <p class="font-weight-normal my-auto">' . date('d/m/Y', strtotime($a['Fecha'])) . '</p>
+        <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
+        <p class="text-sm my-auto">' . $full . '</p>
+    </div>
+</div>';
+  }
+  return $html;
 }

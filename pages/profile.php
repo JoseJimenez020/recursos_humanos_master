@@ -53,37 +53,37 @@ require_once '../controllers/logica_usuario.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -132,7 +132,7 @@ require_once '../controllers/logica_usuario.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
@@ -171,37 +171,37 @@ require_once '../controllers/logica_usuario.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -217,7 +217,7 @@ require_once '../controllers/logica_usuario.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
@@ -437,148 +437,7 @@ require_once '../controllers/logica_usuario.php';
               </div>
               <div class="row">
                 <div class="card-group">
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Aquí va información adicional a la imagen del aviso que se quiera agregar.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">25 de enero del 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Ale RH</p>
-                    </div>
-                  </div>
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">30 de abril del 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">José Alberto Jiménez</p>
-                    </div>
-                  </div>
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">30 de julio del 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Admin</p>
-                    </div>
-                  </div>
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">25 de julio de 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Juan Pérez</p>
-                    </div>
-                  </div>
+                  <?= getAvisosDash($pdo) ?>
                 </div>
               </div>
             </div>

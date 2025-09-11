@@ -25,6 +25,7 @@ $stmt = $pdo->prepare("
     u.PuestoId,
     u.NumeroTelefono,
     u.TipoSangre,
+    u.EsAdmin,
     ce.NombreContacto,
     ce.Parentezco,
     ce.NumeroTelefono AS ContactoTelefono
@@ -35,6 +36,7 @@ $stmt = $pdo->prepare("
   LIMIT 1
 ");
 $stmt->execute(['id'=>$id]);
+$user['EsAdmin'] = (int) $user['EsAdmin'];
 $user = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
 echo json_encode($user, JSON_UNESCAPED_UNICODE);
 exit;

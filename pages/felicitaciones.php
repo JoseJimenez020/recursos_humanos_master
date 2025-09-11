@@ -20,8 +20,14 @@ $alertHtml = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ALERTAS PARA REGISTRO-EDICIÓN-BORRADO
-    if(isset($_POST['subirFelicitación'])){
-        $alertHtml = RegistrarFelicitacion($_POST,$pdo);
+    if (isset($_POST['subirFelicitación'])) {
+        $alertHtml = RegistrarFelicitacion($_POST, $pdo);
+    }
+    if (isset($_POST['eliminarFelicitacion'])) {
+        $alertHtml = borrarFelicitacion($_POST, $pdo);
+    }
+    if (isset($_POST['editarFelicitacion'])) {
+        $alertHtml = editarFelicitacion($_POST, $pdo);
     }
 }
 ?>
@@ -73,37 +79,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/politicas.html">
+                    <a class="nav-link text-primary" href="../pages/politicas.php">
                         <i class="material-symbols-rounded opacity-5">policy</i>
                         <span class="nav-link-text ms-1">Políticas</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+                    <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
                         <i class="material-symbols-rounded opacity-5">rule</i>
                         <span class="nav-link-text ms-1">Reglamento Interno</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/procesos.html">
+                    <a class="nav-link text-primary" href="../pages/procesos.php">
                         <i class="material-symbols-rounded opacity-5">receipt_long</i>
                         <span class="nav-link-text ms-1">Procesos</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/organigrama.html">
+                    <a class="nav-link text-primary" href="../pages/organigrama.php">
                         <i class="material-symbols-rounded opacity-5">globe_book</i>
                         <span class="nav-link-text ms-1">Organigrama</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/mision_vision.html">
+                    <a class="nav-link text-primary" href="../pages/mision_vision.php">
                         <i class="material-symbols-rounded opacity-5">public</i>
                         <span class="nav-link-text ms-1">Misión, Visión</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/valores.html">
+                    <a class="nav-link text-primary" href="../pages/valores.php">
                         <i class="material-symbols-rounded opacity-5">psychology</i>
                         <span class="nav-link-text ms-1">Valores</span>
                     </a>
@@ -153,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/nom035.html">
+                    <a class="nav-link text-primary" href="../pages/nom035.php">
                         <i class="material-symbols-rounded opacity-5">comment</i>
                         <span class="nav-link-text ms-1">NOM-35</span>
                     </a>
@@ -258,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="card-body pt-4 p-3">
                             <ul class="list-group">
-                                <?= getPanelFelicitaciones($pdo)?>
+                                <?= getPanelFelicitaciones($pdo) ?>
                             </ul>
                         </div>
 
@@ -276,21 +282,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form role="form text-left">
+                                        <form role="form text-left" method="POST">
+                                            <input type="hidden" name="feliId" id="edit-feli-id">
                                             <div class="input-group input-group-dynamic">
                                                 <textarea class="form-control" rows="5"
                                                     placeholder="Edite el mensaje si desea o presione cancelar."
-                                                    spellcheck="false" onfocus="focused(this)"
-                                                    onfocusout="defocused(this)"></textarea>
+                                                    name="mensajeFeli" id="edit-mensaje" spellcheck="false"
+                                                    onfocus="focused(this)" onfocusout="defocused(this)"></textarea>
                                             </div>
                                             <div class="text-center">
-                                                <button type="button"
-                                                    class="btn btn-round bg-gradient-primary btn-lg w-100 mt-4 mb-0 toast-btn"
-                                                    data-bs-dismiss="modal"
-                                                    data-target="successToast">Actualizar</button>
+                                                <button type="submit"
+                                                    class="btn btn-round bg-gradient-primary btn-lg w-100 mt-4 mb-0"
+                                                    name="editarFelicitacion"
+                                                    data-bs-dismiss="modal">Actualizar</button>
                                                 <button type="button" class="btn btn-link text-primary ml-auto"
                                                     data-bs-dismiss="modal">Cancelar</button>
                                             </div>
+                                            <?= $alertHtml ?? '' ?>
                                         </form>
                                     </div>
                                 </div>
@@ -320,167 +328,204 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                 Eliminar mensaje
                                             </i>
                                             <h4 class="text-gradient text-danger mt-4">Atención</h4>
-                                            <p>Está a punto de borrar el mensaje de felicitación de @Nombre_Usuario,
-                                                ¿desea continuar?</p>
+                                            <p>Está a punto de borrar el mensaje de felicitación de
+                                                <strong><span id="modal-username">@Nombre_usuario</span></strong>,
+                                                ¿desea continuar?
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn bg-gradient-primary toast-btn"
-                                            data-bs-dismiss="modal" data-target="warningToast">Sí,
-                                            continuar.</button>
-                                        <button type="button" class="btn btn-link text-primary ml-auto"
-                                            data-bs-dismiss="modal">Cancelar</button>
+                                        <form id="deleteForm" method="POST">
+                                            <input type="hidden" name="FelicitacionId" id="delete-feliid" value="">
+                                            <button type="submit" name="eliminarFelicitacion"
+                                                class="btn bg-gradient-primary">Sí,
+                                                continuar.</button>
+
+                                            <button type="button" class="btn btn-link text-primary ml-auto"
+                                                data-bs-dismiss="modal">Cancelar</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- FIN DEL MODAL NOTIFICACIÓN BORRADO -->
                     </div>
+
                 </div>
-
             </div>
-        </div>
 
-        <footer class="footer py-4 ">
-            <div class="container-fluid">
-                <div class="row align-items-center justify-content-lg-between">
-                    <div class="col-lg-6 mb-lg-0 mb-4">
-                        <div class="copyright text-center text-sm text-muted text-lg-start">
-                            ©
-                            <script>
-                                document.write(new Date().getFullYear())
-                            </script>,
-                            Powered by
-                            <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">Fast-net</a>
+            <footer class="footer py-4 ">
+                <div class="container-fluid">
+                    <div class="row align-items-center justify-content-lg-between">
+                        <div class="col-lg-6 mb-lg-0 mb-4">
+                            <div class="copyright text-center text-sm text-muted text-lg-start">
+                                ©
+                                <script>
+                                    document.write(new Date().getFullYear())
+                                </script>,
+                                Powered by
+                                <a href="https://www.fast-net.com.mx" class="font-weight-bold"
+                                    target="_blank">Fast-net</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </footer>
-    </div>
-    <div class="fixed-plugin">
-        <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
-            <i class="material-symbols-rounded py-2">cake_add</i>
-        </a>
-        <div class="card shadow-lg">
-            <div class="card-header pb-0 pt-3">
-                <div class="float-start">
-                    <h5 class="mt-3 mb-0">Crear nueva felicitación</h5>
+            </footer>
+        </div>
+        <div class="fixed-plugin">
+            <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+                <i class="material-symbols-rounded py-2">cake_add</i>
+            </a>
+            <div class="card shadow-lg">
+                <div class="card-header pb-0 pt-3">
+                    <div class="float-start">
+                        <h5 class="mt-3 mb-0">Crear nueva felicitación</h5>
+                    </div>
+                    <div class="float-end mt-4">
+                        <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+                            <i class="material-symbols-rounded">clear</i>
+                        </button>
+                    </div>
+                    <!-- End Toggle Button -->
                 </div>
-                <div class="float-end mt-4">
-                    <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-                        <i class="material-symbols-rounded">clear</i>
-                    </button>
-                </div>
-                <!-- End Toggle Button -->
-            </div>
-            <hr class="horizontal dark my-1">
-            <div class="card-body pt-sm-3 pt-0">
-                <!-- Sidebar Backgrounds -->
-                <div>
-                    <p>A continuación ingrese la información que se solicita</p>
-                </div>
-                <!-- Sidenav Type -->
+                <hr class="horizontal dark my-1">
+                <div class="card-body pt-sm-3 pt-0">
+                    <!-- Sidebar Backgrounds -->
+                    <div>
+                        <p>A continuación ingrese la información que se solicita</p>
+                    </div>
+                    <!-- Sidenav Type -->
 
-                <!-- Navbar Fixed -->
-                <form method="POST">
-                    <div class="input-group input-group-static mb-4 ">
-                        <label for="exampleFormControlSelect1" class="ms-0">Departamento</label>
-                        <select class="form-control" name="DepartamentoId" id="departamento-felicitacion">
-                            <option>Seleccionar</option>
-                            <?= GetListaDepartamentos($departamentos) ?>
-                        </select>
-                    </div>
-                    <div class="input-group input-group-static mb-4 ">
-                        <label for="exampleFormControlSelect1" class="ms-0">Nombre del empleado</label>
-                        <select name="UsuarioId" id="usuario-felicitado" class="form-control">
-                            <option value="">Seleccionar</option>
-                        </select>
-                    </div>
-                    <div class="input-group input-group-dynamic ">
-                        <textarea class="form-control" rows="10" name="MensajeFelicitacion"
-                            placeholder="Escriba un pequeño mensaje de felicitación." spellcheck="false"></textarea>
-                    </div>
-                    <hr class="horizontal dark my-3">
-                    <button type="submit" name="subirFelicitación"
-                        class="btn bg-gradient-primary w-100 fixed-plugin-close-button">
-                        Subir felicitación</button>
-                    <?= $alertHtml ?>
-                </form>
+                    <!-- Navbar Fixed -->
+                    <form method="POST">
+                        <div class="input-group input-group-static mb-4 ">
+                            <label for="exampleFormControlSelect1" class="ms-0">Departamento</label>
+                            <select class="form-control" name="DepartamentoId" id="departamento-felicitacion">
+                                <option>Seleccionar</option>
+                                <?= GetListaDepartamentos($departamentos) ?>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-static mb-4 ">
+                            <label for="exampleFormControlSelect1" class="ms-0">Nombre del empleado</label>
+                            <select name="UsuarioId" id="usuario-felicitado" class="form-control">
+                                <option value="">Seleccionar</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-dynamic ">
+                            <textarea class="form-control" rows="10" name="MensajeFelicitacion"
+                                placeholder="Escriba un pequeño mensaje de felicitación." spellcheck="false"></textarea>
+                        </div>
+                        <hr class="horizontal dark my-3">
+                        <button type="submit" name="subirFelicitación"
+                            class="btn bg-gradient-primary w-100 fixed-plugin-close-button">
+                            Subir felicitación</button>
+                        <?= $alertHtml ?>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    <!--   Core JS Files   -->
-    <script src="../assets/js/core/popper.min.js"></script>
-    <script src="../assets/js/core/bootstrap.min.js"></script>
-    <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
-    <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
-    <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-                damping: '0.5'
+        <!--   Core JS Files   -->
+        <script src="../assets/js/core/popper.min.js"></script>
+        <script src="../assets/js/core/bootstrap.min.js"></script>
+        <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
+        <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+        <script>
+            var win = navigator.platform.indexOf('Win') > -1;
+            if (win && document.querySelector('#sidenav-scrollbar')) {
+                var options = {
+                    damping: '0.5'
+                }
+                Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
             }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-        }
-    </script>
-    <script src="../assets/js/settings.js"></script>
-    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </script>
+        <script src="../assets/js/settings.js"></script>
+        <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+        <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST">
+                        <div class="modal-body">
+                            <p>Estás a punto de cerrar sesión.</p>
+                            <p>¿Seguro que quieres continuar?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+                                sesión</button>
+                            <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form>
                 </div>
-                <form method="POST">
-                    <div class="modal-body">
-                        <p>Estás a punto de cerrar sesión.</p>
-                        <p>¿Seguro que quieres continuar?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
-                            sesión</button>
-                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
-                    </div>
-                </form>
             </div>
         </div>
-    </div>
-    <!--End logout modal-->
-    <!--CARGAR usuarioS FORMULARIO DE REGISTRO-->
-    <script>
-        document.getElementById('departamento-felicitacion').addEventListener('change', function () {
-            const departamentoId = this.value;
-            const usuarioSelect = document.getElementById('usuario-felicitado');
+        <!--End logout modal-->
+        <!--CARGAR usuarioS FORMULARIO DE REGISTRO-->
+        <script>
+            document.getElementById('departamento-felicitacion').addEventListener('change', function () {
+                const departamentoId = this.value;
+                const usuarioSelect = document.getElementById('usuario-felicitado');
 
-            // Limpia opciones anteriores
-            usuarioSelect.innerHTML = '<option value="">Cargando usuarios...</option>';
+                // Limpia opciones anteriores
+                usuarioSelect.innerHTML = '<option value="">Cargando usuarios...</option>';
 
-            if (!departamentoId) {
-                usuarioSelect.innerHTML = '<option value="">Seleccione el usuario</option>';
-                return;
-            }
-
-            fetch(`../controllers/logica_usuario.php?DepartamentoUsuId=${departamentoId}`)
-                .then(response => response.json())
-                .then(data => {
+                if (!departamentoId) {
                     usuarioSelect.innerHTML = '<option value="">Seleccione el usuario</option>';
-                    data.forEach(usuario => {
-                        const option = document.createElement('option');
-                        option.value = usuario.UsuarioId;
-                        option.textContent = usuario.NombreCompleto;
-                        usuarioSelect.appendChild(option);
+                    return;
+                }
+
+                fetch(`../controllers/logica_usuario.php?DepartamentoUsuId=${departamentoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        usuarioSelect.innerHTML = '<option value="">Seleccione el usuario</option>';
+                        data.forEach(usuario => {
+                            const option = document.createElement('option');
+                            option.value = usuario.UsuarioId;
+                            option.textContent = usuario.NombreCompleto;
+                            usuarioSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        usuarioSelect.innerHTML = '<option value="">Error al cargar</option>';
+                        console.error('Error:', error);
                     });
-                })
-                .catch(error => {
-                    usuarioSelect.innerHTML = '<option value="">Error al cargar</option>';
-                    console.error('Error:', error);
-                });
-        });
-    </script>
+            });
+        </script>
+        <script>
+            // Captura el modal y escucha cuando se abre
+            var deleteModal = document.getElementById('modal-notification');
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                // El botón que disparó el modal
+                var btn = event.relatedTarget;
+                // Extraemos los data-attributes
+                var nombre = btn.getAttribute('data-nombre');
+                var feliId = btn.getAttribute('data-fe-id');
+
+                // Actualizamos el texto del nombre
+                deleteModal.querySelector('#modal-username').textContent = nombre;
+
+                // Asignamos el ID al campo oculto del formulario
+                document.getElementById('delete-feliid').value = feliId;
+            });
+        </script>
+
+        <script>
+            const editModal = document.getElementById('modal-edit');
+            editModal.addEventListener('show.bs.modal', event => {
+                const btn = event.relatedTarget;
+                const id = btn.getAttribute('data-felicitacion-id');
+                const desc = btn.getAttribute('data-contenido');
+
+                document.getElementById('edit-feli-id').value = id;
+                document.getElementById('edit-mensaje').value = desc;
+            });
+        </script>
+
+    </div>
 </body>
 
 </html>
