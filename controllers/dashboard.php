@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
                     title: 'Error',
-                    text: 'Inicia Sesion para continuar.',
+                    text: 'Inicia sesión para continuar.',
                     icon: 'error'
                 }).then(() => {
                     window.location.href = '../pages/sign-in.php';
@@ -367,8 +367,7 @@ function registrarAviso(array $post, PDO $pdo): string
     return alertScript(
       '¡Éxito!',
       'Información registrada correctamente.',
-      'success',
-      'avisos.php'
+      'success'
     );
 
   } catch (Exception $e) {
@@ -429,6 +428,11 @@ function getAvisosPanel(PDO $pdo, $tipo)
       ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
       : '../assets/img/small-logos/alerta.png';
     $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
+    // truncate to 152 chars
+    $desc = strip_tags($a['DescripcionAviso']);
+    if (mb_strlen($desc) > 150) {
+      $desc = mb_substr($desc, 0, 150) . '…';
+    }
 
     $html .= '<div class="col-md-4 mb-4">
     <div class="card" data-animation="true">
@@ -448,14 +452,16 @@ function getAvisosPanel(PDO $pdo, $tipo)
                     <i class="material-symbols-rounded text-lg">delete</i>
                 </a>
                 <button class="btn btn-link text-info me-auto border-0" data-toggle="tooltip" data-bs-toggle="modal"
-                    data-bs-placement="bottom" title="Editar" data-aviso-id="' . $a['AvisoId'] . '" data-bs-target="#modal-edit">
+                    data-bs-placement="bottom" title="Editar" data-aviso-id="' . $a['AvisoId'] . '" data-aviso-title="' . htmlspecialchars($a['TituloAviso'], ENT_QUOTES) . '"
+                    data-aviso-desc="' . htmlspecialchars($a['DescripcionAviso'], ENT_QUOTES) . '"
+                    data-aviso-src="' . $src . '" data-bs-target="#modal-edit">
                     <i class="material-symbols-rounded text-lg">edit</i>
                 </button>
             </div>
             <h5 class="font-weight-normal mt-3">
                 <a href="">' . $a['TituloAviso'] . '</a>
             </h5>
-            <p class="mb-0">' . $a['DescripcionAviso'] . '
+            <p class="mb-0">' . $desc . '
             </p>
         </div>';
     if ($a['EsCampana'] === 0) {
@@ -501,7 +507,7 @@ function getAvisosDash(PDO $pdo): string
                   <h5 class="font-weight-normal mt-3">
                       <a href="">Sin registros</a>
                   </h5>
-                  <p class="mb-0">Por el momento no hay información registrada disponible
+                  <p class="mb-0">Por el momento no hay información disponible
                   </p>
               </div>
               <hr class="dark horizontal my-0">
@@ -517,6 +523,12 @@ function getAvisosDash(PDO $pdo): string
       ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
       : '../assets/img/small-logos/alerta.png';
     $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
+
+    // truncate to 152 chars
+    $desc = strip_tags($a['DescripcionAviso']);
+    if (mb_strlen($desc) > 150) {
+      $desc = mb_substr($desc, 0, 150) . '…';
+    }
 
     $html .= '<div class="card" data-animation="true">
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -541,7 +553,7 @@ function getAvisosDash(PDO $pdo): string
             <a href="javascript:;">' . $a['TituloAviso'] . '</a>
         </h5>
         <p class="mb-0">
-            ' . $a['DescripcionAviso'] . '
+            ' . $desc . '
         </p>
     </div>
     <hr class="dark horizontal my-0">
@@ -591,8 +603,7 @@ function borrarAviso(array $data, PDO $pdo): string
     return alertScript(
       '¡Éxito!',
       'Aviso eliminado correctamente.',
-      'success',
-      'avisos.php'
+      'success'
     );
 
   } catch (Exception $e) {
@@ -631,11 +642,7 @@ function getCarouselAvisos(PDO $pdo, int $tipo): string
 
   // 2) If no records, render a placeholder
   if (empty($rows)) {
-    return <<<HTML
-<div class="alert alert-info text-center">
-    No hay campañas activas en este momento.
-</div>
-HTML;
+    return '<div class="carousel-item active text-center p-5">No hay campañas</div>';
   }
 
   // 3) Begin carousel container
@@ -683,6 +690,245 @@ HTML;
             </div>
         </a>
     </div>
+HTML;
+  }
+
+  // 5) Close inner and add controls
+  $html .= <<<HTML
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#{$carouselId}" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#{$carouselId}" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+HTML;
+
+  return $html;
+}
+
+function editarAviso(array $post, PDO $pdo): string
+{
+  // 1) Sanitizar y validar
+  $avisoId = filter_var($post['avisoId'] ?? null, FILTER_VALIDATE_INT);
+  $titulo = trim(filter_var($post['avisoTitulo'] ?? '', FILTER_SANITIZE_STRING));
+  $descrip = trim(filter_var($post['avisoDesc'] ?? '', FILTER_SANITIZE_STRING));
+
+  if (!$avisoId || !$titulo || !$descrip) {
+    return alertScript('Error', 'Faltan datos para editar.', 'error');
+  }
+
+  try {
+    $pdo->beginTransaction();
+
+    // 2) Actualizar título/desc/EsCampana
+    $sql = "UPDATE avisos
+                SET TituloAviso    = :titulo,
+                    DescripcionAviso= :descrip
+                WHERE AvisoId = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+      ':titulo' => $titulo,
+      ':descrip' => $descrip,
+      ':id' => $avisoId,
+    ]);
+
+    // 3) ¿Hay foto nueva?
+    if (
+      isset($_FILES['avisoFoto']) &&
+      $_FILES['avisoFoto']['error'] === UPLOAD_ERR_OK &&
+      is_uploaded_file($_FILES['avisoFoto']['tmp_name'])
+    ) {
+      // Validar imagen
+      $info = getimagesize($_FILES['avisoFoto']['tmp_name']);
+      $allowed = [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF];
+      if ($info === false || !in_array($info[2], $allowed, true)) {
+        throw new Exception('Formato de imagen no válido.');
+      }
+
+      // 4) Obtener y guardar contenido binario
+      $contenido = file_get_contents($_FILES['avisoFoto']['tmp_name']);
+
+      // 5) Insertar nueva foto
+      $ins = $pdo->prepare("
+                INSERT INTO fotos
+                  (FotoContenido, EntidadTipo, EntidadId)
+                VALUES
+                  (:contenido, 'aviso', :id)
+            ");
+      $ins->execute([
+        ':contenido' => $contenido,
+        ':id' => $avisoId,
+      ]);
+      $newFotoId = $pdo->lastInsertId();
+
+      // 6) Actualizar Avisos.FotoId al nuevo
+      $pdo->prepare("
+                UPDATE avisos
+                SET FotoId = :f
+                WHERE AvisoId = :id
+            ")->execute([':f' => $newFotoId, ':id' => $avisoId]);
+
+      // 7) Borrar foto anterior (FK en avisos ya apunta al nuevo)
+      $old = $pdo->prepare("
+                SELECT FotoId
+                FROM fotos
+                WHERE EntidadTipo='aviso'
+                  AND EntidadId = :id
+                  AND FotoId <> :new
+                ORDER BY FotoId DESC
+                LIMIT 1
+            ");
+      $old->execute([':id' => $avisoId, ':new' => $newFotoId]);
+      if ($oldFoto = $old->fetchColumn()) {
+        $pdo->prepare("DELETE FROM fotos WHERE FotoId = :f")
+          ->execute([':f' => $oldFoto]);
+      }
+    }
+
+    $pdo->commit();
+
+    return alertScript(
+      '¡Éxito!',
+      'Información actualizada correctamente.',
+      'success'
+    );
+
+  } catch (Exception $e) {
+    if ($pdo->inTransaction()) {
+      $pdo->rollBack();
+    }
+    return alertScript(
+      'Error',
+      'No se pudo actualizar la información: ' . $e->getMessage(),
+      'error'
+    );
+  }
+}
+
+/**
+ * Obtiene un aviso/campaña por su ID.
+ *
+ * @param PDO $pdo Conexión PDO
+ * @param int $avisoId ID del aviso
+ * @return array|null Datos del aviso o null si no existe
+ */
+function getAvisoById(PDO $pdo, int $avisoId): ?array
+{
+  $sql = "
+        SELECT 
+            a.TituloAviso,
+            a.DescripcionAviso,
+            a.Fecha,
+            u.NombreUsuario,
+            u.ApellidoPaterno,
+            f.FotoContenido
+        FROM avisos a
+        LEFT JOIN usuarios u
+            ON u.UsuarioId = a.UsuarioId
+        LEFT JOIN fotos f
+            ON f.EntidadTipo = 'aviso'
+           AND f.EntidadId     = a.AvisoId
+        WHERE a.AvisoId = :id
+          AND a.EsCampana = 1
+        LIMIT 1
+    ";
+
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([':id' => $avisoId]);
+  $aviso = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  return $aviso !== false ? $aviso : null;
+}
+
+
+function getCarouselFelicitaciones(PDO $pdo): string
+{
+  // 1) Fetch all campana-type avisos
+  $sql = "SELECT u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, 
+                   f.FelicitacionId, f.MensajeFelicitacion, foto.FotoContenido
+            FROM felicitaciones f
+            LEFT JOIN usuarios u ON u.UsuarioId = f.UsuarioId
+            LEFT JOIN fotos foto ON foto.EntidadTipo = 'usuario'
+                                 AND foto.EntidadId   = u.UsuarioId
+            WHERE 1=1
+    ";
+  
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([]);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  // 2) If no records, render a placeholder
+  if (empty($rows)) {
+    return '<div class="carousel-item">
+              <div class="page-header min-vh-15 border-radius-lg">
+                  <div class="card" data-animation="false"
+                      style="background-image: url("https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80");">
+                      <div class="card-body d-flex align-items-center w-100">
+                          <div class="text-start flex-grow-1">
+                              <h6 class="font-weight-bold text-primary mb-1">
+                                  <a href="#" class="text-primary">¡Que tengas un gran día!
+                                      <i class="material-symbols-rounded me-2 text-lg">celebration</i>
+                                  </a>
+                              </h6>
+                              <small class="text-muted d-block">
+                                  La vida es una aventura emocionante, vívela.
+                              </small>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>';
+            }
+
+  // 3) Begin carousel container
+  $carouselId = "carouselAvisos";  
+  $html = '<div id="' . $carouselId . '" class="carousel slide" data-bs-ride="carousel">';
+  $html .= '<div class="carousel-inner">';  
+
+  // 4) Build each slide
+  foreach ($rows as $i => $a) {
+    // make first slide active
+    $activeClass = $i === 0 ? ' active' : '';
+    $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
+
+    // thumbnail (base64 or fallback)
+    if (!empty($a['FotoContenido'])) {
+      $imgSrc = 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido']);
+    } else {
+      $imgSrc = '../assets/img/small-logos/user.png';
+    }
+
+    // build slide
+    $html .= <<<HTML
+    <div class="carousel-item{$activeClass}">
+    <div class="page-header min-vh-15 border-radius-lg">
+        <div class="card" data-animation="false"
+            style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
+            <div class="card-body d-flex align-items-center w-100">
+                <!-- Imagen al lado izquierdo -->
+                <div class="me-3">
+                    <img src="{$imgSrc}" alt="usuario" class="avatar-sm2">
+                </div>
+
+                <!-- Contenido textual centrado verticalmente -->
+                <div class="text-start flex-grow-1">
+                    <h6 class="font-weight-bold text-primary mb-1">
+                        <a href="#" class="text-primary">¡Felicidades! {$full}
+                            <i class="material-symbols-rounded me-2 text-lg">celebration</i>
+                        </a>
+                    </h6>
+                    <small class="text-muted d-block">
+                        {$a['MensajeFelicitacion']}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 HTML;
   }
 

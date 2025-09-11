@@ -925,3 +925,119 @@ function mostrarContador($pdo): string
 
     return $html;
 }
+
+function GetUsuariosPorDepartamento($pdo, $departamentoId)
+{
+    $query = "SELECT UsuarioId, CONCAT(NombreUsuario, ' ', ApellidoPaterno, ' ', ApellidoMaterno) AS NombreCompleto FROM usuarios WHERE DepartamentoId = :departamentoId";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':departamentoId', $departamentoId, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+if (isset($_GET['DepartamentoUsuId'])) {
+    header('Content-Type: application/json');
+    $puestos = GetUsuariosPorDepartamento($pdo, $_GET['DepartamentoUsuId']);
+    echo json_encode($puestos);
+    exit;
+}
+
+function RegistrarFelicitacion(array $post, PDO $pdo): string
+{
+    $usuarioId = filter_var($post['UsuarioId'], FILTER_VALIDATE_INT);
+    $mensaje = filter_var($post['MensajeFelicitacion'], FILTER_SANITIZE_STRING);
+
+    if (
+        !$usuarioId || !$mensaje
+    ) {
+        return alertScript('Error', 'Faltan datos obligatorios.', 'error');
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        $stmt = $pdo->prepare(
+            "INSERT INTO felicitaciones (UsuarioId, MensajeFelicitacion)
+            VALUES (:usid, :msj)"
+        );
+        $stmt->execute([
+            ':usid' => $usuarioId,
+            ':msj' => $mensaje
+        ]);
+        $pdo->commit();
+
+        return alertScript(
+            '¡Éxito!',
+            'Mensaje registrado correctamente.',
+            'success'
+        );
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        return alertScript(
+            'Error',
+            'No se pudo registrar: ' . $e->getMessage(),
+            'error'
+        );
+    }
+
+}
+
+function getPanelFelicitaciones(PDO $pdo): string
+{
+    $sql = "SELECT u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, 
+                   f.FelicitacionId, f.MensajeFelicitacion, foto.FotoContenido
+            FROM felicitaciones f
+            LEFT JOIN usuarios u ON u.UsuarioId = f.UsuarioId
+            LEFT JOIN fotos foto ON foto.EntidadTipo = 'usuario'
+                                 AND foto.EntidadId   = u.UsuarioId
+            WHERE 1=1";
+    $params = [];
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (empty($rows)) {
+        return '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                    <div class="d-flex flex-column">
+                        <h6 class="mb-3 text-sm">Sin resultados</h6>
+                        <span class="mb-2 text-xs">
+                            No hay felicitaciones hechas por el momento
+                        </span>
+                    </div>
+                </li>';
+    }
+
+    $html = '';
+    foreach ($rows as $fe) {
+        $src = $fe['FotoContenido']
+            ? 'data:image/jpeg;base64,' . base64_encode($fe['FotoContenido'])
+            : '../assets/img/small-logos/user.png';
+
+        $full = "{$fe['NombreUsuario']} {$fe['ApellidoPaterno']} {$fe['ApellidoMaterno']}";
+        $html.='<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+    <div class="me-3">
+        <img src="'.$src.'" alt="usuario" class="avatar-sm2">
+    </div>
+    <div class="d-flex flex-column">
+        <h6 class="mb-3 text-sm">'.$full.'</h6>
+        <span class="mb-2 text-xs">Mensaje de felicitación: <span class="text-dark font-weight-bold ms-sm-2">'.$fe['MensajeFelicitacion'].'
+            </span></span>
+    </div>
+    <div class="ms-auto text-end">
+        <a class="btn btn-link text-danger text-gradient px-3 mb-0" 
+        data-felicitacion-id:"'.$fe['FelicitacionId'].'"
+        href="javascript:;" target="_blank"
+            data-bs-toggle="modal" data-bs-target="#modal-notification"><i
+                class="material-symbols-rounded text-sm me-2">delete</i>Borrar</a>
+        <a class="btn btn-link text-dark px-3 mb-0" 
+        data-felicitacion-id:"'.$fe['FelicitacionId'].'"
+        href="javascript:;" target="_blank" data-bs-toggle="modal"
+            data-bs-target="#modal-edit"><i class="material-symbols-rounded text-sm me-2">edit</i>Editar</a>
+    </div>
+</li>';
+    }
+    return $html;
+
+
+}

@@ -1,7 +1,32 @@
-
 <?php
-require_once '../controllers/dashboard.php';
+require '../controllers/dashboard.php';
+
+// 1. Capturar y validar el ID
+$avisoId = filter_input(INPUT_GET, 'avisoId', FILTER_VALIDATE_INT);
+if (!$avisoId) {
+  header('Location: campanias.php');
+  exit;
+}
+
+// 2. Llamar a la función refactorizada
+$aviso = getAvisoById($pdo, $avisoId);
+
+// 3. Si no existe, mostrar mensaje
+if (!$aviso) {
+  echo '<p class="text-center mt-5">Campaña no encontrada.</p>';
+  exit;
+}
+
+// 4. Preparar datos para mostrar
+$imgSrc = $aviso['FotoContenido']
+  ? 'data:image/jpeg;base64,' . base64_encode($aviso['FotoContenido'])
+  : '../assets/img/small-logos/alerta.png';
+$fullName = "{$aviso['NombreUsuario']} {$aviso['ApellidoPaterno']}";
+$titulo = htmlspecialchars($aviso['TituloAviso'], ENT_QUOTES);
+$desc = nl2br(htmlspecialchars($aviso['DescripcionAviso'], ENT_QUOTES));
+$date = date('d/m/Y', strtotime($aviso['Fecha']));
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -11,7 +36,7 @@ require_once '../controllers/dashboard.php';
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/favicon.ico">
   <title>
-    RH | Nombre_campania
+    RH | <?= $titulo ?>
   </title>
   <!--     Fonts and icons     -->
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
@@ -25,6 +50,7 @@ require_once '../controllers/dashboard.php';
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -102,7 +128,7 @@ require_once '../controllers/dashboard.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/felicitaciones.html">
+          <a class="nav-link text-primary" href="../pages/felicitaciones.php">
             <i class="material-symbols-rounded opacity-5">celebration</i>
             <span class="nav-link-text ms-1">Felicitaciones</span>
           </a>
@@ -135,8 +161,16 @@ require_once '../controllers/dashboard.php';
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
         </li>
-
       </ul>
+    </div>
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+        <div class="mx-3">
+            <a class="btn btn-outline mt-4 w-100 text-primary">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+            </a>
+            ' . mostrarContador($pdo) . '
+        </div>
     </div>
   </aside>';
   } elseif ($sesion['EsAdmin'] === 0) {
@@ -215,24 +249,13 @@ require_once '../controllers/dashboard.php';
       </ul>
     </div>
     <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-      <div class="mx-3">
-        <a class="btn btn-outline mt-4 w-100 text-primary">
-          <i class="material-symbols-rounded opacity-5">explore</i>
-          <span class="nav-link-text ms-1">Vacantes</span>
-        </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
-          <span class="nav-link-text ms-1">Comercial</span>
-          <i class="material-symbols-rounded opacity-5">groups</i>
-          <span id="contador_vacantes">4</span>
-          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
-        </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
-          <span class="nav-link-text ms-1">Técnico</span>
-          <i class="material-symbols-rounded opacity-5">groups</i>
-          <span id="contador_vacantes">4</span>
-          <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
-        </a>
-      </div>
+        <div class="mx-3">
+            <a class="btn btn-outline mt-4 w-100 text-primary">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+            </a>
+            ' . mostrarContador($pdo) . '
+        </div>
     </div>
   </aside>';
   }
@@ -246,7 +269,8 @@ require_once '../controllers/dashboard.php';
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Nombre_campania</li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Información detallada de la campaña
+            </li>
           </ol>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
@@ -266,7 +290,7 @@ require_once '../controllers/dashboard.php';
             <li class="nav-item dropdown pe-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <img src="../assets/img/small-logos/user.png" class="avatar avatar-sm  me-3 ">
+                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-sm  me-3 ">
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                 <li class="mb-2">
@@ -284,20 +308,17 @@ require_once '../controllers/dashboard.php';
                   </a>
                 </li>
                 <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="../pages/sign-in.html">
+                  <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                    data-bs-target="#logoutModal">
                     <div class="d-flex py-1">
                       <div class="my-auto">
                         <i class="material-symbols-rounded">logout</i>
                       </div>
                       <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          Salir
-                        </h6>
+                        <h6 class="text-sm font-weight-normal mb-1">Salir</h6>
                       </div>
                     </div>
                   </a>
-                </li>
-                <li>
                 </li>
               </ul>
             </li>
@@ -308,7 +329,7 @@ require_once '../controllers/dashboard.php';
     <!-- End Navbar -->
     <div class="container-fluid px-2 px-md-4">
       <div class="page-header min-height-300 border-radius-xl mt-4"
-        style="background-image: url('../assets/img/campania1.jpg');">
+        style="background-image: url('<?= $imgSrc ?>');">
         <span class="mask  bg-gradient-dark  opacity-6"></span>
       </div>
       <div class="card card-body mx-2 mx-md-2 mt-n6">
@@ -316,43 +337,21 @@ require_once '../controllers/dashboard.php';
           <div class="col-auto my-auto">
             <div class="h-100">
               <h3 class="mb-0 h3 font-weight-bolder">
-                Nombre campaña
+                <?= $titulo ?>
               </h3>
             </div>
           </div>
+          <div class="card bg-dark text-white border-0">
+            <img class="card-img" src="<?= $imgSrc ?>" alt="Imagen Campaña">
+          </div>
           <div class="card-body p-3">
             <p class="text-sm">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem
-              placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.
-              Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer
-              nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra
-              inceptos himenaeos.</p>
-            <p class="text-sm">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem
-              placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.
-              Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer
-              nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra
-              inceptos himenaeos.</p>
-            <p class="text-sm">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem
-              placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.
-              Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer
-              nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra
-              inceptos himenaeos.</p>
-            <p class="text-sm">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem
-              placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.
-              Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer
-              nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra
-              inceptos himenaeos.</p>
-            <p class="text-sm">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem
-              placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor.
-              Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer
-              nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra
-              inceptos himenaeos.</p>
+              <?= $desc ?>
+            </p>
             </p>
             <hr class="horizontal gray-light my-4">
+            <p class="text-xs mb-0"><strong class="text-xs font-weight-bold mb-0">Fecha:</strong> <?= $date ?></p>
+            <p class="text-xs mb-0"><strong class="text-xs font-weight-bold mb-0">Autor:</strong> <?= htmlspecialchars($fullName, ENT_QUOTES) ?></p>
 
           </div>
         </div>
@@ -393,6 +392,29 @@ require_once '../controllers/dashboard.php';
   <script src="../assets/js/settings.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title" id="logoutModalLabel">Cerrar sesión</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST">
+          <div class="modal-body">
+            <p>Estás a punto de cerrar sesión.</p>
+            <p>¿Seguro que quieres continuar?</p>
+          </div>
+          <div class="modal-footer">
+            <button name="cerrarSesion" type="submit" class="btn bg-gradient-primary">Cerrar
+              sesión</button>
+            <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--End logout modal-->
 </body>
 
 </html>

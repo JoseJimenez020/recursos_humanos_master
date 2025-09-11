@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alertHtml = borrarQueja($_POST, $pdo);
   }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -132,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/felicitaciones.html">
+          <a class="nav-link text-primary" href="../pages/felicitaciones.php">
             <i class="material-symbols-rounded opacity-5">celebration</i>
             <span class="nav-link-text ms-1">Felicitaciones</span>
           </a>
@@ -373,92 +372,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="col-md-auto mx-auto">
                   <div id="carouselAvisos" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                      <div class="carousel-item">
-                        <div class="page-header min-vh-15 border-radius-lg">
-                          <div class="card" data-animation="false"
-                            style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
-                            <div class="card-body d-flex align-items-center w-100">
-                              <div class="me-3">
-                                <img src="../assets/img/bruce-mars.jpg" alt="usuario" class="avatar-sm2">
-                              </div>
-                              <div class="text-start flex-grow-1">
-                                <h6 class="font-weight-bold text-primary mb-1">
-                                  <a href="#" class="text-primary">¡Felicidades! Oliver Liam
-                                    <i class="material-symbols-rounded me-2 text-lg">celebration</i>
-                                  </a>
-                                </h6>
-                                <small class="text-muted d-block">
-                                  Enhorabuena por este nuevo logro. Te deseamos mucho éxito en esta nueva etapa.
-                                </small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="carousel-item">
-                        <div class="page-header min-vh-10 border-radius-lg">
-                          <div class="page-header min-vh-15 border-radius-lg">
-                            <div class="card" data-animation="false"
-                              style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
-                              <div class="card-body d-flex align-items-center w-100">
-                                <!-- Imagen al lado izquierdo -->
-                                <div class="me-3">
-                                  <img src="../assets/img/team-4.jpg" alt="usuario" class="avatar-sm2">
-                                </div>
-
-                                <!-- Contenido textual centrado verticalmente -->
-                                <div class="text-start flex-grow-1">
-                                  <h6 class="font-weight-bold text-primary mb-1">
-                                    <a href="#" class="text-primary">¡Felicidades! Lucas Harper
-                                      <i class="material-symbols-rounded me-2 text-lg">celebration</i>
-                                    </a>
-                                  </h6>
-                                  <small class="text-muted d-block">
-                                    Enhorabuena por este nuevo logro. Te deseamos mucho éxito en esta nueva etapa.
-                                  </small>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="carousel-item active">
-                        <div class="page-header min-vh-15 border-radius-lg">
-                          <div class="card" data-animation="false"
-                            style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
-                            <div class="card-body d-flex align-items-center w-100">
-                              <!-- Imagen al lado izquierdo -->
-                              <div class="me-3">
-                                <img src="../assets/img/team-5.jpg" alt="usuario" class="avatar-sm2">
-                              </div>
-
-                              <!-- Contenido textual centrado verticalmente -->
-                              <div class="text-start flex-grow-1">
-                                <h6 class="font-weight-bold text-primary mb-1">
-                                  <a href="#" class="text-primary">¡Felicidades! Ethan James
-                                    <i class="material-symbols-rounded me-2 text-lg">celebration</i>
-                                  </a>
-                                </h6>
-                                <small class="text-muted d-block">
-                                  Enhorabuena por este nuevo logro. Te deseamos mucho éxito en esta nueva etapa.
-                                </small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="min-vh-10 position-relative w-100 top-0 ">
-                      <a class="carousel-control-prev text-primary" href="#carouselAvisos" role="button"
-                        data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon position-absolute bottom-50 " aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                      </a>
-                      <a class="carousel-control-next text-primary" href="#carouselAvisos" role="button"
-                        data-bs-slide="next">
-                        <span class="carousel-control-next-icon position-absolute bottom-50 " aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                      </a>
+                     <?= getCarouselFelicitaciones($pdo)?>
                     </div>
                   </div>
                 </div>

@@ -132,7 +132,7 @@ $departamentos = GetDepartamento($pdo);
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/felicitaciones.html">
+          <a class="nav-link text-primary" href="../pages/felicitaciones.php">
             <i class="material-symbols-rounded opacity-5">celebration</i>
             <span class="nav-link-text ms-1">Felicitaciones</span>
           </a>
