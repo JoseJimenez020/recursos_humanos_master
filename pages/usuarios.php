@@ -132,19 +132,19 @@ $departamentos = GetDepartamento($pdo);
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/felicitaciones.html">
+          <a class="nav-link text-primary" href="../pages/felicitaciones.php">
             <i class="material-symbols-rounded opacity-5">celebration</i>
             <span class="nav-link-text ms-1">Felicitaciones</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/campanias.html">
+          <a class="nav-link text-primary" href="../pages/campanias.php">
             <i class="material-symbols-rounded opacity-5">campaign</i>
             <span class="nav-link-text ms-1">Campañas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/r_vacantes.html">
+          <a class="nav-link text-primary" href="../pages/panel_vacantes.php">
             <i class="material-symbols-rounded opacity-5">explore</i>
             <span class="nav-link-text ms-1">Vacantes</span>
           </a>
@@ -165,8 +165,16 @@ $departamentos = GetDepartamento($pdo);
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
         </li>
-
       </ul>
+    </div>
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+        <div class="mx-3">
+            <a class="btn btn-outline mt-4 w-100 text-primary">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+            </a>
+            ' . mostrarContador($pdo) . '
+        </div>
     </div>
   </aside>';
     } elseif ($sesion['EsAdmin'] === 0) {
@@ -250,19 +258,28 @@ $departamentos = GetDepartamento($pdo);
           <i class="material-symbols-rounded opacity-5">explore</i>
           <span class="nav-link-text ms-1">Vacantes</span>
         </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
           <span class="nav-link-text ms-1">Comercial</span>
           <i class="material-symbols-rounded opacity-5">groups</i>
           <span id="contador_vacantes">4</span>
           <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
         </a>
-        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.html" type="button">
+        <a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
           <span class="nav-link-text ms-1">Técnico</span>
           <i class="material-symbols-rounded opacity-5">groups</i>
           <span id="contador_vacantes">4</span>
           <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
         </a>
       </div>
+    </div>
+    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+        <div class="mx-3">
+            <a class="btn btn-outline mt-4 w-100 text-primary">
+            <i class="material-symbols-rounded opacity-5">explore</i>
+            <span class="nav-link-text ms-1">Vacantes</span>
+            </a>
+            ' . mostrarContador($pdo) . '
+        </div>
     </div>
   </aside>';
     }
@@ -586,7 +603,7 @@ $departamentos = GetDepartamento($pdo);
                         </div>
                         <div class="input-group input-group-static mb-4 ">
                             <input type="checkbox" name="admin" value="1">
-                            <label for="exampleFormControlSelect1" class="ms-0">¿Es Administrador?</label>
+                            <label for="exampleFormControlSelect1" class="ms-0">¿Dar permisos de Administrador?</label>
                         </div>
                         <hr class="horizontal dark my-3">
                         <button type="submit" name="registrarU" class="btn bg-gradient-primary w-100">

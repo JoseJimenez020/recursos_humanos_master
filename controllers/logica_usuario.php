@@ -22,20 +22,6 @@ if (!isset($_SESSION['user_id'])) {
 require 'sesion.php';
 require 'logout.php';
 
-/*function GetFoto($id, $pdo)
-{
-    $query = "SELECT FotoContenido FROM fotos WHERE EntidadTipo = 'usuario' AND EntidadId = :id";
-    $result = $pdo->prepare($query);
-    $result->bindParam(':id', $id, PDO::PARAM_INT);
-    $result->execute();
-    $fetch = $result->fetch(PDO::FETCH_ASSOC);
-
-
-    return ($fetch && !empty($fetch['AsesorFoto']))
-        ? 'data:image/jpeg;base64,' . base64_encode($fetch['AsesorFoto'])
-        : '../assets/img/small-logos/user.png';
-}
-$usuarioFoto = GetFoto($id, $pdo);*/
 function GetTableUsuarios(PDO $pdo, string $nombre, string $departamento): string
 {
     $sql = "SELECT
@@ -786,23 +772,23 @@ function GetTableManuales(PDO $pdo, int $departamentoId, bool $isAdmin): string
 {
     // Consulta: nombre de manual, departamento y fecha de modificación
     $sql = "
-        SELECT
-            m.ManualId,
-            doc.NombreDocumento,
-            d.DepartamentoNombre,
-            m.FechaModificacion
-        FROM manuales m
-        LEFT JOIN documentos doc
-            ON m.DocumentoId = doc.DocumentoId
-        LEFT JOIN departamento d
-            ON m.DepartamentoId = d.DepartamentoId
-        WHERE m.DepartamentoId = :departamento
-        ORDER BY m.FechaModificacion DESC
-    ";
+      SELECT m.ManualId, doc.NombreDocumento, d.DepartamentoNombre, m.FechaModificacion
+      FROM manuales m
+      JOIN documentos doc ON m.DocumentoId = doc.DocumentoId
+      JOIN departamento d ON m.DepartamentoId = d.DepartamentoId
+      WHERE 1=1 ";
 
-    // Ejecutar
+    $params = [];
+    //Si usuario es Admin entonces verá todos los manuales
+    if (!$isAdmin) {
+        $sql .= "AND m.DepartamentoId = ? ";
+        $params[] = $departamentoId;
+    }
+
+    $sql .= "ORDER BY m.FechaModificacion DESC";
+
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['departamento' => $departamentoId]);
+    $stmt->execute($params);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Si no hay manuales para este departamento
@@ -817,69 +803,241 @@ function GetTableManuales(PDO $pdo, int $departamentoId, bool $isAdmin): string
     // Construir filas
     $html = '';
     foreach ($rows as $m) {
-        // Ruta al icono PDF
-        $icon = '../assets/img/icons/pdf-logo.png';
-
-        // Links para descargar/ver; deberás crear estos endpoints
-        $downloadUrl = "descarga_manual.php?id={$m['ManualId']}";
-        $viewUrl = "ver_manual.php?id={$m['ManualId']}";
-
-        // Nombre limpio para el download
-        $safeName = rawurlencode($m['NombreDocumento'] . '.pdf');
-
-        // Formatear fecha
+        $viewUrl = "../controllers/ver_manual.php?id={$m['ManualId']}";
+        $titulo = htmlspecialchars($m['NombreDocumento'], ENT_QUOTES);
+        $departName = htmlspecialchars($m['DepartamentoNombre'], ENT_QUOTES);
         $fecha = date('d/m/Y', strtotime($m['FechaModificacion']));
 
-        $html .= '<tr>
+        $html .= "<tr>
                     <td>
-                      <div class="d-flex px-2 py-1">
-                        <div>
-                          <img src="' . $icon . '"
-                               class="avatar avatar-sm me-3 border-radius-lg"
-                               alt="pdf">
-                        </div>
-                        <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">'
-            . htmlspecialchars($m['NombreDocumento']) .
-            '</h6>
+                      <div class=\"d-flex px-2 py-1\">
+                        <img src=\"../assets/img/icons/pdf-logo.png\"
+                             class=\"avatar avatar-sm me-3 border-radius-lg\" alt=\"pdf\">
+                        <div class=\"d-flex flex-column justify-content-center\">
+                          <h6 class=\"mb-0 text-sm\">{$titulo}</h6>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <p class="text-xs font-weight-bold mb-0">'
-            . htmlspecialchars($m['DepartamentoNombre'] ?? 'Sin departamento') .
-            '</p>
+                      <p class=\"text-xs font-weight-bold mb-0\">{$departName}</p>
                     </td>
-                    <td class="text-center text-sm">
-                      <span class="badge badge-sm bg-gradient-success"
-                            onclick="descargarPDF(\'' . $downloadUrl . '\', \'' . $safeName . '\')">
-                        Descargar
-                      </span>
-                      <span class="badge badge-sm bg-gradient-secondary"
-                            onclick="verPDFSweetAlert(\'' . $viewUrl . '\')">
+                    <td class=\"text-center text-sm\">
+                      <form method=\"POST\" style=\"display:inline\">
+                        <input type=\"hidden\" name=\"manualId\" value=\"{$m['ManualId']}\">
+                        <button type=\"submit\" name=\"download\"
+                                class=\"badge bg-gradient-success\">
+                          <i class=\"fas fa-download d-block\"></i> Descargar
+                        </button>
+                      </form>
+                      <span class=\"badge bg-gradient-secondary\"
+                            style=\"cursor:pointer\"
+                            onclick=\"verPDFSweetAlert('{$viewUrl}')\">
                         Ver
                       </span>
                     </td>
-                    <td class="align-middle text-center text-xs">'
-            . $fecha .
-            '</td>';
+                    <td class=\"align-middle text-center text-xs\">{$fecha}</td>";
 
+        // Añadir botón delete solo si es admin
         if ($isAdmin) {
-            $safeName = htmlspecialchars($m['NombreDocumento'], ENT_QUOTES);
-            $html .= '<td class="align-middle text-center">
-                        <a href="#"
-                           class="btn btn-link text-danger border-0 btn-delete-manual"
-                           data-manual-id="' . $m['ManualId'] . '"
-                           data-manual-name="' . $safeName . '"
-                           data-bs-toggle="modal"
-                           data-bs-target="#modal-notification">
-                          <i class="material-symbols-rounded text-lg">delete</i>
+            $html .= "<td class=\"align-middle text-center\">
+                        <a href=\"#\" class=\"btn btn-link text-danger border-0 btn-delete-manual\"
+                           data-manual-id=\"{$m['ManualId']}\"
+                           data-manual-name=\"{$titulo}\"
+                           data-bs-toggle=\"modal\"
+                           data-bs-target=\"#modal-notification\">
+                          <i class=\"material-symbols-rounded text-lg\">delete</i>
                         </a>
-                      </td>';
+                      </td>";
         }
 
-        $html .= '</tr>';
+        $html .= "</tr>";
     }
 
     return $html;
+}
+
+/**
+ * Descarga el PDF asociado a un manual.
+ *
+ * @param int $manualId  ID de la tabla manuales
+ * @param PDO $pdo       Conexión PDO
+ */
+function DescargarDocumento(int $manualId, PDO $pdo)
+{
+    // 1) Consultar contenido y nombre desde manuales → documentos
+    $sql = "
+        SELECT
+            doc.DocumentoContenido   AS contenido,
+            doc.NombreDocumento      AS nombre
+        FROM manuales m
+        JOIN documentos doc
+            ON m.DocumentoId = doc.DocumentoId
+        WHERE m.ManualId = :id
+        LIMIT 1
+    ";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id' => $manualId]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // 2) Si no existe, inyectar SweetAlert y regresar
+    if (!$row) {
+        echo "
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se encontró el manual solicitado.'
+            });
+          });
+        </script>";
+        return;
+    }
+
+    // 3) Preparar descarga
+    $contenido = $row['contenido'];
+    $filename = preg_replace('/[^A-Za-z0-9_\-]/', '_', $row['nombre']) . '.pdf';
+    $mimeType = 'application/pdf';
+    $length = strlen($contenido);
+
+    // 4) Enviar headers y contenido
+    header("Content-Type: $mimeType");
+    header("Content-Disposition: attachment; filename=\"$filename\"");
+    header("Content-Length: $length");
+
+    echo $contenido;
+    exit;
+}
+
+function mostrarContador($pdo): string
+{
+    $sql = "SELECT COUNT(*) FROM `vacantes` WHERE `Status` = 1";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    $contador = $stmt->fetchColumn(); // Obtiene directamente el número
+
+    $html = '<a class="btn btn-outline-primary w-100" href="../pages/vacantes.php" type="button">
+                <span class="nav-link-text ms-1">Activas</span>
+                <i class="material-symbols-rounded opacity-5">groups</i>
+                <span id="contador_vacantes">' . $contador . '</span>
+                <i class="material-symbols-rounded opacity-5">keyboard_arrow_down</i>
+            </a>';
+
+    return $html;
+}
+
+function GetUsuariosPorDepartamento($pdo, $departamentoId)
+{
+    $query = "SELECT UsuarioId, CONCAT(NombreUsuario, ' ', ApellidoPaterno, ' ', ApellidoMaterno) AS NombreCompleto FROM usuarios WHERE DepartamentoId = :departamentoId";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':departamentoId', $departamentoId, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+if (isset($_GET['DepartamentoUsuId'])) {
+    header('Content-Type: application/json');
+    $puestos = GetUsuariosPorDepartamento($pdo, $_GET['DepartamentoUsuId']);
+    echo json_encode($puestos);
+    exit;
+}
+
+function RegistrarFelicitacion(array $post, PDO $pdo): string
+{
+    $usuarioId = filter_var($post['UsuarioId'], FILTER_VALIDATE_INT);
+    $mensaje = filter_var($post['MensajeFelicitacion'], FILTER_SANITIZE_STRING);
+
+    if (
+        !$usuarioId || !$mensaje
+    ) {
+        return alertScript('Error', 'Faltan datos obligatorios.', 'error');
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        $stmt = $pdo->prepare(
+            "INSERT INTO felicitaciones (UsuarioId, MensajeFelicitacion)
+            VALUES (:usid, :msj)"
+        );
+        $stmt->execute([
+            ':usid' => $usuarioId,
+            ':msj' => $mensaje
+        ]);
+        $pdo->commit();
+
+        return alertScript(
+            '¡Éxito!',
+            'Mensaje registrado correctamente.',
+            'success'
+        );
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        return alertScript(
+            'Error',
+            'No se pudo registrar: ' . $e->getMessage(),
+            'error'
+        );
+    }
+
+}
+
+function getPanelFelicitaciones(PDO $pdo): string
+{
+    $sql = "SELECT u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, 
+                   f.FelicitacionId, f.MensajeFelicitacion, foto.FotoContenido
+            FROM felicitaciones f
+            LEFT JOIN usuarios u ON u.UsuarioId = f.UsuarioId
+            LEFT JOIN fotos foto ON foto.EntidadTipo = 'usuario'
+                                 AND foto.EntidadId   = u.UsuarioId
+            WHERE 1=1";
+    $params = [];
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (empty($rows)) {
+        return '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                    <div class="d-flex flex-column">
+                        <h6 class="mb-3 text-sm">Sin resultados</h6>
+                        <span class="mb-2 text-xs">
+                            No hay felicitaciones hechas por el momento
+                        </span>
+                    </div>
+                </li>';
+    }
+
+    $html = '';
+    foreach ($rows as $fe) {
+        $src = $fe['FotoContenido']
+            ? 'data:image/jpeg;base64,' . base64_encode($fe['FotoContenido'])
+            : '../assets/img/small-logos/user.png';
+
+        $full = "{$fe['NombreUsuario']} {$fe['ApellidoPaterno']} {$fe['ApellidoMaterno']}";
+        $html.='<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+    <div class="me-3">
+        <img src="'.$src.'" alt="usuario" class="avatar-sm2">
+    </div>
+    <div class="d-flex flex-column">
+        <h6 class="mb-3 text-sm">'.$full.'</h6>
+        <span class="mb-2 text-xs">Mensaje de felicitación: <span class="text-dark font-weight-bold ms-sm-2">'.$fe['MensajeFelicitacion'].'
+            </span></span>
+    </div>
+    <div class="ms-auto text-end">
+        <a class="btn btn-link text-danger text-gradient px-3 mb-0" 
+        data-felicitacion-id:"'.$fe['FelicitacionId'].'"
+        href="javascript:;" target="_blank"
+            data-bs-toggle="modal" data-bs-target="#modal-notification"><i
+                class="material-symbols-rounded text-sm me-2">delete</i>Borrar</a>
+        <a class="btn btn-link text-dark px-3 mb-0" 
+        data-felicitacion-id:"'.$fe['FelicitacionId'].'"
+        href="javascript:;" target="_blank" data-bs-toggle="modal"
+            data-bs-target="#modal-edit"><i class="material-symbols-rounded text-sm me-2">edit</i>Editar</a>
+    </div>
+</li>';
+    }
+    return $html;
+
+
 }
