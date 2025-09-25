@@ -562,7 +562,7 @@ function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
                         text: 'Las contraseñas no coinciden.',
                         icon: 'error'
                     }).then(() => {
-                    window.location.href = '../pages/usuarios.php';
+                    window.location.href = '';
                 });
             });
             </script>";
@@ -591,7 +591,7 @@ function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
                         text: 'Contraseña actualizada exitosamente.',
                         icon: 'success'
                     }).then(() => {
-                        window.location.href = '../pages/usuarios.php';
+                        window.location.href = '';
                     });
                 });
             </script>";
@@ -608,7 +608,7 @@ function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
                         text: 'Ocurrio un error inesperado.',
                         icon: 'error'
                     }).then(() => {
-                    window.location.href = '../pages/usuarios.php';
+                    window.location.href = '';
                 });
             });
             </script>";
@@ -771,36 +771,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarDocumentos']))
  * @param int   $departamentoId  ID del departamento
  * @return string                HTML de las filas (<tr>…</tr>)
  */
-function GetTableManuales(PDO $pdo, int $departamentoId, bool $isAdmin): string
-{
-    // Consulta: nombre de manual, departamento y fecha de modificación
+function GetTableManuales(
+    PDO $pdo,
+    int $departamentoId,
+    bool $isAdmin,
+    string $filterName = '',
+    string $filterDept = ''
+): string {
     $sql = "
-      SELECT m.ManualId, doc.NombreDocumento, d.DepartamentoNombre, m.FechaModificacion
+      SELECT
+        m.ManualId,
+        doc.NombreDocumento,
+        d.DepartamentoNombre,
+        m.FechaModificacion
       FROM manuales m
-      JOIN documentos doc ON m.DocumentoId = doc.DocumentoId
+      JOIN documentos doc ON m.DocumentoId   = doc.DocumentoId
       JOIN departamento d ON m.DepartamentoId = d.DepartamentoId
-      WHERE 1=1 ";
-
+      WHERE 1=1
+    ";
     $params = [];
-    //Si usuario es Admin entonces verá todos los manuales
+
+    // Si no es admin, forzamos filtro por su departamento
     if (!$isAdmin) {
-        $sql .= "AND m.DepartamentoId = ? ";
+        $sql .= " AND m.DepartamentoId = ? ";
         $params[] = $departamentoId;
     }
 
-    $sql .= "ORDER BY m.FechaModificacion DESC";
+    // Filtro de nombre (solo admin)
+    if ($isAdmin && $filterName !== '') {
+        $sql .= " AND doc.NombreDocumento LIKE ? ";
+        $params[] = "%{$filterName}%";
+    }
+
+    // Filtro de departamento (solo admin)
+    if ($isAdmin && $filterDept !== '') {
+        $sql .= " AND m.DepartamentoId = ? ";
+        $params[] = $filterDept;
+    }
+
+    $sql .= " ORDER BY m.FechaModificacion DESC";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Si no hay manuales para este departamento
     if (empty($rows)) {
-        return '<tr>
-                    <td colspan="5" class="text-center">
-                        No hay manuales disponibles
-                    </td>
-                </tr>';
+        return '<tr><td colspan="5" class="text-center">No hay manuales disponibles</td></tr>';
     }
 
     // Construir filas
@@ -1111,7 +1127,7 @@ function editarFelicitacion(array $post, PDO $pdo): string
 }
 function getAvisosDash(PDO $pdo): string
 {
-  $sql = "SELECT 
+    $sql = "SELECT 
         a.AvisoId, a.TituloAviso, a.Fecha, a.DescripcionAviso, 
         a.EsCampana, f.FotoContenido, u.NombreUsuario, u.ApellidoPaterno
         FROM avisos a
@@ -1120,15 +1136,15 @@ function getAvisosDash(PDO $pdo): string
                          AND f.EntidadId = a.AvisoId
         WHERE EsCampana = 0";
 
-  $params = [];
+    $params = [];
 
-  // Preparar y ejecutar
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute($params);
-  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Preparar y ejecutar
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  if (empty($rows)) {
-    return '<div class="col-md-4 mb-4">
+    if (empty($rows)) {
+        return '<div class="col-md-4 mb-4">
           <div class="card" data-animation="false">
               <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                   <a class="d-block blur-shadow-image">
@@ -1146,22 +1162,22 @@ function getAvisosDash(PDO $pdo): string
               </div>
           </div>
       </div>';
-  }
-
-  $html = '';
-  foreach ($rows as $a) {
-    $src = $a['FotoContenido']
-      ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
-      : '../assets/img/small-logos/alerta.png';
-    $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
-
-    // truncate to 152 chars
-    $desc = strip_tags($a['DescripcionAviso']);
-    if (mb_strlen($desc) > 150) {
-      $desc = mb_substr($desc, 0, 150) . '…';
     }
 
-    $html .= '<div class="card" data-animation="true">
+    $html = '';
+    foreach ($rows as $a) {
+        $src = $a['FotoContenido']
+            ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
+            : '../assets/img/small-logos/alerta.png';
+        $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
+
+        // truncate to 152 chars
+        $desc = strip_tags($a['DescripcionAviso']);
+        if (mb_strlen($desc) > 150) {
+            $desc = mb_substr($desc, 0, 150) . '…';
+        }
+
+        $html .= '<div class="card" data-animation="true">
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
         <a class="d-block blur-shadow-image">
             <img src="' . $src . '"
@@ -1194,6 +1210,6 @@ function getAvisosDash(PDO $pdo): string
         <p class="text-sm my-auto">' . $full . '</p>
     </div>
 </div>';
-  }
-  return $html;
+    }
+    return $html;
 }

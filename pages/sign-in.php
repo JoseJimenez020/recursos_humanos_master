@@ -94,8 +94,8 @@ require_once '../controllers/login.php';
                 <script>
                   document.write(new Date().getFullYear())
                 </script>,
-                Powered by
-                <a href="https://www.fast-net.com.mx" class="font-weight-bold text-white" target="_blank">Fast-net</a>
+                Desarrollado para
+                <a href="https://www.fast-net.com.mx" class="font-weight-bold text-white" target="_blank">FastNet</a>
               </div>
             </div>
           </div>

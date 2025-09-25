@@ -7,8 +7,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   if (isset($_POST['borrarAviso'])) {
-        $alertHtml = borrarAviso($_POST, $pdo);
-    }
+    $alertHtml = borrarAviso($_POST, $pdo);
+  }
 
   if (isset($_POST['editarAviso'])) {
     $alertHtml = editarAviso($_POST, $pdo);
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <li class="nav-item">
           <a class="nav-link text-primary" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
-            <span class="nav-link-text ms-1">Home</span>
+            <span class="nav-link-text ms-1">Inicio</span>
           </a>
         </li>
         <li class="nav-item">
@@ -180,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <li class="nav-item">
           <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
-            <span class="nav-link-text ms-1">Home</span>
+            <span class="nav-link-text ms-1">Inicio</span>
           </a>
         </li>
         <li class="nav-item">
@@ -258,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">RRHH</a>
             </li>
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Avisos</li>
           </ol>
@@ -280,7 +280,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <li class="nav-item dropdown pe-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-sm  me-3 ">
+                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-lg  me-3 ">
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                 <li class="mb-2">
@@ -293,6 +293,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <h6 class="text-sm font-weight-normal mb-1">
                           Perfil
                         </h6>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                    data-bs-target="#modal-password">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <i class="material-symbols-rounded">password</i>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">Cambiar contraseña</h6>
                       </div>
                     </div>
                   </a>
@@ -485,8 +498,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <script>
                   document.write(new Date().getFullYear())
                 </script>,
-                Powered by
-                <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">Fast-net</a>
+                Desarrollado para
+                <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">FastNet</a>
               </div>
             </div>
           </div>
@@ -579,6 +592,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         reader.readAsDataURL(file);
       });
   </script>
+  <!--MODAL CAMBIAR CONTRASEÑA-->
+  <div class="modal fade" id="modal-password" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalLabel">Cambiar Contraseña</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form role="form text-left" method="post">
+          <div class="modal-body">
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Nueva contraseña</label>
+              <input type="password" name="password1" autocomplete="new-password" autofocus="" class="form-control"
+                required="" id="id_password1" onfocus=" focused(this)" onfocusout="defocused(this)">
+            </div>
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Repetir contraseña</label>
+              <input type="password" name="password2" autocomplete="new-password" class="form-control" required=""
+                id="id_password2" onfocus="focused(this)" onfocusout="defocused(this)">
+            </div>
+            <div class="modal-footer">
+              <button type="submit" name="actualizarPass" class="btn bg-gradient-primary">Cambiar</button>
+              <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--FIN DEL MODAL PARA CAMBIAR CONTRASEÑA-->
 </body>
 
 </html>
