@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const first = new Date(year, month, 1).getDay();
     const last = new Date(year, month + 1, 0).getDate();
     const birthdays = await fetchBirthdays(month);
+    daysContainer.innerHTML = '';
 
     monthYear.textContent = `${months[month]} ${year}`;
     daysContainer.innerHTML = '';
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       d.textContent = i;
       d.classList.add('day-cell');
 
-      // Hoy
+      // Marcar hoy
       if (
         i === today.getDate() &&
         month === today.getMonth() &&
@@ -50,22 +51,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       // Cumpleaños
-      const pics = birthdays[i];
-      if (pics) {
-        const imgs = pics.slice(0, 2);
+      const entries = birthdays[i];
+      if (entries) {
+        // Extrae solo las URLs
+        const imgs = entries
+          .slice(0, 2)
+          .map(e => e.src);
+
         if (imgs.length === 1) {
-          d.style.backgroundImage = `url(${imgs[0]})`;
-          d.style.backgroundSize = 'cover';
-          d.style.backgroundRepeat = 'no-repeat';
+          Object.assign(d.style, {
+            backgroundImage: `url("${imgs[0]}")`,
+            backgroundSize:      'cover',
+            backgroundPosition:  'center'
+          });
         } else {
-          d.style.backgroundImage = `url(${imgs[0]}), url(${imgs[1]})`;
-          d.style.backgroundSize = '50% 100%, 50% 100%';
-          d.style.backgroundPosition = 'left center, right center';
-          d.style.backgroundRepeat = 'no-repeat, no-repeat';
+          Object.assign(d.style, {
+            backgroundImage: `url("${imgs[0]}"), url("${imgs[1]}")`,
+            backgroundSize:      '50% 100%, 50% 100%',
+            backgroundPosition:  'left center, right center',
+            backgroundRepeat:    'no-repeat'
+          });
         }
-        d.style.color = '#fff';
-        d.style.textShadow = '0 0 3px rgba(0,0,0,0.7)';
+        // Tooltip con nombres
+        const names = entries.map(e => e.name);
+        d.setAttribute('title', names.join(', '));
+        d.setAttribute('data-bs-toggle', 'tooltip');
       }
+
 
       daysContainer.appendChild(d);
     }
@@ -78,6 +90,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       d.classList.add('fade');
       daysContainer.appendChild(d);
     }
+
+    const triggers = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    triggers.forEach(el => new bootstrap.Tooltip(el));
+
   }
 
   // Render inicial
@@ -97,6 +115,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     clone.classList.add('in-modal');
 
     modalBody.appendChild(clone);
+
+    // Re-inicializar tooltips sobre el clon
+    clone.querySelectorAll('[data-bs-toggle="tooltip"]')
+      .forEach(el => new bootstrap.Tooltip(el));
+
 
     calendarModal.show();
 

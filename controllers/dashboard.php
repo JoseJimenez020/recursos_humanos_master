@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
 session_start();
 require_once 'conn.php';
 
@@ -434,20 +436,20 @@ function getAvisosPanel(PDO $pdo, $tipo)
       $desc = mb_substr($desc, 0, 150) . '…';
     }
 
-    $html .= '<div class="col-md-4 mb-4">
+    $html .= '<div class="col-md-4 mb-4"> 
     <div class="card" data-animation="true">
         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-            <a class="d-block blur-shadow-image">
+            <a class="d-block blur-shadow-image stretched-link">
                 <img src="' . $src . '"
                     alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
             </a>
-            <div class="colored-shadow"
+            <div class="colored-shadow stretched-link"
                 style="background-image: url(&quot;' . $src . '&quot;);">
             </div>
         </div>
         <div class="card-body text-center">
             <div class="d-flex mt-n6 mx-auto">
-                <a class="btn btn-link text-primary ms-auto border-0" data-toggle="tooltip" data-bs-toggle="modal"
+                <a class="btn btn-link text-primary ms-auto border-0" data-toggle="tooltip" data-bs-toggle="modal" href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '"
                     data-bs-placement="bottom" title="Borrar" data-aviso-name="' . $a['TituloAviso'] . '" data-aviso-id="' . $a['AvisoId'] . '" data-bs-target="#modal-notification">
                     <i class="material-symbols-rounded text-lg">delete</i>
                 </a>
@@ -459,7 +461,7 @@ function getAvisosPanel(PDO $pdo, $tipo)
                 </button>
             </div>
             <h5 class="font-weight-normal mt-3">
-                <a href="">' . $a['TituloAviso'] . '</a>
+                ' . $a['TituloAviso'] . '
             </h5>
             <p class="mb-0">' . $desc . '
             </p>
@@ -530,27 +532,28 @@ function getAvisosDash(PDO $pdo): string
       $desc = mb_substr($desc, 0, 150) . '…';
     }
 
-    $html .= '<div class="card" data-animation="true">
+    $html .= '<div class="card" data-animation="true">     
+    <a href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '">
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-        <a class="d-block blur-shadow-image">
+        <div class="d-block blur-shadow-image">
             <img src="' . $src . '"
                 alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-        </a>
+        </div>
         <div class="colored-shadow"
             style="background-image: url(&quot;' . $src . '&quot;);">
         </div>
     </div>
     <div class="card-body text-center">
         <div class="d-flex mt-n6 mx-auto">
-            <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            <div class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
                 title="">
-            </a>
+            </div>
             <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
                 title="">
             </button>
         </div>
         <h5 class="font-weight-normal mt-3">
-            <a href="javascript:;">' . $a['TituloAviso'] . '</a>
+            <a href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '">' . $a['TituloAviso'] . '</a>
         </h5>
         <p class="mb-0">
             ' . $desc . '
@@ -561,8 +564,9 @@ function getAvisosDash(PDO $pdo): string
         <p class="font-weight-normal my-auto">' . date('d/m/Y', strtotime($a['Fecha'])) . '</p>
         <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
         <p class="text-sm my-auto">' . $full . '</p>
-    </div>
-</div>';
+    </div> </a>
+    <a href="../pages/campania_ext.php?avisoId='.$a['AvisoId'] .'" class="stretched-link"></a>
+</div> ';
   }
   return $html;
 }
@@ -833,7 +837,6 @@ function getAvisoById(PDO $pdo, int $avisoId): ?array
             ON f.EntidadTipo = 'aviso'
            AND f.EntidadId     = a.AvisoId
         WHERE a.AvisoId = :id
-          AND a.EsCampana = 1
         LIMIT 1
     ";
 
@@ -856,7 +859,7 @@ function getCarouselFelicitaciones(PDO $pdo): string
                                  AND foto.EntidadId   = u.UsuarioId
             WHERE 1=1
     ";
-  
+
   $stmt = $pdo->prepare($sql);
   $stmt->execute([]);
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -882,12 +885,12 @@ function getCarouselFelicitaciones(PDO $pdo): string
                   </div>
               </div>
           </div>';
-            }
+  }
 
   // 3) Begin carousel container
-  $carouselId = "carouselAvisos";  
+  $carouselId = "carouselAvisos";
   $html = '<div id="' . $carouselId . '" class="carousel slide" data-bs-ride="carousel">';
-  $html .= '<div class="carousel-inner">';  
+  $html .= '<div class="carousel-inner">';
 
   // 4) Build each slide
   foreach ($rows as $i => $a) {

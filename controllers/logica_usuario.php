@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 session_start();
 require_once 'conn.php';
 
@@ -502,7 +502,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarFoto'])) {
     if (
         isset($_FILES['foto']) &&
         $_FILES['foto']['error'] === UPLOAD_ERR_OK &&
-        $_FILES['foto']['size'] <= 1_048_576   // 1 MB
+        $_FILES['foto']['size'] <= 3_048_576   // 1 MB
     ) {
         // Leemos el binario
         $fotoBinaria = file_get_contents($_FILES['foto']['tmp_name']);

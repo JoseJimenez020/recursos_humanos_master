@@ -28,7 +28,7 @@ require '../controllers/dashboard.php';
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-  
+
   <?php
   if ($sesion['EsAdmin'] === 1) {
     echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
@@ -332,7 +332,7 @@ require '../controllers/dashboard.php';
                       Opciones</th>
                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                       Última modificación</th>
-                    <th></th>
+                    <!--<th></th>-->
                   </tr>
                 </thead>
                 <tbody>
@@ -344,28 +344,28 @@ require '../controllers/dashboard.php';
                             alt="user1">
                         </div>
                         <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0">Proceso Número uno</h6>
+                          <h6 class="mb-0">Proceso de denuncias internas</h6>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <p class="text-xs font-weight-bold mb-0">ENOC</p>
+                      <p class="text-xs font-weight-bold mb-0">Todos</p>
                     </td>
                     <td class="align-middle text-center text-sm">
                       <span class="badge badge-sm bg-gradient-success"
-                        onclick="descargarPDF('../docs/example.pdf', 'example.pdf')">Descargar</span>
+                        onclick="descargarPDF('../docs/PROCESO_DENUNCIAS_INTERNAS.pdf', 'Denuncias internas.pdf')">Descargar</span>
                       <span class="badge badge-sm bg-gradient-secondary"
-                        onclick="verPDFSweetAlert('../docs/example.pdf')">Ver</span>
+                        onclick="verPDFSweetAlert('../docs/PROCESO_DENUNCIAS_INTERNAS.pdf')">Ver</span>
                     </td>
                     <td class="align-middle text-center">
-                      <span class="text-secondary text-xs font-weight-bold">23/04/18</span>
+                      <span class="text-secondary text-xs font-weight-bold">12/09/25</span>
                     </td>
-                    <td class="align-middle text-center">
+                    <!--<td class="align-middle text-center">
                       <a class="btn btn-link text-primary ms-auto border-0" data-toggle="tooltip" data-bs-toggle="modal"
                         data-bs-target="#modal-notification">
                         <i class="material-symbols-rounded text-lg">delete</i>
                       </a>
-                    </td>
+                    </td>-->
                   </tr>
                   <tr>
                     <td>
@@ -375,28 +375,30 @@ require '../controllers/dashboard.php';
                             alt="user2">
                         </div>
                         <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0">Proceso Número dos</h6>
+                          <h6 class="mb-0">Proceso Uso del BioTime</h6>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <p class="text-xs font-weight-bold mb-0">Call Center</p>
+                      <p class="text-xs font-weight-bold mb-0">Todos</p>
                     </td>
                     <td class="align-middle text-center text-sm">
-                      <span class="badge badge-sm bg-gradient-success">Descargar</span>
-                      <span class="badge badge-sm bg-gradient-secondary">Ver</span>
+                      <span class="badge badge-sm bg-gradient-success"
+                        onclick="descargarPDF('../docs/USO_BIOTIME.pdf', 'Denuncias internas.pdf')">Descargar</span>
+                      <span class="badge badge-sm bg-gradient-secondary"
+                        onclick="verPDFSweetAlert('../docs/USO_BIOTIME.pdf')">Ver</span>
                     </td>
                     <td class="align-middle text-center">
-                      <span class="text-secondary text-xs font-weight-bold">11/01/19</span>
+                      <span class="text-secondary text-xs font-weight-bold">12/09/25</span>
                     </td>
-                    <td class="align-middle text-center">
+                    <!--<td class="align-middle text-center">
                       <a class="btn btn-link text-primary ms-auto border-0" data-toggle="tooltip" data-bs-toggle="modal"
                         data-bs-target="#modal-notification">
                         <i class="material-symbols-rounded text-lg">delete</i>
                       </a>
-                    </td>
+                    </td>-->
                   </tr>
-                  <tr>
+                  <!--<tr>
                     <td>
                       <div class="d-flex px-2 py-1">
                         <div>
@@ -511,7 +513,7 @@ require '../controllers/dashboard.php';
                         <i class="material-symbols-rounded text-lg">delete</i>
                       </a>
                     </td>
-                  </tr>
+                  </tr>-->
                 </tbody>
               </table>
               <!-- Script para ver los documentos en la misma página -->
@@ -606,7 +608,7 @@ require '../controllers/dashboard.php';
       </div>
     </footer>
   </div>
-  <div class="fixed-plugin">
+  <!--<div class="fixed-plugin">
     <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
       <i class="material-symbols-rounded py-2">note_add</i>
     </a>
@@ -619,19 +621,19 @@ require '../controllers/dashboard.php';
           <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
             <i class="material-symbols-rounded">clear</i>
           </button>
-        </div>
+        </div>-->
         <!-- End Toggle Button -->
-      </div>
+      <!--</div>
       <hr class="horizontal dark my-1">
-      <div class="card-body pt-sm-3 pt-0">
+      <div class="card-body pt-sm-3 pt-0">-->
         <!-- Sidebar Backgrounds -->
-        <div>
+        <!--<div>
           <p>A continuación ingrese la información que se solicita</p>
-        </div>
+        </div>-->
         <!-- Sidenav Type -->
 
         <!-- Navbar Fixed -->
-        <div class="mt-3 d-flex">
+        <!--<div class="mt-3 d-flex">
           <form>
             <div class="input-group input-group-outline my-3">
               <label class="form-label">Nombre</label>
@@ -651,7 +653,7 @@ require '../controllers/dashboard.php';
         <a class="btn bg-gradient-primary w-100" href="">Subir Proceso</a>
       </div>
     </div>
-  </div>
+  </div>-->
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
   <script src="../assets/js/core/bootstrap.min.js"></script>
