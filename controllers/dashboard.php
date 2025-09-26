@@ -847,7 +847,6 @@ function getAvisoById(PDO $pdo, int $avisoId): ?array
   return $aviso !== false ? $aviso : null;
 }
 
-
 function getCarouselFelicitaciones(PDO $pdo): string
 {
   // 1) Fetch all campana-type avisos
@@ -908,6 +907,7 @@ function getCarouselFelicitaciones(PDO $pdo): string
     // build slide
     $html .= <<<HTML
     <div class="carousel-item{$activeClass}">
+      <a href="#" data-bs-toggle="modal" data-bs-target="#felicitacionModal" data-user-id="{$a['UsuarioId']}">
     <div class="page-header min-vh-15 border-radius-lg">
         <div class="card" data-animation="false"
             style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
@@ -916,13 +916,10 @@ function getCarouselFelicitaciones(PDO $pdo): string
                 <div class="me-3">
                     <img src="{$imgSrc}" alt="usuario" class="avatar-sm2">
                 </div>
-
                 <!-- Contenido textual centrado verticalmente -->
                 <div class="text-start flex-grow-1">
-                    <h6 class="font-weight-bold text-primary mb-1">
-                        <a href="#" class="text-primary">¡Felicidades! {$full}
+                    <h6 class="font-weight-bold text-primary mb-1">¡Felicidades! {$full}
                             <i class="material-symbols-rounded me-2 text-lg">celebration</i>
-                        </a>
                     </h6>
                     <small class="text-muted d-block">
                         {$a['MensajeFelicitacion']}
@@ -931,6 +928,7 @@ function getCarouselFelicitaciones(PDO $pdo): string
             </div>
         </div>
     </div>
+  </a>
 </div>
 HTML;
   }

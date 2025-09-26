@@ -279,8 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <li class="nav-item dropdown pe-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> 
-                class="avatar avatar-lg me-3">
+                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-lg me-3">
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                 <li class="mb-2">
@@ -365,7 +364,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="row">
                   <h6 class="mb-0">¡Sé bienvenid@!</h6>
                   <h6 class="mb-0" id="fechaCompleta"></h6>
-                  <a href="http://45.188.76.34:8081/" target="_blank"> <img class="border-radius-lg w-50" src="../assets/img/BIOTIME.png" alt=""> </a>
+                  <a href="http://45.188.76.34:8081/" target="_blank"> <img class="border-radius-lg w-50"
+                      src="../assets/img/BIOTIME.png" alt=""> </a>
                 </div>
               </div>
               <hr class="dark horizontal">
@@ -476,7 +476,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <script>
                   document.write(new Date().getFullYear())
                 </script>,
-                Desarrollado para
+                Desarrollado por
                 <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">FastNet</a>
               </div>
             </div>
@@ -792,6 +792,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
   <!--FIN DEL MODAL PARA CAMBIAR CONTRASEÑA-->
+  <!-- MODAL PARA VER MÁS SOBRE LA FELICITACIÓN -->
+  <div class="modal fade" id="felicitacionModal" tabindex="-1" role="dialog" aria-labelledby="modal-default"
+    aria-hidden="true">
+    <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title font-weight-normal" id="modal-title-default">¡Felicidades!</h6>
+          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live
+            the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large
+            language ocean.</p>
+          <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a
+            paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-link  ml-auto" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

@@ -400,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <script>
                 document.write(new Date().getFullYear())
               </script>,
-              Desarrollado para
+              Desarrollado por
               <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">FastNet</a>
             </div>
           </div>

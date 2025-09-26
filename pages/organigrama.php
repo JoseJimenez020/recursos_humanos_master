@@ -280,29 +280,31 @@ require '../controllers/dashboard.php';
                   </a>
                 </li>
                 <li class="mb-2">
-    <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal" data-bs-target="#modal-password">
-        <div class="d-flex py-1">
-            <div class="my-auto">
-                <i class="material-symbols-rounded">password</i>
-            </div>
-            <div class="d-flex flex-column justify-content-center">
-                <h6 class="text-sm font-weight-normal mb-1">Cambiar contraseña</h6>
-            </div>
-        </div>
-    </a>
-</li>
-<li class="mb-2">
-    <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
-        <div class="d-flex py-1">
-            <div class="my-auto">
-                <i class="material-symbols-rounded">logout</i>
-            </div>
-            <div class="d-flex flex-column justify-content-center">
-                <h6 class="text-sm font-weight-normal mb-1">Salir</h6>
-            </div>
-        </div>
-    </a>
-</li>
+                  <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                    data-bs-target="#modal-password">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <i class="material-symbols-rounded">password</i>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">Cambiar contraseña</h6>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                    data-bs-target="#logoutModal">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <i class="material-symbols-rounded">logout</i>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">Salir</h6>
+                      </div>
+                    </div>
+                  </a>
+                </li>
                 <li>
                 </li>
               </ul>
@@ -312,16 +314,15 @@ require '../controllers/dashboard.php';
       </div>
     </nav>
     <!-- End Navbar -->
-     
+
     <div class="container-fluid px-2 px-md-4">
       <div class="page-header min-height-100 border-radius-xl mt-4">
-        <!--<span class="mask  bg-gradient-dark  opacity-6"></span>-->
       </div>
       <div class="card card-body mx-2 mx-md-2 mt-n6 p-3">
         <div class="row gx-4 mb-2">
           <div class="col-auto">
             <div class="avatar avatar-xl position-relative">
-              <img src="../assets/img/favicon.ico" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+              <img src="../assets/img/favicon.ico" alt="Logo de FastNet" class="w-100 shadow-sm">
             </div>
           </div>
           <div class="col-auto my-auto">
@@ -332,8 +333,8 @@ require '../controllers/dashboard.php';
             </div>
           </div>
           <div class="card-body p-3 card text-white border-0">
-            <img class="card-img" src="../assets/img/illustrations/Organigrama1.jpeg" alt="Card image">
-            <img class="card-img" src="../assets/img/illustrations/Organigrama2.jpeg" alt="Card image">
+            <img class="card-img" src="../assets/img/illustrations/Organigrama1.jpeg" alt="Organigrama de la compañía">
+            <img class="card-img" src="../assets/img/illustrations/Organigrama2.jpeg" alt="Organigrama administración">
           </div>
         </div>
 
@@ -348,7 +349,7 @@ require '../controllers/dashboard.php';
               <script>
                 document.write(new Date().getFullYear())
               </script>,
-              Desarrollado para
+              Desarrollado por
               <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">FastNet</a>
             </div>
           </div>
@@ -397,7 +398,7 @@ require '../controllers/dashboard.php';
     </div>
   </div>
   <!--End logout modal-->
-    <!--MODAL CAMBIAR CONTRASEÑA-->
+  <!--MODAL CAMBIAR CONTRASEÑA-->
   <div class="modal fade" id="modal-password" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
