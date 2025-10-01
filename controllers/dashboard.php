@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 session_start();
 require_once 'conn.php';
 
@@ -850,7 +850,7 @@ function getAvisoById(PDO $pdo, int $avisoId): ?array
 function getCarouselFelicitaciones(PDO $pdo): string
 {
   // 1) Fetch all campana-type avisos
-  $sql = "SELECT u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, 
+  $sql = "SELECT u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, 
                    f.FelicitacionId, f.MensajeFelicitacion, foto.FotoContenido
             FROM felicitaciones f
             LEFT JOIN usuarios u ON u.UsuarioId = f.UsuarioId
@@ -907,7 +907,13 @@ function getCarouselFelicitaciones(PDO $pdo): string
     // build slide
     $html .= <<<HTML
     <div class="carousel-item{$activeClass}">
-      <a href="#" data-bs-toggle="modal" data-bs-target="#felicitacionModal" data-user-id="{$a['UsuarioId']}">
+      <a href="#"
+     data-bs-toggle="modal"
+     data-bs-target="#felicitacionModal"
+     data-usuario-id="{$a['UsuarioId']}"
+     data-nombre="{$full}"
+     data-mensaje="{$a['MensajeFelicitacion']}"
+     data-foto="{$imgSrc}">
     <div class="page-header min-vh-15 border-radius-lg">
         <div class="card" data-animation="false"
             style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
@@ -1025,4 +1031,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizarPass'])) {
 
     echo ActualizarPassword($password1, $password2, $_SESSION['user_id'], $pdo);
 
+}
+
+function getContenedorPuesto(int $id, PDO $pdo): string
+{
+  $sql = "SELECT u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, p.PuestoNombre, f.FotoContenido FROM usuarios u LEFT JOIN puesto p ON u.PuestoId = p.PuestoId LEFT JOIN fotos f ON f.EntidadTipo = 'usuario' AND f.EntidadId = u.UsuarioId WHERE u.UsuarioId = :id";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute(['id' => $id]);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  $html = '';
+  foreach ($rows as $row) {
+    $src = $row['FotoContenido']
+      ? 'data:image/jpeg;base64,' . base64_encode($row['FotoContenido'])
+      : '../assets/img/small-logos/user.png';
+
+    $fullEscaped = htmlspecialchars(
+      "{$row['NombreUsuario']} {$row['ApellidoPaterno']}",
+      ENT_QUOTES,
+      'UTF-8'
+    );
+    $puestoEscaped = htmlspecialchars($row['PuestoNombre'], ENT_QUOTES, 'UTF-8');
+
+    $html .= "<a href=\"#\" >
+                <img src=\"{$src}\" alt=\"{$fullEscaped}\">
+                <span class=\"text-xs font-weight-bold mb-0\">{$fullEscaped}</span>
+                <span class=\"text-xs text-secondary mb-0\">{$puestoEscaped}</span>
+              </a>";
+  }
+  return $html;
 }

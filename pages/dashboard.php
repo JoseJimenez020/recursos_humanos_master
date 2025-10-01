@@ -565,7 +565,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   ?>
 
-
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
   <script src="../assets/js/core/bootstrap.min.js"></script>
@@ -792,30 +791,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
   <!--FIN DEL MODAL PARA CAMBIAR CONTRASEÑA-->
+
   <!-- MODAL PARA VER MÁS SOBRE LA FELICITACIÓN -->
   <div class="modal fade" id="felicitacionModal" tabindex="-1" role="dialog" aria-labelledby="modal-default"
     aria-hidden="true">
-    <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h6 class="modal-title font-weight-normal" id="modal-title-default">¡Felicidades!</h6>
+          <h6 id="modal-title-default" class="modal-title font-weight-normal">
+            ¡Felicidades!
+          </h6>
+          <i class="material-symbols-rounded me-2 text-lg">celebration</i>
           <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
+
         <div class="modal-body">
-          <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live
-            the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large
-            language ocean.</p>
-          <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a
-            paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-link  ml-auto" data-bs-dismiss="modal">Cerrar</button>
+          <div class="card card-background">
+            <div class="full-background" style="background-image:
+                      url('https://images.unsplash.com/photo-1497294815431-9365093b7331?…
+                      q=80')">
+            </div>
+            <div class="card-body pt-12">
+              <h4 id="modalNombre" class="text-white font-weight-normal">
+              </h4>
+              <p id="modalMensaje"></p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <script>
+    const modalEl = document.getElementById('felicitacionModal');
+    modalEl.addEventListener('show.bs.modal', function (event) {
+      const trigger = event.relatedTarget;
+
+      // Leer atributos data-*
+      const nombre = trigger.getAttribute('data-nombre') || '';
+      const mensaje = trigger.getAttribute('data-mensaje') || '';
+      const foto = trigger.getAttribute('data-foto') || '';
+
+      // Referencias dentro del modal
+      const bgDiv = modalEl.querySelector('.full-background');
+      const h4 = modalEl.querySelector('#modalNombre');
+      const p = modalEl.querySelector('#modalMensaje');
+
+      // Inyectar texto
+      h4.textContent = nombre;
+      p.textContent = mensaje;
+
+      // Actualizar fondo
+      if (foto) {
+        bgDiv.style.backgroundImage = `url('${foto}')`;
+      }
+    });
+  </script>
+  <!-- FIN DEL MODAL PARA VER MÁS SOBRE LA FELICITACIÓN -->
+
 </body>
 
 </html>

@@ -1,10 +1,172 @@
-<?php
-require '../controllers/dashboard.php';
-?>
 <!DOCTYPE html>
+<?php
+  require '../controllers/dashboard.php';
+?>
 <html lang="es">
 
 <head>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    .tree-container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      /* Alinea los árboles por su tope */
+      gap: 10px;
+      /* Separación horizontal */
+      padding: 5px;
+      overflow-x: auto;
+      /* Scroll horizontal si desborda */
+      width: 100%;
+    }
+
+    .tree {
+      flex: 0 0 auto;
+      /* Cada árbol mantiene su ancho mínimo */
+      min-width: 100px;
+      /* Ajusta según tu diseño */
+    }
+
+    .tree ul {
+      padding-top: 20px;
+      position: relative;
+      transition: .5s;
+    }
+
+    .tree li {
+      display: inline-table;
+      text-align: center;
+      list-style-type: none;
+      position: relative;
+      padding: 5px;
+      transition: .5s;
+    }
+
+    .tree li::before,
+    .tree li::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 50%;
+      border-top: 1px solid #ccc;
+      width: 51%;
+      height: 15px;
+    }
+
+    .tree li::after {
+      right: auto;
+      left: 50%;
+      border-left: 1px solid #ccc;
+    }
+
+    .tree li:only-child::after,
+    .tree li:only-child::before {
+      display: none;
+    }
+
+    .tree li:only-child {
+      padding-top: 0;
+    }
+
+    .tree li:first-child::before,
+    .tree li:last-child::after {
+      border: 0 none;
+    }
+
+    .tree li:last-child::before {
+      border-right: 1px solid #ccc;
+      border-radius: 0px 5px 0px 0px;
+    }
+
+    .tree li:first-child::after {
+      border-radius: 5px 0px 0px 0px;
+    }
+
+    .tree ul ul::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      border-left: 1px solid #ccc;
+      width: 0;
+      height: 20px;
+    }
+
+    .tree a {
+      border: 1px solid #ccc;
+      padding: 6px;
+      display: inline-grid;
+      border-radius: 5px;
+      text-decoration-line: none;
+      border-radius: 5px;
+      transition: .5s;
+    }
+
+    .tree a img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px !important;
+      border-radius: 100px;
+      margin: auto;
+    }
+
+    .tree a span {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      color: #666;
+      padding: 4px 6px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    /* Hover */
+    .tree li a:hover,
+    .tree li a:hover img,
+    .tree li a:hover span,
+    .tree li a:hover+ul li a {
+      background: #c8e4f8;
+      color: #000;
+      border: 1px solid #94a0b4;
+      box-shadow: 0px 0px 8px -5px #5f5f5f;
+    }
+
+    .tree li a:hover+ul li::after,
+    .tree li a:hover+ul li::before,
+    .tree li a:hover+ul::before,
+    .tree li a:hover+ul ul::before {
+      border-color: #94a0b4;
+    }
+    .tree-item {
+      position: relative;
+    }
+
+    .tooltip {
+      display: none;
+      position: absolute;
+      top: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      width: 200px;
+      z-index: 10;
+    }
+
+    .tree-item.active .tooltip {
+      display: block;
+    }
+  </style>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
@@ -30,208 +192,208 @@ require '../controllers/dashboard.php';
 <body class="g-sidenav-show bg-gray-100">
 
   <?php
-  if ($sesion['EsAdmin'] === 1) {
-    echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
-    id="sidenav-main">
-    <div class="sidenav-header">
-      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-        aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
-        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
-        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
-      </a>
-    </div>
-    <hr class="horizontal dark mt-0 mb-2">
-    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/dashboard.php">
-            <i class="material-symbols-rounded opacity-5">dashboard</i>
-            <span class="nav-link-text ms-1">Inicio</span>
+    if ($sesion['EsAdmin'] === 1) {
+      echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+        id="sidenav-main">
+        <div class="sidenav-header">
+          <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+            aria-hidden="true" id="iconSidenav"></i>
+          <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+            <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+            <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
           </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.php">
-            <i class="material-symbols-rounded opacity-5">policy</i>
-            <span class="nav-link-text ms-1">Políticas</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
-            <i class="material-symbols-rounded opacity-5">rule</i>
-            <span class="nav-link-text ms-1">Reglamento Interno</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.php">
-            <i class="material-symbols-rounded opacity-5">receipt_long</i>
-            <span class="nav-link-text ms-1">Procesos</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active bg-gradient-primary text-white" href="../pages/organigrama.php">
-            <i class="material-symbols-rounded opacity-5">globe_book</i>
-            <span class="nav-link-text ms-1">Organigrama</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.php">
-            <i class="material-symbols-rounded opacity-5">public</i>
-            <span class="nav-link-text ms-1">Misión, Visión</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.php">
-            <i class="material-symbols-rounded opacity-5">psychology</i>
-            <span class="nav-link-text ms-1">Valores</span>
-          </a>
-        </li>
-        <li class="nav-item mt-3">
-          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Administrador</h6>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/usuarios.php">
-            <i class="material-symbols-rounded opacity-5">groups</i>
-            <span class="nav-link-text ms-1">Usuarios</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/avisos.php">
-            <i class="material-symbols-rounded opacity-5">add_alert</i>
-            <span class="nav-link-text ms-1">Avisos</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/felicitaciones.php">
-            <i class="material-symbols-rounded opacity-5">celebration</i>
-            <span class="nav-link-text ms-1">Felicitaciones</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/campanias.php">
-            <i class="material-symbols-rounded opacity-5">campaign</i>
-            <span class="nav-link-text ms-1">Campañas</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/panel_vacantes.php">
-            <i class="material-symbols-rounded opacity-5">explore</i>
-            <span class="nav-link-text ms-1">Vacantes</span>
-          </a>
-        </li>
-        <li class="nav-item mt-3">
-          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
-            adicional</h6>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/manuales.php">
-            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
-            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.php">
-            <i class="material-symbols-rounded opacity-5">comment</i>
-            <span class="nav-link-text ms-1">NOM-35</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-        <div class="mx-3">
-            <a class="btn btn-outline mt-4 w-100 text-primary">
-            <i class="material-symbols-rounded opacity-5">explore</i>
-            <span class="nav-link-text ms-1">Vacantes</span>
-            </a>
-            ' . mostrarContador($pdo) . '
         </div>
-    </div>
-  </aside>';
-  } elseif ($sesion['EsAdmin'] === 0) {
-    echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
-    id="sidenav-main">
-    <div class="sidenav-header">
-      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-        aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
-        <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
-        <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
-      </a>
-    </div>
-    <hr class="horizontal dark mt-0 mb-2">
-    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/dashboard.php">
-            <i class="material-symbols-rounded opacity-5">dashboard</i>
-            <span class="nav-link-text ms-1">Inicio</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.php">
-            <i class="material-symbols-rounded opacity-5">policy</i>
-            <span class="nav-link-text ms-1">Políticas</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
-            <i class="material-symbols-rounded opacity-5">rule</i>
-            <span class="nav-link-text ms-1">Reglamento Interno</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.php">
-            <i class="material-symbols-rounded opacity-5">receipt_long</i>
-            <span class="nav-link-text ms-1">Procesos</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active bg-gradient-primary text-white" href="../pages/organigrama.php">
-            <i class="material-symbols-rounded opacity-5">globe_book</i>
-            <span class="nav-link-text ms-1">Organigrama</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.php">
-            <i class="material-symbols-rounded opacity-5">public</i>
-            <span class="nav-link-text ms-1">Misión, Visión</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.php">
-            <i class="material-symbols-rounded opacity-5">psychology</i>
-            <span class="nav-link-text ms-1">Valores</span>
-          </a>
-        </li>
-        <li class="nav-item mt-3">
-          <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
-            adicional</h6>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/manuales.php">
-            <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
-            <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.php">
-            <i class="material-symbols-rounded opacity-5">comment</i>
-            <span class="nav-link-text ms-1">NOM-35</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-        <div class="mx-3">
-            <a class="btn btn-outline mt-4 w-100 text-primary">
-            <i class="material-symbols-rounded opacity-5">explore</i>
-            <span class="nav-link-text ms-1">Vacantes</span>
-            </a>
-            ' . mostrarContador($pdo) . '
+        <hr class="horizontal dark mt-0 mb-2">
+        <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/dashboard.php">
+                <i class="material-symbols-rounded opacity-5">dashboard</i>
+                <span class="nav-link-text ms-1">Inicio</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/politicas.php">
+                <i class="material-symbols-rounded opacity-5">policy</i>
+                <span class="nav-link-text ms-1">Políticas</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
+                <i class="material-symbols-rounded opacity-5">rule</i>
+                <span class="nav-link-text ms-1">Reglamento Interno</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/procesos.php">
+                <i class="material-symbols-rounded opacity-5">receipt_long</i>
+                <span class="nav-link-text ms-1">Procesos</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active bg-gradient-primary text-white" href="../pages/organigrama.php">
+                <i class="material-symbols-rounded opacity-5">globe_book</i>
+                <span class="nav-link-text ms-1">Organigrama</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/mision_vision.php">
+                <i class="material-symbols-rounded opacity-5">public</i>
+                <span class="nav-link-text ms-1">Misión, Visión</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/valores.php">
+                <i class="material-symbols-rounded opacity-5">psychology</i>
+                <span class="nav-link-text ms-1">Valores</span>
+              </a>
+            </li>
+            <li class="nav-item mt-3">
+              <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Administrador</h6>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/usuarios.php">
+                <i class="material-symbols-rounded opacity-5">groups</i>
+                <span class="nav-link-text ms-1">Usuarios</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/avisos.php">
+                <i class="material-symbols-rounded opacity-5">add_alert</i>
+                <span class="nav-link-text ms-1">Avisos</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/felicitaciones.php">
+                <i class="material-symbols-rounded opacity-5">celebration</i>
+                <span class="nav-link-text ms-1">Felicitaciones</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/campanias.php">
+                <i class="material-symbols-rounded opacity-5">campaign</i>
+                <span class="nav-link-text ms-1">Campañas</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/panel_vacantes.php">
+                <i class="material-symbols-rounded opacity-5">explore</i>
+                <span class="nav-link-text ms-1">Vacantes</span>
+              </a>
+            </li>
+            <li class="nav-item mt-3">
+              <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+                adicional</h6>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/manuales.php">
+                <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+                <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/nom035.php">
+                <i class="material-symbols-rounded opacity-5">comment</i>
+                <span class="nav-link-text ms-1">NOM-35</span>
+              </a>
+            </li>
+          </ul>
         </div>
-    </div>
-  </aside>';
-  }
+        <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+            <div class="mx-3">
+                <a class="btn btn-outline mt-4 w-100 text-primary">
+                <i class="material-symbols-rounded opacity-5">explore</i>
+                <span class="nav-link-text ms-1">Vacantes</span>
+                </a>
+                ' . mostrarContador($pdo) . '
+            </div>
+        </div>
+      </aside>';
+    } elseif ($sesion['EsAdmin'] === 0) {
+      echo '<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+        id="sidenav-main">
+        <div class="sidenav-header">
+          <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+            aria-hidden="true" id="iconSidenav"></i>
+          <a class="navbar-brand px-4 py-3 m-0" href="../pages/dashboard.php" target="_blank">
+            <img src="../assets/img/favicon.ico" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+            <span class="ms-1 text-sm text-dark">Recursos Humanos</span>
+          </a>
+        </div>
+        <hr class="horizontal dark mt-0 mb-2">
+        <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/dashboard.php">
+                <i class="material-symbols-rounded opacity-5">dashboard</i>
+                <span class="nav-link-text ms-1">Inicio</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/politicas.php">
+                <i class="material-symbols-rounded opacity-5">policy</i>
+                <span class="nav-link-text ms-1">Políticas</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
+                <i class="material-symbols-rounded opacity-5">rule</i>
+                <span class="nav-link-text ms-1">Reglamento Interno</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/procesos.php">
+                <i class="material-symbols-rounded opacity-5">receipt_long</i>
+                <span class="nav-link-text ms-1">Procesos</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active bg-gradient-primary text-white" href="../pages/organigrama.php">
+                <i class="material-symbols-rounded opacity-5">globe_book</i>
+                <span class="nav-link-text ms-1">Organigrama</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/mision_vision.php">
+                <i class="material-symbols-rounded opacity-5">public</i>
+                <span class="nav-link-text ms-1">Misión, Visión</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/valores.php">
+                <i class="material-symbols-rounded opacity-5">psychology</i>
+                <span class="nav-link-text ms-1">Valores</span>
+              </a>
+            </li>
+            <li class="nav-item mt-3">
+              <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
+                adicional</h6>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/manuales.php">
+                <i class="material-symbols-rounded opacity-5">collections_bookmark</i>
+                <span class="nav-link-text ms-1">Capacitaciones | Manuales</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-primary" href="../pages/nom035.php">
+                <i class="material-symbols-rounded opacity-5">comment</i>
+                <span class="nav-link-text ms-1">NOM-35</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+            <div class="mx-3">
+                <a class="btn btn-outline mt-4 w-100 text-primary">
+                <i class="material-symbols-rounded opacity-5">explore</i>
+                <span class="nav-link-text ms-1">Vacantes</span>
+                </a>
+                ' . mostrarContador($pdo) . '
+            </div>
+        </div>
+      </aside>';
+    }
   ?>
 
   <div class="main-content position-relative max-height-vh-100 h-100">
@@ -333,8 +495,144 @@ require '../controllers/dashboard.php';
             </div>
           </div>
           <div class="card-body p-3 card text-white border-0">
-            <img class="card-img" src="../assets/img/illustrations/Organigrama1.jpeg" alt="Organigrama de la compañía">
-            <img class="card-img" src="../assets/img/illustrations/Organigrama2.jpeg" alt="Organigrama administración">
+            <div class="tree-container">
+              <div class="tree">
+                <ul>
+                  <li class="tree-item"> <?= getContenedorPuesto(22, $pdo) ?>
+                      <div class="tooltip">
+                        <h4>Gerente de Operaciones</h4>
+                        <p>Responsable de coordinar equipos y reportes.</p>
+                      </div>
+                    <ul>
+                      <li><?= getContenedorPuesto(6, $pdo) ?>
+                        <ul>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png"
+                                alt=""><span>Construcción</span></a></li>
+                        </ul>
+                      </li>
+                      <li><?= getContenedorPuesto(39, $pdo) ?>
+                        <ul>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png" alt="">
+                              <span>Técnicos</span>
+                              <span>Cajera</span>
+                              <span>Agentes de cambaceo</span></a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><?= getContenedorPuesto(48, $pdo) ?>
+                      </li>
+                      <li>
+                        <?= getContenedorPuesto(32, $pdo) ?>
+                        <ul>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Líder
+                                NOC</span></a></li>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Monitoristas
+                                NOC</span></a></li>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Desarrollo de
+                                Software</span></a></li>
+                        </ul>
+                      </li>
+                      <li><?= getContenedorPuesto(60, $pdo) ?>
+                        <ul>
+                          <li><?= getContenedorPuesto(74, $pdo) ?>
+                            <ul>
+                              <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Técnicos</span>
+                                  <span>Cajera</span>
+                                  <span>Agentes de cambaceo</span></a></li>
+                            </ul>
+                          </li>
+                          <li><?= getContenedorPuesto(108, $pdo) ?>
+                          </li>
+                        </ul>
+                      </li>
+                      <li> <?= getContenedorPuesto(69, $pdo) ?>
+                      </li>
+                      <li> <?= getContenedorPuesto(2, $pdo) ?>
+                        <ul>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Técnicos</span></a>
+                          </li>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Supervisor Call
+                                Center</span></a>
+                            <ul>
+                              <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Agentes
+                                    Call Center</span></a></li>
+                            </ul>
+                          </li>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Supervisor Mesa
+                                Técnica</span></a>
+                            <ul>
+                              <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Mesa
+                                    Técnica</span></a></li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><?= getContenedorPuesto(40, $pdo) ?>
+                      </li>
+                      <li><?= getContenedorPuesto(64, $pdo) ?>
+                        <ul>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png"
+                                alt=""><span>Mantenimiento</span></a></li>
+                        </ul>
+                      </li>
+                      <li><?= getContenedorPuesto(33, $pdo) ?>
+                        <ul>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Técnicos</span>
+                              <span>Cajeras</span></a></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="tree-container">
+              <div class="tree">
+                <ul>
+                  <li><?= getContenedorPuesto(23, $pdo) ?>
+                    <ul>
+                      <li><?= getContenedorPuesto(30, $pdo) ?>
+                      </li>
+                      <li><?= getContenedorPuesto(4, $pdo) ?></li>
+                      <li><?= getContenedorPuesto(142, $pdo) ?></li>
+                      <li> <?= getContenedorPuesto(123, $pdo) ?>
+                      </li>
+                      <li> <?= getContenedorPuesto(125, $pdo) ?>
+                      </li>
+                      <li> <?= getContenedorPuesto(124, $pdo) ?>
+                        <ul>
+                          <li> <?= getContenedorPuesto(116, $pdo) ?></li>
+                        </ul>
+                      </li>
+                      <li> <?= getContenedorPuesto(71, $pdo) ?>
+                        <ul>
+                          <li><?= getContenedorPuesto(91, $pdo) ?>
+                            <ul>
+                              <li><?= getContenedorPuesto(25, $pdo) ?></li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                      <li> <?= getContenedorPuesto(5, $pdo) ?>
+                        <ul>
+                          <li> <?= getContenedorPuesto(92, $pdo) ?> </li>
+                        </ul>
+                      </li>
+                      <li> <?= getContenedorPuesto(61, $pdo) ?>
+                        <ul>
+                          <li><a href="#"><img src="../assets/img/small-logos/user.png">
+                              <span>Técnicos</span>
+                              <span>Cajera</span>
+                              <span>Agentes de cambaceo</span></a></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -428,6 +726,24 @@ require '../controllers/dashboard.php';
     </div>
   </div>
   <!--FIN DEL MODAL PARA CAMBIAR CONTRASEÑA-->
+  <script>
+    document.querySelectorAll('.tree-item').forEach(item => {
+      const link = item.querySelector('.tree-link');
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        // Alterna el estado “active” en este <li>
+        item.classList.toggle('active');
+      });
+    });
+
+    // Opcional: cerrar tooltips al hacer click fuera
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.tree-item')) {
+        document.querySelectorAll('.tree-item.active')
+                .forEach(i => i.classList.remove('active'));
+      }
+    });
+  </script>
 </body>
 
 </html>

@@ -1,20 +1,20 @@
 <?php
-require '../controllers/logica_usuario.php';
+    require '../controllers/logica_usuario.php';
 
-$alertHtml = '';
+    $alertHtml = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // ALERTAS PARA REGISTRO-EDICIÓN-BORRADO
-    if (isset($_POST['subirFelicitación'])) {
-        $alertHtml = RegistrarFelicitacion($_POST, $pdo);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // ALERTAS PARA REGISTRO-EDICIÓN-BORRADO
+        if (isset($_POST['subirFelicitación'])) {
+            $alertHtml = RegistrarFelicitacion($_POST, $pdo);
+        }
+        if (isset($_POST['eliminarFelicitacion'])) {
+            $alertHtml = borrarFelicitacion($_POST, $pdo);
+        }
+        if (isset($_POST['editarFelicitacion'])) {
+            $alertHtml = editarFelicitacion($_POST, $pdo);
+        }
     }
-    if (isset($_POST['eliminarFelicitacion'])) {
-        $alertHtml = borrarFelicitacion($_POST, $pdo);
-    }
-    if (isset($_POST['editarFelicitacion'])) {
-        $alertHtml = editarFelicitacion($_POST, $pdo);
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">

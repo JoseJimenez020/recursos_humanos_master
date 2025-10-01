@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .tree-container {
+            display: grid;
+            grid-template-rows: auto auto;
+            justify-items: center;            /* Centra cada árbol en su columna */
+            row-gap: 40px;                   /* Espacio vertical entre filas */
+            padding: 20px;                  
+            height: auto;
+        }
+
+        .tree {
+            width: 100%;
+            height: auto;
+            text-align: center;
+        }
+
+        .tree ul {
+            padding-top: 20px;
+            position: relative;
+            transition: .5s;
+        }
+
+        .tree li {
+            display: inline-table;
+            text-align: center;
+            list-style-type: none;
+            position: relative;
+            padding: 10px;
+            transition: .5s;
+        }
+
+        .tree li::before,
+        .tree li::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 50%;
+            border-top: 1px solid #ccc;
+            width: 51%;
+            height: 10px;
+        }
+
+        .tree li::after {
+            right: auto;
+            left: 50%;
+            border-left: 1px solid #ccc;
+        }
+
+        .tree li:only-child::after,
+        .tree li:only-child::before {
+            display: none;
+        }
+
+        .tree li:only-child {
+            padding-top: 0;
+        }
+
+        .tree li:first-child::before,
+        .tree li:last-child::after {
+            border: 0 none;
+        }
+
+        .tree li:last-child::before {
+            border-right: 1px solid #ccc;
+            border-radius: 0px 5px 0px 0px;
+        }
+
+        .tree li:first-child::after {
+            border-radius: 5px 0px 0px 0px;
+        }
+
+        .tree ul ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-left: 1px solid #ccc;
+            width: 0;
+            height: 20px;
+        }
+
+        .tree a {
+            border: 1px solid #ccc;
+            padding: 10px;
+            display: inline-grid;
+            border-radius: 5px;
+            text-decoration-line: none;
+            border-radius: 5px;
+            transition: .5s;
+        }
+
+        .tree a img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px !important;
+            border-radius: 100px;
+            margin: auto;
+        }
+
+        .tree a span {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            color: #666;
+            padding: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        /* Hover */
+        .tree li a:hover,
+        .tree li a:hover img,
+        .tree li a:hover span,
+        .tree li a:hover+ul li a {
+            background: #c8e4f8;
+            color: #000;
+            border: 1px solid #94a0b4;
+            box-shadow: 0px 0px 8px -5px #5f5f5f;
+        }
+
+        .tree li a:hover+ul li::after,
+        .tree li a:hover+ul li::before,
+        .tree li a:hover+ul::before,
+        .tree li a:hover+ul ul::before {
+            border-color: #94a0b4;
+        }
+    </style>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<div class="tree-container">
+
+    <div class="tree">
+        <ul>
+            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Edgard Alfonso Vadillo
+                        López</span> <span>Director de operaciones</span> </a>
+                <ul>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Daniel García</span>
+                            <span>Coordinador planta externa</span></a>
+                        <ul>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png"
+                                        alt=""><span>Construcción</span></a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Parhis Mera</span>
+                            <span>Coordinador Zona Sierra</span> </a>
+                        <ul>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Técnicos</span>
+                                    <span>Cajera</span>
+                                    <span>Agentes de cambaceo</span></a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Ángel Falcón</span>
+                            <span>Coordinador de Red</span></a>
+                    </li>
+                    <!--<li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Grand child</span></a>
+                            <ul>
+                                <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Great grand
+                                            child</span></a></li>
+                            </ul>
+                        </li>-->
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Victor Lugo</span>
+                            <span>Coordinador NOC</span> </a>
+                        <ul>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Líder
+                                        NOC</span></a></li>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Monitoristas
+                                        NOC</span></a></li>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Desarrollo de
+                                        Software</span></a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Abel Ovando</span>
+                            <span>Coordinador Zona Norte</span></a>
+                        <ul>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Oscar
+                                        Méndez</span> <span>Supervisor Allende</span></a>
+                                <ul>
+                                    <li><a href="#"><img src="../assets/img/small-logos/user.png"
+                                                alt=""><span>Técnicos</span>
+                                            <span>Cajera</span>
+                                            <span>Agentes de cambaceo</span></a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Alexis
+                                        Falcón</span> <span>Supervisor Mérida</span> </a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Carlos Mario Cruz</span>
+                            <span>Coordinador de almacén</span> </a>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Miguel Jiménez</span>
+                            <span>Coordinador Call center y Zona Centro</span> </a>
+                        <ul>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png"
+                                        alt=""><span>Técnicos</span></a></li>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Supervisor Call
+                                        Center</span></a>
+                                <ul>
+                                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Agentes
+                                                Call Center</span></a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Supervisor Mesa
+                                        Técnica</span></a>
+                                <ul>
+                                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Mesa
+                                                Técnica</span></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Carlos Gutiérrez</span>
+                            <span>Coordinador de servicios</span> </a>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>David Ovando</span>
+                            <span>Coordinador de mantenimiento</span> </a>
+                        <ul>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png"
+                                        alt=""><span>Mantenimiento</span></a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Oscar Alvarado</span>
+                            <span>Coordinador Zona Chontalpa</span> </a>
+                        <ul>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png" alt=""><span>Técnicos</span>
+                                    <span>Cajeras</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tree">
+        <ul>
+            <li> <a href="#"><img src="../assets/img/small-logos/user.png"><span>Garo Mauricio González Vega</span>
+                    <span>Director de administración</span></a>
+                <ul>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png"><span>Gabriela García</span>
+                            <span>Coordinadora de cobranza</span></a>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png"><span>Ángel Rodríguez</span>
+                            <span>Ejecutivo de ventas Senior</span> </a></li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png"><span>Jesús Valenzuela</span>
+                            <span>Diseñador Gráfico</span> </a></li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png"><span>Elvira Coix</span> <span>Coach
+                                de ventas</span> </a>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png"><span>Fabiola Rosado</span>
+                            <span>Administración de Ventas</span> </a>
+                    </li>
+                    <li> <a href="#"><img src="../assets/img/small-logos/user.png"><span>Diana Soberano</span>
+                            <span>Coordinadora legal</span> </a>
+                        <ul>
+                            <li> <a href="#"><img src="../assets/img/small-logos/user.png"><span>Daysi González</span>
+                                    <span>Abogada</span> </a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png"><span>Manuel Flores</span>
+                            <span>Ejecutivo de ventas empresarial</span> </a></li>
+                    <li><a href="#"><img src="images/9.jpg"><span>Grand Child</span></a></li>
+                    <li><a href="#"><img src="../assets/img/small-logos/user.png"><span>Araceli Salas</span>
+                            <span>Coordinador Cd. Del
+                                Carmen</span></a>
+                        <ul>
+                            <li><a href="#"><img src="../assets/img/small-logos/user.png"> <span>Técnicos</span>
+                                    <span>Cajera</span>
+                                    <span>Agentes de cambaceo</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+</html>
