@@ -593,6 +593,7 @@ $departamentos = GetDepartamento($pdo);
                                 <option>Jalapa</option>
                                 <option>Jalpa de Méndez</option>
                                 <option>Lázaro Cárdenas</option>
+                                <option>Mérida</option>
                                 <option>Nacajuca</option>
                                 <option>Paraíso </option>
                                 <option>Parrilla</option>

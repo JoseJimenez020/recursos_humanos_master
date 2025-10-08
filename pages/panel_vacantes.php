@@ -351,7 +351,7 @@ $departamentos = GetDepartamento($pdo);
                 <script>
                     function verPDFSweetAlert(url) {
                         Swal.fire({
-                            title: 'Vista previa del CV',
+                            title: 'Vista previa del Documento',
                             html: `<iframe src="${url}" width="100%" height="700px" style="border:none;"></iframe>`,
                             width: '75%',
                             showCloseButton: true,

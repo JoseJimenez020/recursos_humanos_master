@@ -565,7 +565,7 @@ function getAvisosDash(PDO $pdo): string
         <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
         <p class="text-sm my-auto">' . $full . '</p>
     </div> </a>
-    <a href="../pages/campania_ext.php?avisoId='.$a['AvisoId'] .'" class="stretched-link"></a>
+    <a href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '" class="stretched-link"></a>
 </div> ';
   }
   return $html;
@@ -959,11 +959,11 @@ HTML;
 function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
 {
 
-    $password1 = filter_var($password1, FILTER_SANITIZE_STRING);
-    $password2 = filter_var($password2, FILTER_SANITIZE_STRING);
+  $password1 = filter_var($password1, FILTER_SANITIZE_STRING);
+  $password2 = filter_var($password2, FILTER_SANITIZE_STRING);
 
-    if ($password1 !== $password2) {
-        $error = "
+  if ($password1 !== $password2) {
+    $error = "
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -975,24 +975,24 @@ function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
                 });
             });
             </script>";
-        return $error;
-    }
+    return $error;
+  }
 
-    $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
+  $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
 
 
-    try {
-        // Inserción principal
-        $stmt = $pdo->prepare("UPDATE usuarios SET 
+  try {
+    // Inserción principal
+    $stmt = $pdo->prepare("UPDATE usuarios SET 
             Contrasena = :password
         WHERE UsuarioId = :id");
 
-        $stmt->execute([
-            ':password' => $hashed_password,
-            ':id' => $UsuarioId
-        ]);
+    $stmt->execute([
+      ':password' => $hashed_password,
+      ':id' => $UsuarioId
+    ]);
 
-        $exito = "
+    $exito = "
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -1005,11 +1005,11 @@ function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
                 });
             </script>";
 
-        return $exito;
+    return $exito;
 
-    } catch (PDOException $e) {
-        echo "Error al actualizar los datos: " . $e->getMessage();
-        $error = "
+  } catch (PDOException $e) {
+    echo "Error al actualizar los datos: " . $e->getMessage();
+    $error = "
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
@@ -1021,15 +1021,15 @@ function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
                 });
             });
             </script>";
-        return $error;
-    }
+    return $error;
+  }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizarPass'])) {
-    $password1 = $_POST['password1'];
-    $password2 = $_POST['password2'];
+  $password1 = $_POST['password1'];
+  $password2 = $_POST['password2'];
 
-    echo ActualizarPassword($password1, $password2, $_SESSION['user_id'], $pdo);
+  echo ActualizarPassword($password1, $password2, $_SESSION['user_id'], $pdo);
 
 }
 
@@ -1053,11 +1053,130 @@ function getContenedorPuesto(int $id, PDO $pdo): string
     );
     $puestoEscaped = htmlspecialchars($row['PuestoNombre'], ENT_QUOTES, 'UTF-8');
 
-    $html .= "<a href=\"#\" >
+    $html .= "<p >
                 <img src=\"{$src}\" alt=\"{$fullEscaped}\">
                 <span class=\"text-xs font-weight-bold mb-0\">{$fullEscaped}</span>
                 <span class=\"text-xs text-secondary mb-0\">{$puestoEscaped}</span>
-              </a>";
+              </p>";
   }
   return $html;
+}
+
+function getTableACargo(array $puestos, array $bases, PDO $pdo): string
+{
+    // Normalizar arrays
+    $puestos = array_values(array_map('intval', array_filter($puestos, 'strlen')));
+    $bases = array_values(array_map('trim', array_filter($bases, 'strlen')));
+
+    $whereParts = [];
+    $params = [];
+
+    if (!empty($puestos)) {
+        $ph = [];
+        foreach ($puestos as $i => $p) {
+            $key = ":p{$i}";
+            $ph[] = $key;
+            $params[$key] = $p;
+        }
+        $whereParts[] = 'u.PuestoId IN (' . implode(',', $ph) . ')';
+    }
+
+    if (!empty($bases)) {
+        $phb = [];
+        foreach ($bases as $i => $b) {
+            $key = ":b{$i}";
+            $phb[] = $key;
+            $params[$key] = $b;
+        }
+        $whereParts[] = 'u.Base IN (' . implode(',', $phb) . ')';
+    }
+
+    if (empty($whereParts)) {
+        return '<tr><td colspan="2" class="text-center">Sin registros</td></tr>';
+    }
+
+    $where = implode(' AND ', $whereParts);
+
+    $sql = "SELECT u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, p.PuestoNombre, u.Base, f.FotoContenido
+            FROM usuarios u
+            LEFT JOIN puesto p ON u.PuestoId = p.PuestoId
+            LEFT JOIN fotos f ON f.EntidadTipo = 'usuario' AND f.EntidadId = u.UsuarioId
+            WHERE ($where) AND u.UsuarioActivo = 1
+            ORDER BY p.PuestoNombre ASC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (empty($rows)) {
+        return '<tr><td colspan="2" class="text-center">Sin registros</td></tr>';
+    }
+
+    $html = '';
+    foreach ($rows as $u) {
+        $src = $u['FotoContenido']
+            ? 'data:image/jpeg;base64,' . base64_encode($u['FotoContenido'])
+            : '../assets/img/small-logos/user.png';
+
+        $full = htmlspecialchars("{$u['NombreUsuario']} {$u['ApellidoPaterno']} {$u['ApellidoMaterno']}", ENT_QUOTES, 'UTF-8');
+        $puesto = htmlspecialchars($u['PuestoNombre'] ?? 'Sin registros', ENT_QUOTES, 'UTF-8');
+
+        $html .= '<tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <img src="' . $src . '" class="avatar avatar-sm me-3 border-radius-lg" alt="' . $full . '">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">' . $full . '</h6>
+                          <p class="text-xs text-secondary mb-0"> Base ' . htmlspecialchars($u['Base'] ?? '', ENT_QUOTES, 'UTF-8') . '</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">' . $puesto . '</p>
+                    </td>
+                  </tr>';
+    }
+
+    return $html;
+}
+
+function getModalSubordinados(string $modalId, array $puestos, array $bases, PDO $pdo): void
+{
+    // Normalizar inputs para usar en atributos y en la consulta
+    $puestosClean = array_values(array_map('intval', array_filter($puestos, 'strlen')));
+    $basesClean = array_values(array_map('trim', array_filter($bases, 'strlen')));
+  
+    // Generar filas ya en servidor
+    $rowsHtml = getTableACargo($puestosClean, $basesClean, $pdo);
+
+    // Imprimir modal (Bootstrap 5)
+    echo '<div class="modal fade" id="' .$modalId . '" tabindex="-1" aria-labelledby="' . htmlspecialchars($modalId, ENT_QUOTES, 'UTF-8') . 'Label" aria-hidden="true">';
+    echo '  <div class="modal-dialog modal-lg" role="document">';
+    echo '    <div class="modal-content">';
+    echo '      <div class="modal-header">';
+    echo '        <h5 class="modal-title" id="' . htmlspecialchars($modalId, ENT_QUOTES, 'UTF-8') . 'Label">Gente a cargo</h5>';
+    echo '        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
+    echo '      </div>';
+    echo '      <div class="modal-body">';
+    echo '        <div class="table-responsive p-0">';
+    echo '          <table class="table align-items-center mb-0">';
+    echo '            <thead>';
+    echo '              <tr>';
+    echo '                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre completo</th>';
+    echo '                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Puesto</th>';
+    echo '              </tr>';
+    echo '            </thead>';
+    echo '            <tbody>';
+    echo                $rowsHtml;
+    echo '            </tbody>';
+    echo '          </table>';
+    echo '        </div>';
+    echo '      </div>';
+    echo '      <div class="modal-footer">';
+    echo '        <button type="button" class="btn bg-gradient-primary" data-bs-dismiss="modal">Cerrar</button>';
+    echo '      </div>';
+    echo '    </div>';
+    echo '  </div>';
+    echo '</div>';
+
 }
