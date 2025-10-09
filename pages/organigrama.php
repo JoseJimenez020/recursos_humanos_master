@@ -6,22 +6,6 @@ require '../controllers/dashboard.php';
 
 <head>
     <style>
-        /* 1.3 Cuando el <li> tenga .active mostramos tooltip */
-        .tree li.active .tooltip {
-            display: block;
-        }
-
-        /* (Opcional) si quieres desplegar la lista también bajo el árbol */
-        .tree li.active>ul {
-            display: block;
-        }
-
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-
         .tree-container {
             display: flex;
             flex-direction: row;
@@ -29,23 +13,26 @@ require '../controllers/dashboard.php';
             /* Alinea los árboles por su tope */
             gap: 10px;
             /* Separación horizontal */
-            padding: 5px;
-            overflow-x: auto;
+            padding: 0.5px;
             /* Scroll horizontal si desborda */
             width: 100%;
+            flex-wrap: nowrap;
         }
 
         .tree {
-            flex: 0 0 auto;
+            flex: 1 1 50%;
             /* Cada árbol mantiene su ancho mínimo */
-            min-width: 100px;
-            /* Ajusta según tu diseño */
+            width: 50%;
+            overflow-x: auto;
+            min-width: 0;
         }
 
         .tree ul {
             padding-top: 20px;
             position: relative;
             transition: .5s;
+            width: max-content;
+            display: block;
         }
 
         .tree li {
@@ -53,7 +40,7 @@ require '../controllers/dashboard.php';
             text-align: center;
             list-style-type: none;
             position: relative;
-            padding: 5px;
+            padding: 10px;
             transition: .5s;
         }
 
@@ -65,7 +52,7 @@ require '../controllers/dashboard.php';
             right: 50%;
             border-top: 1px solid #ccc;
             width: 51%;
-            height: 15px;
+            height: 10px;
         }
 
         .tree li::after {
@@ -90,11 +77,15 @@ require '../controllers/dashboard.php';
 
         .tree li:last-child::before {
             border-right: 1px solid #ccc;
-            border-radius: 0px 5px 0px 0px;
+            border-radius: 0 5px 0 0;
+            -webkit-border-radius: 0 5px 0 0;
+            -moz-border-radius: 0 5px 0 0;
         }
 
         .tree li:first-child::after {
-            border-radius: 5px 0px 0px 0px;
+            border-radius: 5px 0 0 0;
+            -webkit-border-radius: 5px 0 0 0;
+            -moz-border-radius: 5px 0 0 0;
         }
 
         .tree ul ul::before {
@@ -107,9 +98,9 @@ require '../controllers/dashboard.php';
             height: 20px;
         }
 
-        .tree p {
+        .tree li p {
             border: 1px solid #ccc;
-            padding: 6px;
+            padding: 10px;
             display: inline-grid;
             border-radius: 5px;
             text-decoration-line: none;
@@ -117,7 +108,7 @@ require '../controllers/dashboard.php';
             transition: .5s;
         }
 
-        .tree p img {
+        .tree li p img {
             width: 50px;
             height: 50px;
             margin-bottom: 10px !important;
@@ -125,26 +116,25 @@ require '../controllers/dashboard.php';
             margin: auto;
         }
 
-        .tree p span {
+        .tree li p span {
             border: 1px solid #ccc;
             border-radius: 5px;
             color: #666;
-            padding: 4px 6px;
-            font-size: 10px;
+            padding: 8px;
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 500;
         }
 
-        /* Hover */
+        /*Hover-Section*/
         .tree li p:hover,
-        .tree li p:hover img,
+        .tree li p:hover i,
         .tree li p:hover span,
-        .tree li p:hover+ul li p {
+        .tree li p:hover+ul li a {
             background: #c8e4f8;
             color: #000;
             border: 1px solid #94a0b4;
-            box-shadow: 0px 0px 8px -5px #5f5f5f;
         }
 
         .tree li p:hover+ul li::after,
@@ -490,9 +480,8 @@ require '../controllers/dashboard.php';
                                     <li> <?= getContenedorPuesto(22, $pdo) ?>
                                         <ul>
                                             <li data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal"
-                                                data-bs-target="#construccion"
-                                            ><?= getContenedorPuesto(6, $pdo) ?>
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#construccion">
+                                                <?= getContenedorPuesto(6, $pdo) ?>
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
@@ -514,8 +503,7 @@ require '../controllers/dashboard.php';
                                             <li><?= getContenedorPuesto(48, $pdo) ?>
                                             </li>
                                             <li data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal"
-                                                data-bs-target="#lidernoc">
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#lidernoc">
                                                 <?= getContenedorPuesto(32, $pdo) ?>
                                                 <ul>
                                                     <li>
@@ -555,8 +543,8 @@ require '../controllers/dashboard.php';
                                             <li> <?= getContenedorPuesto(69, $pdo) ?>
                                             </li>
                                             <li data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal"
-                                                data-bs-target="#centro"> <?= getContenedorPuesto(2, $pdo) ?>
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#centro">
+                                                <?= getContenedorPuesto(2, $pdo) ?>
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
@@ -612,9 +600,6 @@ require '../controllers/dashboard.php';
                                     </li>
                                 </ul>
                             </div>
-                        </div>
-
-                        <div class="tree-container">
                             <div class="tree">
                                 <ul>
                                     <li><?= getContenedorPuesto(23, $pdo) ?>
@@ -633,28 +618,27 @@ require '../controllers/dashboard.php';
                                                 </ul>
                                             </li>
                                             <li> <?= getContenedorPuesto(71, $pdo) ?>
+                                            </li>
+                                            <li> <?= getContenedorPuesto(5, $pdo) ?>
                                                 <ul>
                                                     <li><?= getContenedorPuesto(91, $pdo) ?>
                                                         <ul>
                                                             <li><?= getContenedorPuesto(25, $pdo) ?></li>
                                                         </ul>
                                                     </li>
-                                                </ul>
-                                            </li>
-                                            <li> <?= getContenedorPuesto(5, $pdo) ?>
-                                                <ul>
                                                     <li> <?= getContenedorPuesto(92, $pdo) ?> </li>
                                                 </ul>
                                             </li>
                                             <li data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal"
-                                                data-bs-target="#carmen"> <?= getContenedorPuesto(61, $pdo) ?>
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#carmen">
+                                                <?= getContenedorPuesto(61, $pdo) ?>
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png">
-                                                            <span>Técnicos</span>
-                                                            <span>Cajera</span>
-                                                            <span>Agentes de cambaceo</span>
+                                                            <span class="text-xs text-secondary mb-0">Técnicos</span>
+                                                            <span class="text-xs text-secondary mb-0">Cajera</span>
+                                                            <span class="text-xs text-secondary mb-0">Agentes de
+                                                                cambaceo</span>
                                                         </p>
                                                     </li>
                                                 </ul>
@@ -769,9 +753,36 @@ require '../controllers/dashboard.php';
     <?= getModalSubordinados("carmen", [24, 25, 37, 38, 17, 40], ["Ciudad del carmen"], $pdo) ?>
 
     <?= getModalSubordinados("centro", [24, 25, 37, 38, 12, 14, 13, 15], ["Villahermosa"], $pdo) ?>
-    
-    <!--FIN DEL MODAL DE LAS PERSONAS A CARGO -->
 
+    <!--FIN DEL MODAL DE LAS PERSONAS A CARGO -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Selecciona TODOS los elementos que tienen el scroll individual.
+            const treeElements = document.querySelectorAll('.tree');
+
+            // 2. Itera sobre cada uno de ellos para aplicar el centrado.
+            treeElements.forEach(function(tree) {
+                // tree es ahora el elemento div.tree que tiene overflow-x: auto
+
+                if (tree) {
+                    // El scrollWidth es el ancho total del contenido (el organigrama).
+                    const scrollWidth = tree.scrollWidth;
+                    // El clientWidth es el ancho visible del div.tree (en tu caso, 50%).
+                    const clientWidth = tree.clientWidth;
+
+                    // 3. Calcula la posición central.
+                    // Posición = (Ancho Total del Contenido - Ancho Visible) / 2
+                    const centerPosition = (scrollWidth - clientWidth) / 2;
+
+                    // 4. Aplica el scroll a ese elemento individual.
+                    tree.scrollTo({
+                        left: centerPosition,
+                        behavior: 'auto' // Centra instantáneamente
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
