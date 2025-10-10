@@ -49,41 +49,41 @@ require_once '../controllers/logica_usuario.php';
         <li class="nav-item">
           <a class="nav-link text-primary" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
-            <span class="nav-link-text ms-1">Home</span>
+            <span class="nav-link-text ms-1">Inicio</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -132,7 +132,7 @@ require_once '../controllers/logica_usuario.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
@@ -167,41 +167,41 @@ require_once '../controllers/logica_usuario.php';
         <li class="nav-item">
           <a class="nav-link text-primary" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
-            <span class="nav-link-text ms-1">Home</span>
+            <span class="nav-link-text ms-1">Inicio</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -217,7 +217,7 @@ require_once '../controllers/logica_usuario.php';
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
@@ -245,7 +245,7 @@ require_once '../controllers/logica_usuario.php';
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">RRHH</a></li>
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Perfil</li>
           </ol>
         </nav>
@@ -266,7 +266,7 @@ require_once '../controllers/logica_usuario.php';
             <li class="nav-item dropdown pe-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-sm  me-3 ">
+                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-lg  me-3 ">
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                 <li class="mb-2">
@@ -279,6 +279,19 @@ require_once '../controllers/logica_usuario.php';
                         <h6 class="text-sm font-weight-normal mb-1">
                           Perfil
                         </h6>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                    data-bs-target="#modal-password">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <i class="material-symbols-rounded">password</i>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">Cambiar contraseña</h6>
                       </div>
                     </div>
                   </a>
@@ -307,7 +320,7 @@ require_once '../controllers/logica_usuario.php';
     <!-- End Navbar -->
 
     <div class="container-fluid px-2 px-md-4">
-      <div class="page-header min-height-300 border-radius-xl mt-4"
+      <div class="page-header min-height-200 border-radius-xl mt-4"
         style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
         <span class="mask  bg-gradient-dark  opacity-6"></span>
       </div>
@@ -379,7 +392,7 @@ require_once '../controllers/logica_usuario.php';
                   </div>
                   <p class="text-sm d-xl-none d-block mt-2">Puedes elegir igual que en la vista de escritorio</p>
                   <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal"
-                    data-bs-target="#modal-form">Cambiar Contraseña</button>
+                    data-bs-target="#modal-password">Cambiar Contraseña</button>
                 </div>
               </div>
             </div>
@@ -437,148 +450,7 @@ require_once '../controllers/logica_usuario.php';
               </div>
               <div class="row">
                 <div class="card-group">
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Aquí va información adicional a la imagen del aviso que se quiera agregar.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">25 de enero del 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Ale RH</p>
-                    </div>
-                  </div>
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">30 de abril del 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">José Alberto Jiménez</p>
-                    </div>
-                  </div>
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">30 de julio del 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Admin</p>
-                    </div>
-                  </div>
-                  <div class="card" data-animation="true">
-                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                      <a class="d-block blur-shadow-image">
-                        <img
-                          src="https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg"
-                          alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-                      </a>
-                      <div class="colored-shadow"
-                        style="background-image: url(&quot;https://demos.creative-tim.com/test/material-dashboard-pro/assets/img/products/product-1-min.jpg&quot;);">
-                      </div>
-                    </div>
-                    <div class="card-body text-center">
-                      <div class="d-flex mt-n6 mx-auto">
-                        <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </a>
-                        <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip"
-                          data-bs-placement="bottom" title="">
-                        </button>
-                      </div>
-                      <h5 class="font-weight-normal mt-3">
-                        <a href="javascript:;">Título del aviso</a>
-                      </h5>
-                      <p class="mb-0">
-                        Duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer d-flex">
-                      <p class="font-weight-normal my-auto">25 de julio de 2025</p>
-                      <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-                      <p class="text-sm my-auto">Juan Pérez</p>
-                    </div>
-                  </div>
+                  <?= getAvisosDash($pdo) ?>
                 </div>
               </div>
             </div>
@@ -596,8 +468,8 @@ require_once '../controllers/logica_usuario.php';
               <script>
                 document.write(new Date().getFullYear())
               </script>,
-              Powered by
-              <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">Fast-net</a>
+              Desarrollado por
+              <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">FastNet</a>
             </div>
           </div>
         </div>
@@ -715,40 +587,35 @@ require_once '../controllers/logica_usuario.php';
         </form>
       </div>
     </div>
-
   </div>
   <!--End logout modal-->
 
   <!--MODAL CAMBIAR CONTRASEÑA-->
-  <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+  <div class="modal fade" id="modal-password" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
-        <div class="modal-body p-0">
-          <div class="card card-plain">
-            <div class="card-header pb-0 text-left">
-              <h5 class="">Cambiar Contraseña</h5>
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalLabel">Cambiar Contraseña</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form role="form text-left" method="post">
+          <div class="modal-body">
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Nueva contraseña</label>
+              <input type="password" name="password1" autocomplete="new-password" autofocus="" class="form-control"
+                required="" id="id_password1" onfocus=" focused(this)" onfocusout="defocused(this)">
             </div>
-            <div class="card-body">
-
-              <form role="form text-left" method="post">
-                <div class="input-group input-group-outline my-3">
-                  <label class="form-label">Nueva contraseña</label>
-                  <input type="password" name="password1" autocomplete="new-password" autofocus="" class="form-control"
-                    required="" id="id_password1" onfocus=" focused(this)" onfocusout="defocused(this)">
-                </div>
-                <div class="input-group input-group-outline my-3">
-                  <label class="form-label">Repetir contraseña</label>
-                  <input type="password" name="password2" autocomplete="new-password" class="form-control" required=""
-                    id="id_password2" onfocus="focused(this)" onfocusout="defocused(this)">
-                </div>
-                <div class="text-center">
-                  <button type="submit" name="actualizarPass"
-                    class="btn btn-round bg-gradient-primary btn-lg w-100 mt-4 mb-0">Cambiar</button>
-                </div>
-              </form>
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Repetir contraseña</label>
+              <input type="password" name="password2" autocomplete="new-password" class="form-control" required=""
+                id="id_password2" onfocus="focused(this)" onfocusout="defocused(this)">
+            </div>
+            <div class="modal-footer">
+              <button type="submit" name="actualizarPass" class="btn bg-gradient-primary">Cambiar</button>
+              <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>

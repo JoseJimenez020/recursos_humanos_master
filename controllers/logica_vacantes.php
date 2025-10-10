@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 session_start();
 require_once 'conn.php';
 
@@ -438,4 +438,81 @@ function GetTableRecomendaciones(PDO $pdo, int $vacanteId): string
     }
 
     return $html;
+}
+
+function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
+{
+
+    $password1 = filter_var($password1, FILTER_SANITIZE_STRING);
+    $password2 = filter_var($password2, FILTER_SANITIZE_STRING);
+
+    if ($password1 !== $password2) {
+        $error = "
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Las contraseñas no coinciden.',
+                        icon: 'error'
+                    }).then(() => {
+                    window.location.href = '';
+                });
+            });
+            </script>";
+        return $error;
+    }
+
+    $hashed_password = password_hash($password1, PASSWORD_DEFAULT);
+
+
+    try {
+        // Inserción principal
+        $stmt = $pdo->prepare("UPDATE usuarios SET 
+            Contrasena = :password
+        WHERE UsuarioId = :id");
+
+        $stmt->execute([
+            ':password' => $hashed_password,
+            ':id' => $UsuarioId
+        ]);
+
+        $exito = "
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: 'Contraseña actualizada exitosamente.',
+                        icon: 'success'
+                    }).then(() => {
+                        window.location.href = '';
+                    });
+                });
+            </script>";
+
+        return $exito;
+
+    } catch (PDOException $e) {
+        echo "Error al actualizar los datos: " . $e->getMessage();
+        $error = "
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Ocurrio un error inesperado.',
+                        icon: 'error'
+                    }).then(() => {
+                    window.location.href = '';
+                });
+            });
+            </script>";
+        return $error;
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizarPass'])) {
+    $password1 = $_POST['password1'];
+    $password2 = $_POST['password2'];
+
+    echo ActualizarPassword($password1, $password2, $_SESSION['user_id'], $pdo);
+
 }

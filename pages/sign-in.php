@@ -1,17 +1,3 @@
-<!--
-=========================================================
-* Material Dashboard 3 - v3.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <?php
 require_once '../controllers/login.php';
 ?>
@@ -70,7 +56,7 @@ require_once '../controllers/login.php';
                   </div>
                   <div class="input-group input-group-outline mb-3">
                     <label class="form-label" type="password">Contraseña</label>
-                    <input type="password"  name="password" class="form-control">
+                    <input type="password" name="password" class="form-control">
                   </div>
                   <div class="form-check form-switch d-flex align-items-center mb-3">
                     <input class="form-check-input" type="checkbox" id="rememberMe">
@@ -94,8 +80,8 @@ require_once '../controllers/login.php';
                 <script>
                   document.write(new Date().getFullYear())
                 </script>,
-                Powered by
-                <a href="https://www.fast-net.com.mx" class="font-weight-bold text-white" target="_blank">Fast-net</a>
+                Desarrollado por
+                <a href="https://www.fast-net.com.mx" class="font-weight-bold text-white" target="_blank">FastNet</a>
               </div>
             </div>
           </div>
@@ -119,7 +105,36 @@ require_once '../controllers/login.php';
   </script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // IDs: inputs must tener name/ID username, password y checkbox rememberMe
+    const usernameInput = document.querySelector('input[name="username"]');
+    const passwordInput = document.querySelector('input[name="password"]');
+    const rememberCheckbox = document.getElementById('rememberMe');
+
+    // Al cargar, rellena si existe
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedUser = localStorage.getItem('rh_username');
+      if (savedUser) usernameInput.value = savedUser;
+      const savedPass = localStorage.getItem('rh_password');
+      if (savedPass) passwordInput.value = savedPass;
+      const remember = localStorage.getItem('rh_remember') === '1';
+      rememberCheckbox.checked = remember;
+    });
+
+    // Al enviar el formulario
+    document.querySelector('form').addEventListener('submit', () => {
+      if (rememberCheckbox.checked) {
+        localStorage.setItem('rh_username', usernameInput.value);
+        localStorage.setItem('rh_password', passwordInput.value); // no recomendado
+        localStorage.setItem('rh_remember', '1');
+      } else {
+        localStorage.removeItem('rh_username');
+        localStorage.removeItem('rh_password');
+        localStorage.setItem('rh_remember', '0');
+      }
+    });
+  </script>
 </body>
 
 </html>

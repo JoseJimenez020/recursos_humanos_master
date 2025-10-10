@@ -1,18 +1,3 @@
-<!--
-=========================================================
-* Material Dashboard 3 - v3.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <?php
 require '../controllers/dashboard.php';
 
@@ -33,6 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 
 <head>
+  <style>
+
+  </style>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
@@ -76,41 +64,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <li class="nav-item">
           <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
-            <span class="nav-link-text ms-1">Home</span>
+            <span class="nav-link-text ms-1">Inicio</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -159,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
@@ -193,41 +181,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <li class="nav-item">
           <a class="nav-link active bg-gradient-primary text-white" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
-            <span class="nav-link-text ms-1">Home</span>
+            <span class="nav-link-text ms-1">Inicio</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/politicas.html">
+          <a class="nav-link text-primary" href="../pages/politicas.php">
             <i class="material-symbols-rounded opacity-5">policy</i>
             <span class="nav-link-text ms-1">Políticas</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+          <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
             <i class="material-symbols-rounded opacity-5">rule</i>
             <span class="nav-link-text ms-1">Reglamento Interno</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/procesos.html">
+          <a class="nav-link text-primary" href="../pages/procesos.php">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Procesos</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/organigrama.html">
+          <a class="nav-link text-primary" href="../pages/organigrama.php">
             <i class="material-symbols-rounded opacity-5">globe_book</i>
             <span class="nav-link-text ms-1">Organigrama</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/mision_vision.html">
+          <a class="nav-link text-primary" href="../pages/mision_vision.php">
             <i class="material-symbols-rounded opacity-5">public</i>
             <span class="nav-link-text ms-1">Misión, Visión</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/valores.html">
+          <a class="nav-link text-primary" href="../pages/valores.php">
             <i class="material-symbols-rounded opacity-5">psychology</i>
             <span class="nav-link-text ms-1">Valores</span>
           </a>
@@ -243,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-primary" href="../pages/nom035.html">
+          <a class="nav-link text-primary" href="../pages/nom035.php">
             <i class="material-symbols-rounded opacity-5">comment</i>
             <span class="nav-link-text ms-1">NOM-35</span>
           </a>
@@ -270,8 +258,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Home</li>
+            <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">RRHH</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Inicio</li>
           </ol>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
@@ -291,7 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <li class="nav-item dropdown pe-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-sm  me-3 ">
+                <img <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?> class="avatar avatar-lg me-3">
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
                 <li class="mb-2">
@@ -310,6 +298,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </li>
                 <li class="mb-2">
                   <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                    data-bs-target="#modal-password">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <i class="material-symbols-rounded">password</i>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">Cambiar contraseña</h6>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="mb-2">
+                  <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
                     data-bs-target="#logoutModal">
                     <div class="d-flex py-1">
                       <div class="my-auto">
@@ -320,8 +321,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       </div>
                     </div>
                   </a>
-                </li>
-                <li>
                 </li>
               </ul>
             </li>
@@ -365,6 +364,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="row">
                   <h6 class="mb-0">¡Sé bienvenid@!</h6>
                   <h6 class="mb-0" id="fechaCompleta"></h6>
+                  <a href="http://45.188.76.34:8081/" target="_blank"> <img class="border-radius-lg w-50"
+                      src="../assets/img/BIOTIME.png" alt=""> </a>
                 </div>
               </div>
               <hr class="dark horizontal">
@@ -372,7 +373,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="col-md-auto mx-auto">
                   <div id="carouselAvisos" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                     <?= getCarouselFelicitaciones($pdo)?>
+                      <?= getCarouselFelicitaciones($pdo) ?>
                     </div>
                   </div>
                 </div>
@@ -475,8 +476,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <script>
                   document.write(new Date().getFullYear())
                 </script>,
-                Powered by
-                <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">Fast-net</a>
+                Desarrollado por
+                <a href="https://www.fast-net.com.mx" class="font-weight-bold" target="_blank">FastNet</a>
               </div>
             </div>
           </div>
@@ -563,7 +564,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>';
   }
   ?>
-
 
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
@@ -681,7 +681,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <i class="material-symbols-rounded h1 text-secondary">Borrar Mensaje</i>
           <h4 class="text-danger mt-4">Atención</h4>
           <p>
-            Está a punto de borrar el mensaje
+            Está a punto de borrar el mensaje de
             <strong><span id="modal-username">@Nombre_usuario</span></strong>,
             ¿Está seguro que desea continuar?
           </p>
@@ -746,6 +746,110 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       document.getElementById('delete-quejaid').value = quejaId;
     });
   </script>
+  <!-- Modal -->
+  <div class="modal fade" id="calendarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 60vw;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Calendario completo</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-0">
+          <!-- Aquí inyectaremos el calendario -->
+          <div id="modalCalendarBody"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--MODAL CAMBIAR CONTRASEÑA-->
+  <div class="modal fade" id="modal-password" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalLabel">Cambiar Contraseña</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form role="form text-left" method="post">
+          <div class="modal-body">
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Nueva contraseña</label>
+              <input type="password" name="password1" autocomplete="new-password" autofocus="" class="form-control"
+                required="" id="id_password1" onfocus=" focused(this)" onfocusout="defocused(this)">
+            </div>
+            <div class="input-group input-group-outline my-3">
+              <label class="form-label">Repetir contraseña</label>
+              <input type="password" name="password2" autocomplete="new-password" class="form-control" required=""
+                id="id_password2" onfocus="focused(this)" onfocusout="defocused(this)">
+            </div>
+            <div class="modal-footer">
+              <button type="submit" name="actualizarPass" class="btn bg-gradient-primary">Cambiar</button>
+              <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--FIN DEL MODAL PARA CAMBIAR CONTRASEÑA-->
+
+  <!-- MODAL PARA VER MÁS SOBRE LA FELICITACIÓN -->
+  <div class="modal fade" id="felicitacionModal" tabindex="-1" role="dialog" aria-labelledby="modal-default"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 id="modal-title-default" class="modal-title font-weight-normal">
+            ¡Felicidades!
+          </h6>
+          <i class="material-symbols-rounded me-2 text-lg">celebration</i>
+          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="card card-background">
+            <div class="full-background" style="background-image:
+                      url('https://images.unsplash.com/photo-1497294815431-9365093b7331?…
+                      q=80')">
+            </div>
+            <div class="card-body pt-12">
+              <h4 id="modalNombre" class="text-white font-weight-normal">
+              </h4>
+              <p id="modalMensaje"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const modalEl = document.getElementById('felicitacionModal');
+    modalEl.addEventListener('show.bs.modal', function (event) {
+      const trigger = event.relatedTarget;
+
+      // Leer atributos data-*
+      const nombre = trigger.getAttribute('data-nombre') || '';
+      const mensaje = trigger.getAttribute('data-mensaje') || '';
+      const foto = trigger.getAttribute('data-foto') || '';
+
+      // Referencias dentro del modal
+      const bgDiv = modalEl.querySelector('.full-background');
+      const h4 = modalEl.querySelector('#modalNombre');
+      const p = modalEl.querySelector('#modalMensaje');
+
+      // Inyectar texto
+      h4.textContent = nombre;
+      p.textContent = mensaje;
+
+      // Actualizar fondo
+      if (foto) {
+        bgDiv.style.backgroundImage = `url('${foto}')`;
+      }
+    });
+  </script>
+  <!-- FIN DEL MODAL PARA VER MÁS SOBRE LA FELICITACIÓN -->
+
 </body>
 
 </html>

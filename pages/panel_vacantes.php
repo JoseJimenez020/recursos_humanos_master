@@ -68,41 +68,41 @@ $departamentos = GetDepartamento($pdo);
                 <li class="nav-item">
                     <a class="nav-link text-primary" href="../pages/dashboard.php">
                         <i class="material-symbols-rounded opacity-5">dashboard</i>
-                        <span class="nav-link-text ms-1">Home</span>
+                        <span class="nav-link-text ms-1">Inicio</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/politicas.html">
+                    <a class="nav-link text-primary" href="../pages/politicas.php">
                         <i class="material-symbols-rounded opacity-5">policy</i>
                         <span class="nav-link-text ms-1">Políticas</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/reglamento_interno.html">
+                    <a class="nav-link text-primary" href="../pages/reglamento_interno.php">
                         <i class="material-symbols-rounded opacity-5">rule</i>
                         <span class="nav-link-text ms-1">Reglamento Interno</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/procesos.html">
+                    <a class="nav-link text-primary" href="../pages/procesos.php">
                         <i class="material-symbols-rounded opacity-5">receipt_long</i>
                         <span class="nav-link-text ms-1">Procesos</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/organigrama.html">
+                    <a class="nav-link text-primary" href="../pages/organigrama.php">
                         <i class="material-symbols-rounded opacity-5">globe_book</i>
                         <span class="nav-link-text ms-1">Organigrama</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/mision_vision.html">
+                    <a class="nav-link text-primary" href="../pages/mision_vision.php">
                         <i class="material-symbols-rounded opacity-5">public</i>
                         <span class="nav-link-text ms-1">Misión, Visión</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/valores.html">
+                    <a class="nav-link text-primary" href="../pages/valores.php">
                         <i class="material-symbols-rounded opacity-5">psychology</i>
                         <span class="nav-link-text ms-1">Valores</span>
                     </a>
@@ -152,7 +152,7 @@ $departamentos = GetDepartamento($pdo);
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="../pages/nom035.html">
+                    <a class="nav-link text-primary" href="../pages/nom035.php">
                         <i class="material-symbols-rounded opacity-5">comment</i>
                         <span class="nav-link-text ms-1">NOM-35</span>
                     </a>
@@ -177,7 +177,7 @@ $departamentos = GetDepartamento($pdo);
             <div class="container-fluid py-1 px-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
+                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">RRHH</a>
                         </li>
                         <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Vacantes</li>
                     </ol>
@@ -199,7 +199,7 @@ $departamentos = GetDepartamento($pdo);
                         <li class="nav-item dropdown pe-3 d-flex align-items-center">
                             <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                <img class="avatar avatar-sm  me-3" <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?>>
+                                <img class="avatar avatar-lg  me-3" <?php echo isset($sesion) ? obtenerFotoUsuario($pdo, $sesion['UsuarioId']) : 'src="../assets/img/small-logos/user.png"' ?>>
                             </a>
                             <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4"
                                 aria-labelledby="dropdownMenuButton">
@@ -213,6 +213,19 @@ $departamentos = GetDepartamento($pdo);
                                                 <h6 class="text-sm font-weight-normal mb-1">
                                                     Perfil
                                                 </h6>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="mb-2">
+                                    <a class="dropdown-item border-radius-md" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#modal-password">
+                                        <div class="d-flex py-1">
+                                            <div class="my-auto">
+                                                <i class="material-symbols-rounded">password</i>
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="text-sm font-weight-normal mb-1">Cambiar contraseña</h6>
                                             </div>
                                         </div>
                                     </a>
@@ -241,9 +254,7 @@ $departamentos = GetDepartamento($pdo);
         <!-- End Navbar -->
 
         <div class="container-fluid px-2 px-md-4">
-            <div class="page-header min-height-300 border-radius-xl mt-4"
-                style="background-image: url('../assets/img/illustrations/banner-vacantes.jpg');">
-                <span class="mask  bg-gradient-dark  opacity-6"></span>
+            <div class="page-header min-height-100 border-radius-xl mt-4">
             </div>
             <div class="card card-body mx-2 mx-md-2 mt-n6">
                 <div class="row gx-4 mb-2">
@@ -340,7 +351,7 @@ $departamentos = GetDepartamento($pdo);
                 <script>
                     function verPDFSweetAlert(url) {
                         Swal.fire({
-                            title: 'Vista previa del CV',
+                            title: 'Vista previa del Documento',
                             html: `<iframe src="${url}" width="100%" height="700px" style="border:none;"></iframe>`,
                             width: '75%',
                             showCloseButton: true,
@@ -363,9 +374,9 @@ $departamentos = GetDepartamento($pdo);
                                 <script>
                                     document.write(new Date().getFullYear())
                                 </script>,
-                                Powered by
+                                Desarrollado por
                                 <a href="https://www.fast-net.com.mx" class="font-weight-bold"
-                                    target="_blank">Fast-net</a>
+                                    target="_blank">FastNet</a>
                             </div>
                         </div>
                     </div>
@@ -609,6 +620,38 @@ $departamentos = GetDepartamento($pdo);
                 });
             });
         </script>
+        <!--MODAL CAMBIAR CONTRASEÑA-->
+        <div class="modal fade" id="modal-password" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="logoutModalLabel">Cambiar Contraseña</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form role="form text-left" method="post">
+                        <div class="modal-body">
+                            <div class="input-group input-group-outline my-3">
+                                <label class="form-label">Nueva contraseña</label>
+                                <input type="password" name="password1" autocomplete="new-password" autofocus=""
+                                    class="form-control" required="" id="id_password1" onfocus=" focused(this)"
+                                    onfocusout="defocused(this)">
+                            </div>
+                            <div class="input-group input-group-outline my-3">
+                                <label class="form-label">Repetir contraseña</label>
+                                <input type="password" name="password2" autocomplete="new-password" class="form-control"
+                                    required="" id="id_password2" onfocus="focused(this)" onfocusout="defocused(this)">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="actualizarPass"
+                                    class="btn bg-gradient-primary">Cambiar</button>
+                                <button type="button" class="btn btn-link" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--FIN DEL MODAL PARA CAMBIAR CONTRASEÑA-->
 </body>
 
 </html>
