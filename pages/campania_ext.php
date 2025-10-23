@@ -122,6 +122,12 @@ $date = date('d/m/Y', strtotime($aviso['Fecha']));
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/panel_candidatos.php">
+            <i class="material-symbols-rounded opacity-5">group_add</i>
+            <span class="nav-link-text ms-1">Candidatos</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link text-primary" href="../pages/avisos.php">
             <i class="material-symbols-rounded opacity-5">add_alert</i>
             <span class="nav-link-text ms-1">Avisos</span>

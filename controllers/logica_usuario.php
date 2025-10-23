@@ -22,126 +22,6 @@ if (!isset($_SESSION['user_id'])) {
 require 'sesion.php';
 require 'logout.php';
 
-function GetTableUsuarios(PDO $pdo, string $nombre, string $departamento): string
-{
-    $sql = "SELECT
-        u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno,
-        u.Username, u.NumeroTelefono, u.TipoSangre, d.DepartamentoNombre, p.PuestoNombre,
-        ce.NombreContacto, ce.Parentezco, ce.NumeroTelefono AS CEtelefono,
-        u.UsuarioActivo, u.FechaRegistro, f.FotoContenido
-      FROM usuarios u
-      LEFT JOIN departamento d ON u.DepartamentoId = d.DepartamentoId
-      LEFT JOIN puesto p        ON u.PuestoId       = p.PuestoId
-      LEFT JOIN contacto_emergencia ce ON ce.UsuarioId = u.UsuarioId
-      LEFT JOIN fotos f ON f.EntidadTipo = 'usuario'
-                       AND f.EntidadId   = u.UsuarioId
-      WHERE 1=1
-    ";
-
-    $params = [];
-
-    // Filtro por nombre
-    if ($nombre !== '') {
-        $sql .= " AND (
-                        u.NombreUsuario   LIKE ? OR
-                        u.ApellidoPaterno LIKE ? OR
-                        u.ApellidoMaterno LIKE ? OR
-                        u.Username        LIKE ?
-
-                     )";
-        // clave sin dos puntos
-        $params = array_fill(0, 4, "%{$nombre}%");
-
-    }
-
-    // Filtro por departamento
-    if ($departamento !== '') {
-        $sql .= " AND u.DepartamentoId = :departamento";
-        $params['departamento'] = $departamento;
-    }
-
-    $sql .= " ORDER BY u.ApellidoPaterno";
-
-    // Preparar y ejecutar
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    if (empty($rows)) {
-        return '<tr><td colspan="6" class="text-center">Sin registros</td></tr>';
-    }
-
-    $html = '';
-    foreach ($rows as $u) {
-        $src = $u['FotoContenido']
-            ? 'data:image/jpeg;base64,' . base64_encode($u['FotoContenido'])
-            : '../assets/img/small-logos/user.png';
-
-        $full = "{$u['NombreUsuario']} {$u['ApellidoPaterno']} {$u['ApellidoMaterno']}";
-        $badge = $u['UsuarioActivo']
-            ? '<span class="badge bg-success">Activo</span>'
-            : '<span class="badge bg-secondary">Vacaciones</span>';
-
-        $html .= '<tr>
-                    <td>
-                        <div class="d-flex px-2 py-1">
-                        <a href="#" class="edit-photo"
-                        data-bs-toggle="modal"
-                        data-bs-target="#fotoPerfilModal"
-                        data-user-id="' . $u['UsuarioId'] . '"
-                        data-photo-src="' . $src . '">
-                        <img src="' . $src . '"
-                            class="avatar avatar-sm me-3 border-radius-lg"
-                            style="cursor: pointer;">
-                        </a>
-                        <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">' . $full . '</h6>
-                            <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['Username']) . '</p>
-                            <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['NumeroTelefono'] ?? 'No disponible') . '</p>
-                            <p class="text-xs text-secondary mb-0">' . htmlspecialchars($u['TipoSangre'] ?? 'No disponible') . '</p>
-                        </div>
-                        </div>
-                    </td>
-                    <td>
-                        <p class="text-xs font-weight-bold mb-0">' . ($u['PuestoNombre'] ?? 'Sin registros') . '</p>
-                        <p class="text-xs text-secondary mb-0">' . ($u['DepartamentoNombre'] ?? 'Sin registros') . '</p>
-                    </td>
-                    <td>
-                        <p class="text-xs font-weight-bold mb-0">' . ($u['NombreContacto'] ?? 'Sin registros') . '</p>
-                        <p class="text-xs text-secondary mb-0">' . ($u['Parentezco'] ?? 'Sin registros') . '</p>
-                        <p class="text-xs text-secondary mb-0">' . ($u['CEtelefono'] ?? 'Sin registros') . '</p>
-                    </td>
-                    <td class="text-center text-sm">' . $badge . '</td>
-                    <td class="text-center text-xs">' . date('d/m/Y', strtotime($u['FechaRegistro'])) . '</td>
-                    <td class="align-middle">
-                        <a href="" class="text-secondary font-weight-bold text-xs btn-edit"
-                        data-user-id="' . ($u['UsuarioId']) . '"
-                        data-bs-toggle="modal" data-bs-target="#modal-edit">
-                        <i class="material-symbols-rounded opacity-5">edit</i>
-                        </a>
-                        <a href="" class="text-danger font-weight-bold text-xs"
-                        data-user-id="' . ($u['UsuarioId']) . '"';
-        $full = "{$u['NombreUsuario']} {$u['ApellidoPaterno']} {$u['ApellidoMaterno']}";
-        $html .= 'data-user-name="' . htmlspecialchars($full) . '"
-                        data-toggle="tooltip" data-original-title="Delete user" target="_blank"
-                        data-bs-toggle="modal" data-bs-target="#modal-notification">
-                        <i class="material-symbols-rounded opacity-5">delete</i>
-                        </a>
-                        <a href="" class="text-success font-weight-bold text-xs"
-                        data-user-id="' . ($u['UsuarioId']) . '"
-                        data-user-name="' . htmlspecialchars($full) . '"
-                        data-toggle="tooltip" data-original-title="Vacations" target="_blank"
-                        data-bs-toggle="modal" data-bs-target="#modal-form">
-                        <i class="material-symbols-rounded opacity-5">beach_access</i>
-                        </a>
-                    </td>
-                    </tr>';
-    }
-
-    return $html;
-
-}
-
 function GetDepartamento($pdo)
 {
     $query = "SELECT * FROM departamento";
@@ -663,7 +543,6 @@ function RegistrarVacaciones(array $post, PDO $pdo): string
             '¡Éxito!',
             'Vacaciones registradas y usuario desactivado correctamente.',
             'success',
-            'usuarios.php'
         );
 
     } catch (PDOException $e) {
@@ -1166,9 +1045,7 @@ function getAvisosDash(PDO $pdo): string
 
     $html = '';
     foreach ($rows as $a) {
-        $src = $a['FotoContenido']
-            ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
-            : '../assets/img/small-logos/alerta.png';
+        $src = '../controllers/usuario_foto.php?id=' . $a['UsuarioId'] . '';
         $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
 
         // truncate to 152 chars
@@ -1212,4 +1089,181 @@ function getAvisosDash(PDO $pdo): string
 </div>';
     }
     return $html;
+}
+
+// Devuelve array ['rows' => [...], 'total' => int]
+function GetUsuariosPagina(PDO $pdo, string $nombre, string $departamento, int $limit, int $offset): array
+{
+    // Primera parte: filtro común
+    $where = " WHERE 1=1 ";
+    $params = [];
+
+    if ($nombre !== '') {
+        $where .= " AND (
+        u.NombreUsuario LIKE :nombre1 OR
+        u.ApellidoPaterno LIKE :nombre2 OR
+        u.ApellidoMaterno LIKE :nombre3 OR
+        u.Username LIKE :nombre4
+    )";
+        $params['nombre1'] = "%{$nombre}%";
+        $params['nombre2'] = "%{$nombre}%";
+        $params['nombre3'] = "%{$nombre}%";
+        $params['nombre4'] = "%{$nombre}%";
+    }
+
+
+    if ($departamento !== '') {
+        $where .= " AND u.DepartamentoId = :departamento";
+        $params['departamento'] = $departamento;
+    }
+
+    // Query para obtener total
+    $sqlCount = "SELECT COUNT(*) FROM usuarios u
+                 LEFT JOIN departamento d ON u.DepartamentoId = d.DepartamentoId
+                 LEFT JOIN puesto p ON u.PuestoId = p.PuestoId
+                 $where";
+    $stmt = $pdo->prepare($sqlCount);
+    $stmt->execute($params);
+    $total = (int) $stmt->fetchColumn();
+
+    // Query para obtener filas paginadas (añade los LEFT JOINs que necesitas)
+    $sql = "SELECT
+        u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno,
+        u.Username, u.NumeroTelefono, u.Base, u.TipoSangre, d.DepartamentoNombre, p.PuestoNombre,
+        ce.NombreContacto, ce.Parentezco, ce.NumeroTelefono AS CEtelefono,
+        u.UsuarioActivo, u.FechaRegistro, f.FotoContenido
+      FROM usuarios u
+      LEFT JOIN departamento d ON u.DepartamentoId = d.DepartamentoId
+      LEFT JOIN puesto p ON u.PuestoId = p.PuestoId
+      LEFT JOIN contacto_emergencia ce ON ce.UsuarioId = u.UsuarioId
+      LEFT JOIN fotos f ON f.EntidadTipo = 'usuario' AND f.EntidadId = u.UsuarioId
+      $where
+      ORDER BY u.ApellidoPaterno
+      LIMIT :limit OFFSET :offset";
+
+    $stmt = $pdo->prepare($sql);
+    // Bind dinámico: si hay parámetros posicionales mezclados con nombrados, normaliza.
+    // Si $params tiene claves numéricas (posicionales) y uno nombrado, bind en orden.
+    $pos = 1;
+    foreach ($params as $k => $v) {
+        if (is_int($k)) {
+            $stmt->bindValue($pos, $v, PDO::PARAM_STR);
+            $pos++;
+        } else {
+            // named param
+            $stmt->bindValue(':' . $k, $v);
+        }
+    }
+    $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return ['rows' => $rows, 'total' => $total];
+}
+
+function GetCandidatosPagina(PDO $pdo, string $nombre, int $limit, int $offset): array
+{
+    $where = " WHERE 1=1 ";
+    $params = [];
+
+    if ($nombre !== '') {
+        $where .= " AND c.NombreCompleto LIKE :nombre";
+        $params['nombre'] = "%{$nombre}%";
+    }
+
+    // total de candidatos (no contar filas de pruebas)
+    $sqlCount = "SELECT COUNT(*) FROM candidatos c $where";
+    $stmt = $pdo->prepare($sqlCount);
+    $stmt->execute($params);
+    $total = (int) $stmt->fetchColumn();
+
+    // obtener candidatos paginados
+    $sql = "SELECT c.CandidatoId, c.NombreCompleto, c.BaseAplica, c.PuestoAplica
+            FROM candidatos c
+            $where
+            ORDER BY c.NombreCompleto
+            LIMIT :limit OFFSET :offset";
+
+    $stmt = $pdo->prepare($sql);
+
+    // bind params nombrados si existen
+    foreach ($params as $k => $v) {
+        $stmt->bindValue(':' . $k, $v);
+    }
+    $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $candidatos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // si no hay candidatos, devolver vacío
+    if (empty($candidatos)) {
+        return ['rows' => [], 'total' => $total];
+    }
+
+    // construir lista de ids para traer todas las pruebas de estos candidatos
+    $ids = array_column($candidatos, 'CandidatoId');
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+    $sqlPruebas = "SELECT PruebaId, CandidatoId, PruebaRuta, PruebaNombre
+                   FROM pruebas_candidatos
+                   WHERE CandidatoId IN ($placeholders)";
+
+    $stmt = $pdo->prepare($sqlPruebas);
+    // bind por posición
+    foreach (array_values($ids) as $i => $v) {
+        $stmt->bindValue($i + 1, $v, PDO::PARAM_INT);
+    }
+    $stmt->execute();
+    $pruebas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // agrupar pruebas por candidatoId
+    $mapPruebas = [];
+    foreach ($pruebas as $p) {
+        $mapPruebas[(int)$p['CandidatoId']][] = $p;
+    }
+
+    // añadir la lista de pruebas a cada candidato
+    foreach ($candidatos as &$c) {
+        $cid = (int)$c['CandidatoId'];
+        $c['pruebas'] = $mapPruebas[$cid] ?? [];
+    }
+    unset($c);
+
+    return ['rows' => $candidatos, 'total' => $total];
+}
+
+function DeleteCandidato(PDO $pdo, int $candidatoId): string
+{
+    try {
+        $pdo->beginTransaction();
+
+        // borrar pruebas asociadas (si quieres eliminar las filas en pruebas_candidatos)
+        $sqlDeletePruebas = "DELETE FROM pruebas_candidatos WHERE CandidatoId = :cid";
+        $stmt = $pdo->prepare($sqlDeletePruebas);
+        $stmt->execute([':cid' => $candidatoId]);
+
+        // borrar candidato
+        $sqlDeleteCandidato = "DELETE FROM candidatos WHERE CandidatoId = :cid";
+        $stmt = $pdo->prepare($sqlDeleteCandidato);
+        $stmt->execute([':cid' => $candidatoId]);
+
+        $pdo->commit();
+
+        return "<script>Swal.fire('Eliminado','El candidato y sus documentos fueron eliminados','success').then(()=>{location.href=location.pathname + location.search});</script>";
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        // registra/log el error según tu sistema si quieres: error_log($e->getMessage());
+        return "<script>Swal.fire('Error','Ocurrió un error al eliminar. Intenta de nuevo','error');</script>";
+    }
+}
+// BORRADO DE CANDIDATO
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete_candidato'])) {
+    $deleteId = isset($_POST['delete_candidato_id']) ? (int) $_POST['delete_candidato_id'] : 0;
+    if ($deleteId > 0) {
+        $alertHtml = DeleteCandidato($pdo, $deleteId);
+    } else {
+        // respuesta rápida en caso de id inválido
+        $alertHtml = "<script>Swal.fire('Error','ID de candidato inválido','error');</script>";
+    }
 }
