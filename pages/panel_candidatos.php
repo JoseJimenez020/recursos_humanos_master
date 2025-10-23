@@ -494,7 +494,7 @@ $departamentos = GetDepartamento($pdo);
                                             if ($pruebaC) {
                                                 echo '<button type="button" class="btn btn-success btn-sm" onclick="window.location.href=\'' . htmlspecialchars($pruebaC) . '\'">Descargar Prueba C</button>';
                                             } else {
-                                                echo '<span class="text-muted small">Sin archivo</span>';
+                                                echo '<span class="text-muted small">Sin documento</span>';
                                             }
 
                                             echo '</td><td class="text-center">';
@@ -503,7 +503,7 @@ $departamentos = GetDepartamento($pdo);
                                             if ($testZavic) {
                                                 echo '<button type="button" class="btn btn-info btn-sm" onclick="window.location.href=\'' . htmlspecialchars($testZavic) . '\'">Descargar Cuestionario</button>';
                                             } else {
-                                                echo '<span class="text-muted small">Sin archivo</span>';
+                                                echo '<span class="text-muted small">Sin documento</span>';
                                             }
 
                                             echo '</td><td class="text-center">';
@@ -512,7 +512,7 @@ $departamentos = GetDepartamento($pdo);
                                             if ($estudioSocio) {
                                                 echo '<button type="button" class="btn btn-danger btn-sm" onclick="window.location.href=\'' . htmlspecialchars($estudioSocio) . '\'">Descargar Estudio</button>';
                                             } else {
-                                                echo '<span class="text-muted small">Sin archivo</span>';
+                                                echo '<span class="text-muted small">Sin documento</span>';
                                             }
 
                                             echo '</td><td class="text-center">';
@@ -521,7 +521,7 @@ $departamentos = GetDepartamento($pdo);
                                             if ($formatoMedico) {
                                                 echo '<button type="button" class="btn btn-warning btn-sm" onclick="window.location.href=\'' . htmlspecialchars($formatoMedico) . '\'">Descargar Formato</button>';
                                             } else {
-                                                echo '<span class="text-muted small">Sin archivo</span>';
+                                                echo '<span class="text-muted small">Sin documento</span>';
                                             }
 
                                             echo '</td>
