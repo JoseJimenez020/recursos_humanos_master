@@ -489,7 +489,8 @@ require '../controllers/dashboard.php';
                                                     </li>
                                                 </ul>
                                             </li>
-                                            <li><?= getContenedorPuesto(39, $pdo) ?>
+                                            <li data-toggle="tooltip" data-original-title="Recomendaciones"
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#sierra"><?= getContenedorPuesto(39, $pdo) ?>
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png" alt="">
@@ -508,8 +509,7 @@ require '../controllers/dashboard.php';
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
-                                                                alt=""><span>Líder
-                                                                NOC</span></p>
+                                                                alt=""><span>Líder NOC</span></p>
                                                     </li>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
@@ -523,9 +523,11 @@ require '../controllers/dashboard.php';
                                                     </li>
                                                 </ul>
                                             </li>
-                                            <li><?= getContenedorPuesto(60, $pdo) ?>
+                                            <li data-toggle="tooltip" data-original-title="Recomendaciones"
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#norte"><?= getContenedorPuesto(60, $pdo) ?>
                                                 <ul>
-                                                    <li><?= getContenedorPuesto(74, $pdo) ?>
+                                                    <li data-toggle="tooltip" data-original-title="Recomendaciones"
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#allende"><?= getContenedorPuesto(74, $pdo) ?>
                                                         <ul>
                                                             <li>
                                                                 <p><img src="../assets/img/small-logos/user.png"
@@ -536,7 +538,8 @@ require '../controllers/dashboard.php';
                                                             </li>
                                                         </ul>
                                                     </li>
-                                                    <li><?= getContenedorPuesto(108, $pdo) ?>
+                                                    <li li data-toggle="tooltip" data-original-title="Recomendaciones"
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#merida"><?= getContenedorPuesto(108, $pdo) ?>
                                                     </li>
                                                 </ul>
                                             </li>
@@ -578,7 +581,8 @@ require '../controllers/dashboard.php';
                                             </li>
                                             <li><?= getContenedorPuesto(40, $pdo) ?>
                                             </li>
-                                            <li><?= getContenedorPuesto(64, $pdo) ?>
+                                            <li data-toggle="tooltip" data-original-title="Recomendaciones"
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#mantenimiento"><?= getContenedorPuesto(64, $pdo) ?>
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
@@ -586,7 +590,9 @@ require '../controllers/dashboard.php';
                                                     </li>
                                                 </ul>
                                             </li>
-                                            <li><?= getContenedorPuesto(33, $pdo) ?>
+                                            <li data-toggle="tooltip" data-original-title="Recomendaciones"
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#chontalpa">
+                                                <?= getContenedorPuesto(33, $pdo) ?>
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
@@ -604,7 +610,8 @@ require '../controllers/dashboard.php';
                                 <ul>
                                     <li><?= getContenedorPuesto(23, $pdo) ?>
                                         <ul>
-                                            <li><?= getContenedorPuesto(30, $pdo) ?>
+                                            <li  data-toggle="tooltip" data-original-title="Recomendaciones"
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#cobranza"><?= getContenedorPuesto(30, $pdo) ?>
                                             </li>
                                             <li><?= getContenedorPuesto(4, $pdo) ?></li>
                                             <li><?= getContenedorPuesto(142, $pdo) ?></li>
@@ -753,6 +760,21 @@ require '../controllers/dashboard.php';
     <?= getModalSubordinados("carmen", [24, 25, 37, 38, 17, 40], ["Ciudad del carmen"], $pdo) ?>
 
     <?= getModalSubordinados("centro", [24, 25, 37, 38, 12, 14, 13, 15], ["Villahermosa"], $pdo) ?>
+
+    <?= getModalSubordinados("chontalpa", [24, 25, 37, 38, 17], ["Comalcalco", "Nacajuca","Pomoca","Jalpa de Méndez","Paraíso"],$pdo)?>
+
+    <?= getModalSubordinados("mantenimiento", [36], ["Villahermosa"],$pdo)?>
+
+    <?= getModalSubordinados( "sierra", [24, 25, 37, 38, 17, 40], ["Pichucalco", "Teapa","Tacotalpa","Jalapa","Parrilla","Cunduacán"],$pdo)?>
+   
+    <?= getModalSubordinados( "allende", [24, 25, 37, 38, 17, 40], ["Allende"],$pdo)?>
+    
+    <?= getModalSubordinados( "merida", [24, 25, 37, 38, 17, 40], ["Mérida"],$pdo)?>
+    
+    <?= getModalSubordinados( "cobranza", [16], ["Villahermosa"],$pdo)?>
+
+    <?= getModalSubordinados( "norte", [24, 25, 37, 38, 17, 40], ["Chihuahua","Mérida","Delicias","Lázaro Cárdenas"],$pdo)?>
+
 
     <!--FIN DEL MODAL DE LAS PERSONAS A CARGO -->
     <script>

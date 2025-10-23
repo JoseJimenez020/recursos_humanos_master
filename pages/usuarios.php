@@ -124,6 +124,12 @@ $departamentos = GetDepartamento($pdo);
             <i class="material-symbols-rounded opacity-5">groups</i>
             <span class="nav-link-text ms-1">Usuarios</span>
           </a>
+        </li>        
+        <li class="nav-item">
+          <a class="nav-link text-primary" href="../pages/panel_candidatos.php">
+            <i class="material-symbols-rounded opacity-5">group_add</i>
+            <span class="nav-link-text ms-1">Candidatos</span>
+          </a>
         </li>
         <li class="nav-item">
           <a class="nav-link text-primary" href="../pages/avisos.php">
@@ -436,9 +442,131 @@ $departamentos = GetDepartamento($pdo);
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?= GetTableUsuarios($pdo, $filterName, $filterDept) ?>
+                                    <?php
+                                    // Parámetros de paginación
+                                    $page = max(1, (int) ($_GET['page'] ?? 1));
+                                    $perPage = 10; // puedes hacerlo configurable
+                                    $offset = ($page - 1) * $perPage;
+
+                                    // llamar a la función nueva
+                                    $result = GetUsuariosPagina($pdo, $filterName, $filterDept, $perPage, $offset);
+                                    $rows = $result['rows'];
+                                    $total = $result['total'];
+                                    $totalPages = (int) ceil($total / $perPage);
+
+                                    // Si no hay filas
+                                    if (empty($rows)) {
+                                        echo '<tr><td colspan="6" class="text-center">Sin registros</td></tr>';
+                                    } else {
+                                        foreach ($rows as $u) {
+                                            // reutiliza exactamente el HTML que ya tenías en GetTableUsuarios para cada fila.
+                                            // ejemplo mínimo:
+                                            $src = '../controllers/usuario_foto.php?id=' . $u['UsuarioId'] . '';
+                                            $full = "{$u['NombreUsuario']} {$u['ApellidoPaterno']} {$u['ApellidoMaterno']}";
+                                            $badge = $u['UsuarioActivo'] ? '<span class="badge bg-success">Activo</span>' : '<span class="badge bg-secondary">Vacaciones</span>';
+
+                                            echo '<tr>
+                                                    <td>
+                                                        <div class="d-flex px-2 py-1">
+                                                        <a href="#" class="edit-photo"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#fotoPerfilModal"
+                                                        data-user-id="' . $u['UsuarioId'] . '"
+                                                        data-photo-src="' . $src . '">
+                                                        <img src="' . $src . '"
+                                                            class="avatar avatar-md me-3 border-radius-lg"
+                                                            style="cursor: pointer;">
+                                                        </a>
+                                                        <div class="d-flex flex-column justify-content-center">
+                                                            <h6 class="mb-0 text-sm">' . $full . '</h6>
+                                                            <p class="text-xs text-secondary mb-0">Usuario: ' . htmlspecialchars($u['Username']) . '</p>
+                                                            <p class="text-xs text-secondary mb-0">Número: ' . htmlspecialchars($u['NumeroTelefono'] ?? 'No disponible') . '</p>
+                                                            <p class="text-xs text-secondary mb-0"> Base ' . htmlspecialchars($u['Base'] ?? 'no disponible') . '</p>
+                                                        </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <p class="text-xs font-weight-bold mb-0">' . ($u['PuestoNombre'] ?? 'Sin registros') . '</p>
+                                                        <p class="text-xs text-secondary mb-0">' . ($u['DepartamentoNombre'] ?? 'Sin registros') . '</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="text-xs font-weight-bold mb-0">' . ($u['NombreContacto'] ?? 'Sin registros') . '</p>
+                                                        <p class="text-xs text-secondary mb-0">' . ($u['Parentezco'] ?? 'Sin registros') . '</p>
+                                                        <p class="text-xs text-secondary mb-0">' . ($u['CEtelefono'] ?? 'Sin registros') . '</p>
+                                                    </td>
+                                                    <td class="text-center text-sm">' . $badge . '</td>
+                                                    <td class="text-center text-xs">' . date('d/m/Y', strtotime($u['FechaRegistro'])) . '</td>
+                                                    <td class="align-middle">
+                                                        <a href="" class="text-secondary font-weight-bold text-xs btn-edit"
+                                                        data-user-id="' . ($u['UsuarioId']) . '"
+                                                        data-bs-toggle="modal" data-bs-target="#modal-edit">
+                                                        <i class="material-symbols-rounded opacity-5">edit</i>
+                                                        </a>
+                                                        <a href="" class="text-danger font-weight-bold text-xs"
+                                                        data-user-id="' . ($u['UsuarioId']) . '" 
+                                                        data-user-name="' . htmlspecialchars($full) . '"
+                                                    data-toggle="tooltip" data-original-title="Delete user" target="_blank"
+                                                    data-bs-toggle="modal" data-bs-target="#modal-notification">
+                                                    <i class="material-symbols-rounded opacity-5">delete</i>
+                                                    </a>
+                                                    <a href="" class="text-success font-weight-bold text-xs"
+                                                    data-user-id="' . ($u['UsuarioId']) . '"
+                                                    data-user-name="' . htmlspecialchars($full) . '"
+                                                    data-toggle="tooltip" data-original-title="Vacations" target="_blank"
+                                                    data-bs-toggle="modal" data-bs-target="#modal-form">
+                                                    <i class="material-symbols-rounded opacity-5">beach_access</i>
+                                                    </a>
+                                                </td>
+                                                </tr>';
+                                        }
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
+                            <?php
+                            // Construir base de query (preserva filtros)
+                            $queryBase = [];
+                            if ($filterName !== '')
+                                $queryBase['nombreusuario'] = $filterName;
+                            if ($filterDept !== '')
+                                $queryBase['departamento'] = $filterDept;
+                            ?>
+                            <nav aria-label="Paginación usuarios" class="mt-3">
+                                <ul class="pagination justify-content-center">
+                                    <?php
+                                    $buildUrl = function ($p) use ($queryBase) {
+                                        $qp = array_merge($queryBase, ['page' => $p]);
+                                        return '?' . http_build_query(data: $qp);
+                                    };
+
+                                    // Prev
+                                    $prevDisabled = $page <= 1 ? ' disabled' : '';
+                                    echo '<li class="page-item' . $prevDisabled . '"><a class="page-link" href="' . ($page > 1 ? $buildUrl($page - 1) : '#') . '"><</a></li>';
+
+                                    // Páginas (limitar cantidad mostrada, p.ej. 7 botones)
+                                    $maxButtons = 7;
+                                    $start = max(1, $page - intval($maxButtons / 2));
+                                    $end = min($totalPages, $start + $maxButtons - 1);
+                                    if ($end - $start + 1 < $maxButtons) {
+                                        $start = max(1, $end - $maxButtons + 1);
+                                    }
+                                    for ($i = $start; $i <= $end; $i++) {
+                                        $active = $i === $page ? ' active' : '';
+                                        echo '<li class="page-item' . $active . '"><a class="page-link" href="' . $buildUrl($i) . '">' . $i . '</a></li>';
+                                    }
+
+                                    // Next
+                                    $nextDisabled = $page >= $totalPages ? ' disabled' : '';
+                                    echo '<li class="page-item' . $nextDisabled . '"><a class="page-link" href="' . ($page < $totalPages ? $buildUrl($page + 1) : '#') . '">></a></li>';
+                                    ?>
+                                </ul>
+                            </nav>
+
+                            <?php
+                            $startRow = $offset + 1;
+                            $endRow = min($offset + $perPage, $total);
+                            echo "<p class=\"text-muted\">Mostrando {$startRow}–{$endRow} de {$total}</p>";
+                            ?>
 
                             <!-- MODAL NOTIFICACIÓN BORRADO -->
                             <div class="modal fade" id="modal-notification" tabindex="-1" aria-hidden="true">
@@ -469,7 +597,6 @@ $departamentos = GetDepartamento($pdo);
                                 </div>
                             </div>
                             <!-- FIN DEL MODAL -->
-
                         </div>
                     </div>
                 </div>
@@ -583,7 +710,7 @@ $departamentos = GetDepartamento($pdo);
                         <div class="input-group input-group-static mb-4 ">
                             <label for="exampleFormControlSelect1" class="ms-0">Base</label>
                             <select name="Base" class="form-control" id="exampleFormControl2" required>
-                                <option selected>Seleccionar</option>
+                                <option value="" selected>Seleccionar</option>
                                 <option>Allende</option>
                                 <option>Chihuahua</option>
                                 <option>Ciudad del carmen</option>
@@ -603,6 +730,7 @@ $departamentos = GetDepartamento($pdo);
                                 <option>Tacotalpa</option>
                                 <option>Teapa</option>
                                 <option>Villahermosa</option>
+                                <option>Zaragoza</option>
                             </select>
                         </div>
                         <div class="input-group input-group-outline my-3">

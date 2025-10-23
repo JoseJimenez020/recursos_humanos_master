@@ -1,6 +1,8 @@
 <?php
 require_once '../controllers/login.php';
+require_once '../controllers/handle_login.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -10,7 +12,7 @@ require_once '../controllers/login.php';
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/favicon.ico">
   <title>
-    Recursos Humanos
+    Iniciar Sesión
   </title>
   <!--     Fonts and icons     -->
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
@@ -47,25 +49,128 @@ require_once '../controllers/login.php';
                 <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
                   <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Iniciar Sesión</h4>
                 </div>
+              </div> <br>
+
+              <div class="nav-wrapper position-relative end-0">
+                <ul class="nav nav-pills nav-fill p-1" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-icons" role="tab"
+                      aria-controls="preview" aria-selected="true">
+                      <span class="material-symbols-rounded align-middle mb-1">
+                        badge
+                      </span>
+                      Empleados
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-icons" role="tab"
+                      aria-controls="code" aria-selected="false">
+                      <span class="material-symbols-rounded align-middle mb-1">
+                        person_check
+                      </span>
+                      Candidatos
+                    </a>
+                  </li>
+                </ul>
               </div>
-              <div class="card-body">
-                <form role="form" class="text-start" method="POST">
-                  <div class="input-group input-group-outline my-3">
-                    <label class="form-label">Usuario</label>
-                    <input type="text" name="username" class="form-control">
-                  </div>
-                  <div class="input-group input-group-outline mb-3">
-                    <label class="form-label" type="password">Contraseña</label>
-                    <input type="password" name="password" class="form-control">
-                  </div>
-                  <div class="form-check form-switch d-flex align-items-center mb-3">
-                    <input class="form-check-input" type="checkbox" id="rememberMe">
-                    <label class="form-check-label mb-0 ms-3" for="rememberMe">Recordar usuario</label>
-                  </div>
-                  <div class="text-center">
-                    <button type="submit" name="login" class="btn bg-gradient-primary w-100 my-4 mb-2">Entrar</button>
-                  </div>
-                </form>
+              <div class="tab-content">
+
+                <div class="card-body tab-pane fade show active" id="profile-tabs-icons">
+                  <form role="form" class="text-start" method="POST">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Usuario</label>
+                      <input type="text" name="username" class="form-control">
+                    </div>
+                    <div class="input-group input-group-outline mb-3">
+                      <label class="form-label" type="password">Contraseña</label>
+                      <input type="password" name="password" class="form-control">
+                    </div>
+                    <div class="form-check form-switch d-flex align-items-center mb-3">
+                      <input class="form-check-input" type="checkbox" id="rememberMe">
+                      <label class="form-check-label mb-0 ms-3" for="rememberMe">Recordar
+                        usuario</label>
+                    </div>
+                    <div class="text-center">
+                      <button type="submit" name="login" class="btn bg-gradient-primary w-100 my-4 mb-2">Entrar</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="card-body tab-pane fade" id="dashboard-tabs-icons">
+                  <form role="form" class="text-start" method="POST">
+                    <div class="input-group input-group-outline my-3">
+                      <label class="form-label">Nombre completo</label>
+                      <input type="text" name="fullname" class="form-control">
+                    </div>
+                    <div class="input-group input-group-outline mb-3">
+                      <label class="form-label">Número de teléfono</label>
+                      <input type="tel" name="tel" class="form-control">
+                    </div>
+                    <div class="input-group input-group-outline mb-3">
+                      <label class="form-label" type="password">Correo electrónico</label>
+                      <input type="email" name="email" class="form-control">
+                    </div>
+                    <div class="input-group input-group-outline mb-3">
+                      <label class="form-label" type="password">Edad</label>
+                      <input type="number" name="age" class="form-control">
+                    </div>
+                    <div class="input-group input-group-static mb-4 ">
+                      <label for="exampleFormControlSelect1" class="ms-0">¿A qué base está
+                        aplicando?</label>
+                      <select name="Base" class="form-control" id="exampleFormControl3">
+                        <option value="" selected>Seleccionar</option>
+                        <option>Allende</option>
+                        <option>Chihuahua</option>
+                        <option>Ciudad del carmen</option>
+                        <option>Comalcalco</option>
+                        <option>Cunduacán </option>
+                        <option>Delicias</option>
+                        <option>Jalapa</option>
+                        <option>Jalpa de Méndez</option>
+                        <option>Lázaro Cárdenas</option>
+                        <option>Mérida</option>
+                        <option>Nacajuca</option>
+                        <option>Paraíso </option>
+                        <option>Parrilla</option>
+                        <option>Petrolera</option>
+                        <option>Pichucalco</option>
+                        <option>Pomoca</option>
+                        <option>Tacotalpa</option>
+                        <option>Teapa</option>
+                        <option>Villahermosa</option>
+                        <option>Zaragoza</option>
+                      </select>
+                    </div>
+                    <div class="input-group input-group-static mb-4 ">
+                      <label for="exampleFormControlSelect1" class="ms-0">¿A qué puesto está
+                        aplicando?</label>
+                      <select name="Puesto" class="form-control" id="exampleFormControl">
+                        <option value="" selected>Seleccionar</option>
+                        <option>Abogado</option>
+                        <option>Auxiliar Contable</option>
+                        <option>Desarrollo de Software</option>
+                        <option>Diseñador/a Gráfico</option>
+                        <option>Ejecutivo de ventas empresarial</option>
+                        <option>Agente Call Center</option>
+                        <option>Mesa de Control</option>
+                        <option>Auxiliar de cobranza</option>
+                        <option>Técnico/a</option>
+                        <option>Cajero/a</option>
+                        <option>Limpieza</option>
+                        <option>Monitorista NOC</option>
+                        <option>Ayudante de Técnico</option>
+                        <option>Construcción</option>
+                        <option>Coach de Ventas</option>
+                        <option>Agente de Cambaceo</option>
+                        <option>Mantenimiento</option>
+                      </select>
+                    </div>
+                    <div class="text-center">
+                      <button type="submit" name="candidato"
+                        class="btn bg-gradient-primary w-100 my-4 mb-2">Entrar</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
@@ -126,7 +231,7 @@ require_once '../controllers/login.php';
     document.querySelector('form').addEventListener('submit', () => {
       if (rememberCheckbox.checked) {
         localStorage.setItem('rh_username', usernameInput.value);
-        localStorage.setItem('rh_password', passwordInput.value); // no recomendado
+        localStorage.setItem('rh_password', passwordInput.value);
         localStorage.setItem('rh_remember', '1');
       } else {
         localStorage.removeItem('rh_username');

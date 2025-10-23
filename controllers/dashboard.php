@@ -1035,16 +1035,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizarPass'])) {
 
 function getContenedorPuesto(int $id, PDO $pdo): string
 {
-  $sql = "SELECT u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, p.PuestoNombre, f.FotoContenido FROM usuarios u LEFT JOIN puesto p ON u.PuestoId = p.PuestoId LEFT JOIN fotos f ON f.EntidadTipo = 'usuario' AND f.EntidadId = u.UsuarioId WHERE u.UsuarioId = :id";
+  $sql = "SELECT u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, p.PuestoNombre, f.FotoContenido FROM usuarios u LEFT JOIN puesto p ON u.PuestoId = p.PuestoId LEFT JOIN fotos f ON f.EntidadTipo = 'usuario' AND f.EntidadId = u.UsuarioId WHERE u.UsuarioId = :id";
   $stmt = $pdo->prepare($sql);
   $stmt->execute(['id' => $id]);
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   $html = '';
   foreach ($rows as $row) {
-    $src = $row['FotoContenido']
-      ? 'data:image/jpeg;base64,' . base64_encode($row['FotoContenido'])
-      : '../assets/img/small-logos/user.png';
+    $src = '../controllers/usuario_foto.php?id=' . $row['UsuarioId'] . '';
 
     $fullEscaped = htmlspecialchars(
       "{$row['NombreUsuario']} {$row['ApellidoPaterno']}",
@@ -1053,7 +1051,7 @@ function getContenedorPuesto(int $id, PDO $pdo): string
     );
     $puestoEscaped = htmlspecialchars($row['PuestoNombre'], ENT_QUOTES, 'UTF-8');
 
-    $html .= "<p >
+    $html .= "<p>
                 <img src=\"{$src}\" alt=\"{$fullEscaped}\">
                 <span class=\"text-xs font-weight-bold mb-0\">{$fullEscaped}</span>
                 <span class=\"text-xs text-secondary mb-0\">{$puestoEscaped}</span>
@@ -1114,9 +1112,7 @@ function getTableACargo(array $puestos, array $bases, PDO $pdo): string
 
     $html = '';
     foreach ($rows as $u) {
-        $src = $u['FotoContenido']
-            ? 'data:image/jpeg;base64,' . base64_encode($u['FotoContenido'])
-            : '../assets/img/small-logos/user.png';
+        $src = '../controllers/usuario_foto.php?id=' . $u['UsuarioId'] . '';
 
         $full = htmlspecialchars("{$u['NombreUsuario']} {$u['ApellidoPaterno']} {$u['ApellidoMaterno']}", ENT_QUOTES, 'UTF-8');
         $puesto = htmlspecialchars($u['PuestoNombre'] ?? 'Sin registros', ENT_QUOTES, 'UTF-8');
