@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
+
 session_start();
 require_once 'conn.php';
 
@@ -524,7 +525,6 @@ function getAvisosDash(PDO $pdo): string
     $src = $a['FotoContenido']
       ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
       : '../assets/img/small-logos/alerta.png';
-    $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
 
     // truncate to 152 chars
     $desc = strip_tags($a['DescripcionAviso']);
@@ -562,8 +562,6 @@ function getAvisosDash(PDO $pdo): string
     <hr class="dark horizontal my-0">
     <div class="card-footer d-flex">
         <p class="font-weight-normal my-auto">' . date('d/m/Y', strtotime($a['Fecha'])) . '</p>
-        <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-        <p class="text-sm my-auto">' . $full . '</p>
     </div> </a>
     <a href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '" class="stretched-link"></a>
 </div> ';

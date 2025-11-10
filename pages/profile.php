@@ -333,7 +333,8 @@ require_once '../controllers/logica_usuario.php';
       <div class="card card-body mx-2 mx-md-2 mt-n6">
         <div class="row gx-4 mb-2">
           <div class="col-auto">
-            <a href="#" data-bs-toggle="modal" data-bs-target="#fotoPerfilModal">
+            <a href="#">
+            <!--<a href="#" data-bs-toggle="modal" data-bs-target="#fotoPerfilModal">-->
               <div class="avatar avatar-xl position-relative">
                 <img <?php echo isset($sesion)
                   ? obtenerFotoUsuario($pdo, $sesion['UsuarioId'])

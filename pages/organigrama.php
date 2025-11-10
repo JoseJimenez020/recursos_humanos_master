@@ -490,7 +490,8 @@ require '../controllers/dashboard.php';
                                                 </ul>
                                             </li>
                                             <li data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal" data-bs-target="#sierra"><?= getContenedorPuesto(39, $pdo) ?>
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#sierra">
+                                                <?= getContenedorPuesto(39, $pdo) ?>
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png" alt="">
@@ -524,10 +525,19 @@ require '../controllers/dashboard.php';
                                                 </ul>
                                             </li>
                                             <li data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal" data-bs-target="#norte"><?= getContenedorPuesto(60, $pdo) ?>
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#norte">
+                                                <?= getContenedorPuesto(60, $pdo) ?>
                                                 <ul>
+                                                    <li>
+                                                        <p><img src="../assets/img/small-logos/user.png"
+                                                                alt=""><span>Técnicos</span>
+                                                            <span>Cajera</span>
+                                                            <span>Agentes de cambaceo</span>
+                                                        </p>
+                                                    </li>
                                                     <li data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal" data-bs-target="#allende"><?= getContenedorPuesto(74, $pdo) ?>
+                                                        target="_blank" data-bs-toggle="modal"
+                                                        data-bs-target="#allende"><?= getContenedorPuesto(74, $pdo) ?>
                                                         <ul>
                                                             <li>
                                                                 <p><img src="../assets/img/small-logos/user.png"
@@ -539,7 +549,16 @@ require '../controllers/dashboard.php';
                                                         </ul>
                                                     </li>
                                                     <li li data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal" data-bs-target="#merida"><?= getContenedorPuesto(108, $pdo) ?>
+                                                        target="_blank" data-bs-toggle="modal" data-bs-target="#merida">
+                                                        <?= getContenedorPuesto(108, $pdo) ?>
+                                                        <ul>
+                                                            <li>
+                                                                <p><img src="../assets/img/small-logos/user.png"
+                                                                        alt=""><span>Cajera</span>
+                                                                    <span>Agentes de cambaceo</span>
+                                                                </p>
+                                                            </li>
+                                                        </ul>
                                                     </li>
                                                 </ul>
                                             </li>
@@ -582,7 +601,8 @@ require '../controllers/dashboard.php';
                                             <li><?= getContenedorPuesto(40, $pdo) ?>
                                             </li>
                                             <li data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal" data-bs-target="#mantenimiento"><?= getContenedorPuesto(64, $pdo) ?>
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#mantenimiento">
+                                                <?= getContenedorPuesto(64, $pdo) ?>
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
@@ -610,12 +630,16 @@ require '../controllers/dashboard.php';
                                 <ul>
                                     <li><?= getContenedorPuesto(23, $pdo) ?>
                                         <ul>
-                                            <li  data-toggle="tooltip" data-original-title="Recomendaciones"
-                                                target="_blank" data-bs-toggle="modal" data-bs-target="#cobranza"><?= getContenedorPuesto(30, $pdo) ?>
+                                            <li data-toggle="tooltip" data-original-title="Recomendaciones"
+                                                target="_blank" data-bs-toggle="modal" data-bs-target="#cobranza">
+                                                <?= getContenedorPuesto(30, $pdo) ?>
                                             </li>
                                             <li><?= getContenedorPuesto(4, $pdo) ?></li>
                                             <li><?= getContenedorPuesto(142, $pdo) ?></li>
                                             <li> <?= getContenedorPuesto(123, $pdo) ?>
+                                                <ul>
+                                                    <li><?= getContenedorPuesto(38, $pdo) ?></li>
+                                                </ul>
                                             </li>
                                             <li> <?= getContenedorPuesto(125, $pdo) ?>
                                             </li>
@@ -761,29 +785,29 @@ require '../controllers/dashboard.php';
 
     <?= getModalSubordinados("centro", [24, 25, 37, 38, 12, 14, 13, 15], ["Villahermosa"], $pdo) ?>
 
-    <?= getModalSubordinados("chontalpa", [24, 25, 37, 38, 17], ["Comalcalco", "Nacajuca","Pomoca","Jalpa de Méndez","Paraíso"],$pdo)?>
+    <?= getModalSubordinados("chontalpa", [24, 25, 37, 38, 17], ["Comalcalco", "Nacajuca", "Pomoca", "Jalpa de Méndez", "Paraíso"], $pdo) ?>
 
-    <?= getModalSubordinados("mantenimiento", [36], ["Villahermosa"],$pdo)?>
+    <?= getModalSubordinados("mantenimiento", [36], ["Villahermosa"], $pdo) ?>
 
-    <?= getModalSubordinados( "sierra", [24, 25, 37, 38, 17, 40], ["Pichucalco", "Teapa","Tacotalpa","Jalapa","Parrilla","Cunduacán"],$pdo)?>
-   
-    <?= getModalSubordinados( "allende", [24, 25, 37, 38, 17, 40], ["Allende"],$pdo)?>
-    
-    <?= getModalSubordinados( "merida", [24, 25, 37, 38, 17, 40], ["Mérida"],$pdo)?>
-    
-    <?= getModalSubordinados( "cobranza", [16], ["Villahermosa"],$pdo)?>
+    <?= getModalSubordinados("sierra", [24, 25, 37, 38, 17, 40], ["Pichucalco", "Teapa", "Tacotalpa", "Jalapa", "Parrilla", "Cunduacán"], $pdo) ?>
 
-    <?= getModalSubordinados( "norte", [24, 25, 37, 38, 17, 40], ["Chihuahua","Mérida","Delicias","Lázaro Cárdenas"],$pdo)?>
+    <?= getModalSubordinados("allende", [24, 25, 37, 38, 17, 40], ["Allende"], $pdo) ?>
+
+    <?= getModalSubordinados("merida", [24, 25, 37, 38, 17, 40], ["Mérida"], $pdo) ?>
+
+    <?= getModalSubordinados("cobranza", [16], ["Villahermosa"], $pdo) ?>
+
+    <?= getModalSubordinados("norte", [24, 25, 37, 38, 17, 40], ["Chihuahua", "Mérida", "Delicias", "Lázaro Cárdenas"], $pdo) ?>
 
 
     <!--FIN DEL MODAL DE LAS PERSONAS A CARGO -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // 1. Selecciona TODOS los elementos que tienen el scroll individual.
             const treeElements = document.querySelectorAll('.tree');
 
             // 2. Itera sobre cada uno de ellos para aplicar el centrado.
-            treeElements.forEach(function(tree) {
+            treeElements.forEach(function (tree) {
                 // tree es ahora el elemento div.tree que tiene overflow-x: auto
 
                 if (tree) {

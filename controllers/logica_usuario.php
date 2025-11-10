@@ -116,8 +116,7 @@ function RegistrarUsuarioCompleto(array $post, PDO $pdo): string
         $pdo->beginTransaction();
 
         // 4.1) Insertar en usuarios (incluye Base y FechaRegistro=CURDATE())
-        $sqlU = "
-          INSERT INTO usuarios
+        $sqlU = "INSERT INTO usuarios
             (Username, Contrasena,
              NombreUsuario, ApellidoPaterno, ApellidoMaterno,
              FechaNacimiento, TipoSangre,
@@ -970,7 +969,6 @@ function borrarFelicitacion(array $post, PDO $pdo): string
         );
     }
 }
-
 function editarFelicitacion(array $post, PDO $pdo): string
 {
     $feliId = filter_var($post['feliId'] ?? null, FILTER_VALIDATE_INT);
@@ -1006,7 +1004,7 @@ function editarFelicitacion(array $post, PDO $pdo): string
 }
 function getAvisosDash(PDO $pdo): string
 {
-    $sql = "SELECT 
+  $sql = "SELECT 
         a.AvisoId, a.TituloAviso, a.Fecha, a.DescripcionAviso, 
         a.EsCampana, f.FotoContenido, u.NombreUsuario, u.ApellidoPaterno
         FROM avisos a
@@ -1015,15 +1013,15 @@ function getAvisosDash(PDO $pdo): string
                          AND f.EntidadId = a.AvisoId
         WHERE EsCampana = 0";
 
-    $params = [];
+  $params = [];
 
-    // Preparar y ejecutar
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  // Preparar y ejecutar
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute($params);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (empty($rows)) {
-        return '<div class="col-md-4 mb-4">
+  if (empty($rows)) {
+    return '<div class="col-md-4 mb-4">
           <div class="card" data-animation="false">
               <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                   <a class="d-block blur-shadow-image">
@@ -1041,40 +1039,42 @@ function getAvisosDash(PDO $pdo): string
               </div>
           </div>
       </div>';
+  }
+
+  $html = '';
+  foreach ($rows as $a) {
+    $src = $a['FotoContenido']
+      ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
+      : '../assets/img/small-logos/alerta.png';
+
+    // truncate to 152 chars
+    $desc = strip_tags($a['DescripcionAviso']);
+    if (mb_strlen($desc) > 150) {
+      $desc = mb_substr($desc, 0, 150) . '…';
     }
 
-    $html = '';
-    foreach ($rows as $a) {
-        $src = '../controllers/usuario_foto.php?id=' . $a['UsuarioId'] . '';
-        $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
-
-        // truncate to 152 chars
-        $desc = strip_tags($a['DescripcionAviso']);
-        if (mb_strlen($desc) > 150) {
-            $desc = mb_substr($desc, 0, 150) . '…';
-        }
-
-        $html .= '<div class="card" data-animation="true">
+    $html .= '<div class="card" data-animation="true">     
+    <a href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '">
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-        <a class="d-block blur-shadow-image">
+        <div class="d-block blur-shadow-image">
             <img src="' . $src . '"
                 alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-        </a>
+        </div>
         <div class="colored-shadow"
             style="background-image: url(&quot;' . $src . '&quot;);">
         </div>
     </div>
     <div class="card-body text-center">
         <div class="d-flex mt-n6 mx-auto">
-            <a class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            <div class="btn btn-link text-primary ms-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
                 title="">
-            </a>
+            </div>
             <button class="btn btn-link text-info me-auto border-0" data-bs-toggle="tooltip" data-bs-placement="bottom"
                 title="">
             </button>
         </div>
         <h5 class="font-weight-normal mt-3">
-            <a href="javascript:;">' . $a['TituloAviso'] . '</a>
+            <a href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '">' . $a['TituloAviso'] . '</a>
         </h5>
         <p class="mb-0">
             ' . $desc . '
@@ -1083,15 +1083,12 @@ function getAvisosDash(PDO $pdo): string
     <hr class="dark horizontal my-0">
     <div class="card-footer d-flex">
         <p class="font-weight-normal my-auto">' . date('d/m/Y', strtotime($a['Fecha'])) . '</p>
-        <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-        <p class="text-sm my-auto">' . $full . '</p>
-    </div>
-</div>';
-    }
-    return $html;
+    </div> </a>
+    <a href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '" class="stretched-link"></a>
+</div> ';
+  }
+  return $html;
 }
-
-// Devuelve array ['rows' => [...], 'total' => int]
 function GetUsuariosPagina(PDO $pdo, string $nombre, string $departamento, int $limit, int $offset): array
 {
     // Primera parte: filtro común
