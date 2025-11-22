@@ -1097,7 +1097,7 @@ function getTableACargo(array $puestos, array $bases, PDO $pdo): string
             FROM usuarios u
             LEFT JOIN puesto p ON u.PuestoId = p.PuestoId
             LEFT JOIN fotos f ON f.EntidadTipo = 'usuario' AND f.EntidadId = u.UsuarioId
-            WHERE ($where) AND u.UsuarioActivo = 1
+            WHERE ($where) 
             ORDER BY p.PuestoNombre ASC";
 
     $stmt = $pdo->prepare($sql);
