@@ -28,13 +28,14 @@
 }
 
 .days {
-    height: 240px;
+    height: 240px;    
+    text-align: end;
 }
 
 .weekdays div,
 .days div {
     width: 14.28%;
-    text-align: center;
+    text-align: end;
     padding: 10px 0;
     border-radius: 5px;
 }
@@ -70,36 +71,45 @@
 
 /* 1) Forzar que el modal use 60% de viewport */
 #calendarModal .modal-dialog {
-  max-width: 80vw;
-  max-height: 80vh;
+    max-width: 80vw;
+    max-height: 80vh;
 }
 
 #calendarModal .modal-body {
-  display: flex;
-  flex-direction: column;
-  padding: 0;           /* ya tienes padding 0, ok */
-  height: 100%;
-  overflow: hidden;     /* ocultar desbordes generales */
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    /* ya tienes padding 0, ok */
+    height: 100%;
+    overflow: hidden;
+    /* ocultar desbordes generales */
 }
 
 /* 2) Convertir el calendario en un flex-column de altura total */
 #calendarModal .calendar {
-  display: flex;
-  flex-direction: column;
-  flex: 1;              /* ocupa todo el alto disponible */
-  padding: 20px;        /* si quieres conservar tu padding */
-  box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    /* ocupa todo el alto disponible */
+    padding: 20px;
+    /* si quieres conservar tu padding */
+    box-sizing: border-box;
 }
 
 /* 3) Las cabeceras (mes, weekdays) no cambian */
 #calendarModal .weekdays {
-  flex: 0 0 auto;
+    flex: 0 0 auto;
 }
 
 /* 4) La grilla de días crece y hace scroll interno */
 #calendarModal .days {
-  flex: 1 1 auto;       /* crece para llenar el espacio restante */
-  height: 80vh;         /* elimina el height: 240px */
-  overflow-y: auto;     /* scroll si se desborda */
-  margin-top: 10px;     /* opcional: separar de weekdays */
+    flex: 1 1 auto;
+    /* crece para llenar el espacio restante */
+    height: 80vh;
+    /* elimina el height: 240px */
+    text-align: end;
+    overflow-y: auto;
+    /* scroll si se desborda */
+    margin-top: 10px;
+    /* opcional: separar de weekdays */
 }

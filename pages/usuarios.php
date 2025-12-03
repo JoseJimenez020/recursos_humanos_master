@@ -20,8 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['RegistrarV'])) {
         $alertHtml = RegistrarVacaciones($_POST, $pdo);
     }
-
-
 }
 
 $filterName = trim($_GET['nombreusuario'] ?? '');
@@ -565,7 +563,7 @@ $departamentos = GetDepartamento($pdo);
                             <?php
                             $startRow = $offset + 1;
                             $endRow = min($offset + $perPage, $total);
-                            echo "<p class=\"text-muted\">Mostrando {$startRow}–{$endRow} de {$total}</p>";
+                            echo "<p class=\"text-muted\">Mostrando {$startRow} – {$endRow} de {$total} resultados</p>";
                             ?>
 
                             <!-- MODAL NOTIFICACIÓN BORRADO -->
