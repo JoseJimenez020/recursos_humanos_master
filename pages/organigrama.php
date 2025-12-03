@@ -514,6 +514,30 @@ require '../controllers/dashboard.php';
                                                     </li>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
+                                                                alt=""><span>Supervisor Call
+                                                                Center</span></p>
+                                                        <ul>
+                                                            <li>
+                                                                <p><img src="../assets/img/small-logos/user.png"
+                                                                        alt=""><span>Agentes
+                                                                        Call Center</span></p>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <p><img src="../assets/img/small-logos/user.png"
+                                                                alt=""><span>Supervisor Mesa
+                                                                Técnica</span></p>
+                                                        <ul>
+                                                            <li>
+                                                                <p><img src="../assets/img/small-logos/user.png"
+                                                                        alt=""><span>Mesa
+                                                                        Técnica</span></p>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        <p><img src="../assets/img/small-logos/user.png"
                                                                 alt=""><span>Monitoristas
                                                                 NOC</span></p>
                                                     </li>
@@ -571,34 +595,10 @@ require '../controllers/dashboard.php';
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
                                                                 alt=""><span>Técnicos</span></p>
-                                                    </li>
-                                                    <li>
-                                                        <p><img src="../assets/img/small-logos/user.png"
-                                                                alt=""><span>Supervisor Call
-                                                                Center</span></p>
-                                                        <ul>
-                                                            <li>
-                                                                <p><img src="../assets/img/small-logos/user.png"
-                                                                        alt=""><span>Agentes
-                                                                        Call Center</span></p>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <p><img src="../assets/img/small-logos/user.png"
-                                                                alt=""><span>Supervisor Mesa
-                                                                Técnica</span></p>
-                                                        <ul>
-                                                            <li>
-                                                                <p><img src="../assets/img/small-logos/user.png"
-                                                                        alt=""><span>Mesa
-                                                                        Técnica</span></p>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
+                                                    </li>                                                    
                                                 </ul>
                                             </li>
-                                            <li><?= getContenedorPuesto(40, $pdo) ?>
+                                            <li><?= getContenedorPuesto(157, $pdo) ?>
                                             </li>
                                             <li data-toggle="tooltip" data-original-title="Recomendaciones"
                                                 target="_blank" data-bs-toggle="modal" data-bs-target="#mantenimiento">
@@ -633,13 +633,18 @@ require '../controllers/dashboard.php';
                                             <li data-toggle="tooltip" data-original-title="Recomendaciones"
                                                 target="_blank" data-bs-toggle="modal" data-bs-target="#cobranza">
                                                 <?= getContenedorPuesto(30, $pdo) ?>
+                                                <ul>
+                                                    <li>
+                                                        <p><img src="../assets/img/small-logos/user.png">
+                                                            <span class="text-xs text-secondary mb-0">Auxiliar de cobranza</span>
+                                                        </p>
+                                                    </li>
+                                                </ul>
                                             </li>
                                             <li><?= getContenedorPuesto(4, $pdo) ?></li>
                                             <li><?= getContenedorPuesto(142, $pdo) ?></li>
                                             <li> <?= getContenedorPuesto(123, $pdo) ?>
-                                                <ul>
-                                                    <li><?= getContenedorPuesto(38, $pdo) ?></li>
-                                                </ul>
+                                            
                                             </li>
                                             <li> <?= getContenedorPuesto(125, $pdo) ?>
                                             </li>
@@ -777,13 +782,13 @@ require '../controllers/dashboard.php';
 
     <!--MODAL PARA VER LAS PERSONAS A CARGO-->
 
-    <?= getModalSubordinados("lidernoc", [44, 23, 4], ["Villahermosa"], $pdo) ?>
+    <?= getModalSubordinados("lidernoc", [44, 23, 4, 12, 14, 15, 13], ["Villahermosa"], $pdo) ?>
 
     <?= getModalSubordinados("construccion", [27], ["Villahermosa"], $pdo) ?>
 
     <?= getModalSubordinados("carmen", [24, 25, 37, 38, 17, 40], ["Ciudad del carmen"], $pdo) ?>
 
-    <?= getModalSubordinados("centro", [24, 25, 37, 38, 12, 14, 13, 15], ["Villahermosa"], $pdo) ?>
+    <?= getModalSubordinados("centro", [24, 25, 37, 38], ["Villahermosa"], $pdo) ?>
 
     <?= getModalSubordinados("chontalpa", [24, 25, 37, 38, 17], ["Comalcalco", "Nacajuca", "Pomoca", "Jalpa de Méndez", "Paraíso"], $pdo) ?>
 
