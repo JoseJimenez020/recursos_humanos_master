@@ -361,7 +361,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <?php echo $sesion['NombreUsuario']; ?>
                     </h5>
                     <p class="mb-0 font-weight-normal text-sm">
-                      <?php echo $sesion['DepartamentoNombre'] ?? 'Sin departamento' ?>
+                      <?php echo $sesion['PuestoNombre'] ?? 'Sin departamento' ?>
                     </p>
                   </div>
                 </div>
