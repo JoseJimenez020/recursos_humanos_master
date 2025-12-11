@@ -12,14 +12,14 @@ if (isset($_SESSION['user_id'])) {
     u.NumeroTelefono,
     u.Email,
     u.TipoSangre,
-    u.DepartamentoId,
-    d.DepartamentoNombre,
+    u.PuestoId,
+    d.PuestoNombre,
     ce.NombreContacto,
     ce.Parentezco,
     ce.NumeroTelefono AS contactoNumero
   FROM usuarios u
-  LEFT JOIN departamento d 
-    ON u.DepartamentoId = d.DepartamentoId
+  LEFT JOIN puesto d 
+    ON u.PuestoId = d.PuestoId
   LEFT JOIN contacto_emergencia ce 
     ON ce.UsuarioId = u.UsuarioId
   WHERE u.UsuarioId = :id
