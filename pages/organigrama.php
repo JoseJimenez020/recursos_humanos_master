@@ -595,7 +595,7 @@ require '../controllers/dashboard.php';
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png"
                                                                 alt=""><span>Técnicos</span></p>
-                                                    </li>                                                    
+                                                    </li>
                                                 </ul>
                                             </li>
                                             <li><?= getContenedorPuesto(157, $pdo) ?>
@@ -636,17 +636,19 @@ require '../controllers/dashboard.php';
                                                 <ul>
                                                     <li>
                                                         <p><img src="../assets/img/small-logos/user.png">
-                                                            <span class="text-xs text-secondary mb-0">Auxiliar de cobranza</span>
+                                                            <span class="text-xs text-secondary mb-0">Auxiliar de
+                                                                cobranza</span>
                                                         </p>
                                                     </li>
                                                 </ul>
                                             </li>
                                             <li><?= getContenedorPuesto(4, $pdo) ?></li>
                                             <li><?= getContenedorPuesto(142, $pdo) ?></li>
-                                            <li> <?= getContenedorPuesto(123, $pdo) ?>
-                                            
-                                            </li>
+                                            <li> <?= getContenedorPuesto(123, $pdo) ?> </li>
                                             <li> <?= getContenedorPuesto(125, $pdo) ?>
+                                                <ul>
+                                                    <li> <?= getContenedorPuesto(38, $pdo) ?> </li>
+                                                </ul>
                                             </li>
                                             <li> <?= getContenedorPuesto(124, $pdo) ?>
                                                 <ul>
@@ -788,9 +790,9 @@ require '../controllers/dashboard.php';
 
     <?= getModalSubordinados("carmen", [24, 25, 37, 38, 17, 40], ["Ciudad del carmen"], $pdo) ?>
 
-    <?= getModalSubordinados("centro", [24, 25, 37, 38], ["Villahermosa"], $pdo) ?>
+    <?= getModalSubordinados("centro", [24, 25, 37, 38], ["Villahermosa", "Pomoca"], $pdo) ?>
 
-    <?= getModalSubordinados("chontalpa", [24, 25, 37, 38, 17], ["Comalcalco", "Nacajuca", "Pomoca", "Jalpa de Méndez", "Paraíso"], $pdo) ?>
+    <?= getModalSubordinados("chontalpa", [24, 25, 37, 38, 17], ["Comalcalco", "Nacajuca", "Jalpa de Méndez", "Paraíso"], $pdo) ?>
 
     <?= getModalSubordinados("mantenimiento", [36], ["Villahermosa"], $pdo) ?>
 
