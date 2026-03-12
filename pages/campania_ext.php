@@ -275,7 +275,7 @@ $date = date('d/m/Y', strtotime($aviso['Fecha']));
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
             <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">RRHH</a></li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Información detallada de la campaña
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Información detallada
             </li>
           </ol>
         </nav>
@@ -358,12 +358,14 @@ $date = date('d/m/Y', strtotime($aviso['Fecha']));
                 <?= $titulo ?>
               </h3>
             </div>
-          </div>            
+          </div>
           <div class="card-body p-3">
             <p class="text-sm">
               <?= $desc ?>
             </p>
-            <img class="border-radius-lg w-50" src="<?= $imgSrc ?>" alt="Imagen Campaña">
+            <center>
+              <img class="border-radius-lg w-100" src="<?= $imgSrc ?>" alt="Imagen Campaña <?= $titulo ?>">
+            </center>
             </p>
             <hr class="horizontal gray-light my-4">
             <p class="text-xs mb-0"><strong class="text-xs font-weight-bold mb-0">Fecha:</strong> <?= $date ?></p>
