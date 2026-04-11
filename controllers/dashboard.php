@@ -1,24 +1,25 @@
 <?php
+declare(strict_types=1);
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
-session_start();
+require_once __DIR__ . '/security.php';   // ← NUEVO
+
+if (session_status() === PHP_SESSION_NONE) {
+    secureSessionConfig();                // ← NUEVO
+    session_start();
+}
+
 require_once 'conn.php';
 
 if (!isset($_SESSION['user_id'])) {
-  echo "
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Inicia sesión para continuar.',
-                    icon: 'error'
-                }).then(() => {
-                    window.location.href = '../';
-                });
-            });
-        </script>";
+    http_response_code(401);
+    // No revelar la URL interna en el redirect
+    header('Location: /');
+    exit;
 }
+
+sessionIntegrityCheck();  // ← NUEVO: verifica que no haya session hijacking
 
 require 'sesion.php';
 require 'logout.php';
@@ -139,38 +140,30 @@ function mostrarContador($pdo): string
 
 function registrarQueja(array $data, PDO $pdo): string
 {
-  $userId = filter_var($data['UsuarioId'], FILTER_SANITIZE_STRING);
-  $mensajeContenido = filter_var($data['mensajeContenido'], FILTER_SANITIZE_STRING);
-  try {
-    $pdo->beginTransaction();
-    $sqlM = "INSERT INTO quejas 
-            (UsuarioId, FechaMensaje, Mensaje)
-            VALUES
-            (:usuario, CURDATE(), :mensaje)";
+    // Verifica CSRF (ya debe haberse llamado csrfVerify() en el dispatcher,
+    // pero lo dejamos aquí como segunda capa)
+    $userId  = sanitizeInt($data['UsuarioId'] ?? null);
+    $mensaje = sanitizeString($data['mensajeContenido'] ?? '', 2000);
 
-    $stM = $pdo->prepare($sqlM);
-    $stM->execute([
-      ':usuario' => $userId,
-      'mensaje' => $mensajeContenido
-    ]);
+    if (!$userId || $mensaje === '') {
+        return alertScript('Error', 'Datos incompletos.', 'error');
+    }
 
-    $pdo->commit();
+    try {
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare(
+            "INSERT INTO quejas (UsuarioId, FechaMensaje, Mensaje)
+             VALUES (:usuario, CURDATE(), :mensaje)"
+        );
+        $stmt->execute([':usuario' => $userId, ':mensaje' => $mensaje]);
+        $pdo->commit();
 
-    return alertScript(
-      '¡Éxito!',
-      'Mensaje enviado correctamente.',
-      'success',
-      '../pages/dashboard.php'
-    );
-
-  } catch (PDOException $e) {
-    $pdo->rollBack();
-    return alertScript(
-      'Error',
-      'No se pudo registrar: ' . $e->getMessage(),
-      'error'
-    );
-  }
+        return alertScript('¡Éxito!', 'Mensaje enviado correctamente.', 'success', '../pages/dashboard.php');
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        error_log('[registrarQueja] ' . $e->getMessage()); // log interno, no al usuario
+        return alertScript('Error', 'No se pudo registrar el mensaje.', 'error');
+    }
 }
 
 function GetBuzonQuejas($pdo): string
@@ -289,8 +282,8 @@ function borrarQueja(array $data, PDO $pdo): string
 function registrarAviso(array $post, PDO $pdo): string
 {
   // 1. Sanitizar inputs
-  $titulo = trim(filter_var($post['avisoTitulo'], FILTER_SANITIZE_STRING));
-  $descrip = trim(filter_var($post['avisoDesc'], FILTER_SANITIZE_STRING));
+  $titulo = trim(sanitizeString($post['avisoTitulo'], 500));
+  $descrip = trim(sanitizeString($post['avisoDesc'], 500));
   $esAviso = (int) filter_var($post['esAviso'], FILTER_SANITIZE_NUMBER_INT);
   $usuarioId = (int) $_SESSION['user_id'];
 
@@ -386,99 +379,90 @@ function registrarAviso(array $post, PDO $pdo): string
   }
 }
 
-function getAvisosPanel(PDO $pdo, $tipo)
+function getAvisosPanel(PDO $pdo, int $tipo): string
 {
-  $sql = "SELECT 
-        a.AvisoId, a.TituloAviso, a.Fecha, a.DescripcionAviso, 
-        a.EsCampana, f.FotoContenido, u.NombreUsuario, u.ApellidoPaterno
-        FROM avisos a
-        LEFT JOIN usuarios u ON u.UsuarioId = a.UsuarioId
-        LEFT JOIN fotos f ON f.EntidadTipo = 'aviso'
-                         AND f.EntidadId = a.AvisoId
-        WHERE EsCampana=" . $tipo . " ";
+    // $tipo ahora es int, no string — NO hay concatenación en la query
+    $sql = "SELECT
+                a.AvisoId, a.TituloAviso, a.Fecha, a.DescripcionAviso,
+                a.EsCampana, f.FotoContenido, u.NombreUsuario, u.ApellidoPaterno
+            FROM avisos a
+            LEFT JOIN usuarios u ON u.UsuarioId  = a.UsuarioId
+            LEFT JOIN fotos   f ON f.EntidadTipo = 'aviso'
+                               AND f.EntidadId   = a.AvisoId
+            WHERE a.EsCampana = :tipo";
 
-  $params = [];
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':tipo' => $tipo]);     // parametrizado ✔
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  // Preparar y ejecutar
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute($params);
-  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-  if (empty($rows)) {
-    return '<div class="col-md-4 mb-4">
-          <div class="card" data-animation="false">
-              <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                  <a class="d-block blur-shadow-image">
-                  </a>
-              </div>
-              <div class="card-body text-center">
-                  <h5 class="font-weight-normal mt-3">
-                      <a href="">Sin registros</a>
-                  </h5>
-                  <p class="mb-0">Por el momento no hay información registrada disponible
-                  </p>
-              </div>
-              <hr class="dark horizontal my-0">
-              <div class="card-footer d-flex">
-              </div>
-          </div>
-      </div>';
-  }
-
-  $html = '';
-  foreach ($rows as $a) {
-    $src = $a['FotoContenido']
-      ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
-      : '../assets/img/small-logos/alerta.png';
-    $full = "{$a['NombreUsuario']} {$a['ApellidoPaterno']}";
-    // truncate to 152 chars
-    $desc = strip_tags($a['DescripcionAviso']);
-    if (mb_strlen($desc) > 150) {
-      $desc = mb_substr($desc, 0, 150) . '…';
+    if (empty($rows)) {
+        return '<div class="col-md-4 mb-4">
+                  <div class="card" data-animation="false">
+                    <div class="card-body text-center">
+                      <h5 class="font-weight-normal mt-3">Sin registros</h5>
+                      <p class="mb-0">Por el momento no hay información registrada.</p>
+                    </div>
+                  </div>
+                </div>';
     }
 
-    $html .= '<div class="col-md-4 mb-4"> 
-    <div class="card" data-animation="true">
-        <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-            <a class="d-block blur-shadow-image stretched-link">
-                <img src="' . $src . '"
-                    alt="img-blur-shadow" class="img-fluid shadow border-radius-lg">
-            </a>
-            <div class="colored-shadow stretched-link"
-                style="background-image: url(&quot;' . $src . '&quot;);">
-            </div>
-        </div>
-        <div class="card-body text-center">
-            <div class="d-flex mt-n6 mx-auto">
-                <a class="btn btn-link text-primary ms-auto border-0" data-toggle="tooltip" data-bs-toggle="modal" href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '"
-                    data-bs-placement="bottom" title="Borrar" data-aviso-name="' . $a['TituloAviso'] . '" data-aviso-id="' . $a['AvisoId'] . '" data-bs-target="#modal-notification">
-                    <i class="material-symbols-rounded text-lg">delete</i>
-                </a>
-                <button class="btn btn-link text-info me-auto border-0" data-toggle="tooltip" data-bs-toggle="modal"
-                    data-bs-placement="bottom" title="Editar" data-aviso-id="' . $a['AvisoId'] . '" data-aviso-title="' . htmlspecialchars($a['TituloAviso'], ENT_QUOTES) . '"
-                    data-aviso-desc="' . htmlspecialchars($a['DescripcionAviso'], ENT_QUOTES) . '"
-                    data-aviso-src="' . $src . '" data-bs-target="#modal-edit">
-                    <i class="material-symbols-rounded text-lg">edit</i>
-                </button>
-            </div>
-            <h5 class="font-weight-normal mt-3">
-                ' . $a['TituloAviso'] . '
-            </h5>
-            <p class="mb-0">' . $desc . '
-            </p>
-        </div>';
-    if ($a['EsCampana'] === 0) {
-      $html .= '<hr class="dark horizontal my-0">
-        <div class="card-footer d-flex">
-            <p class="font-weight-normal my-auto">' . date('d/m/Y', strtotime($a['Fecha'])) . '</p>
-            <i class="material-symbols-rounded position-relative ms-auto text-lg me-1 my-auto">person</i>
-            <p class="text-sm my-auto">' . $full . '</p>
-        </div>';
+    $html = '';
+    foreach ($rows as $a) {
+        $src = !empty($a['FotoContenido'])
+            ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
+            : '../assets/img/small-logos/alerta.png';
+
+        $full      = escHtml("{$a['NombreUsuario']} {$a['ApellidoPaterno']}");
+        $titulo    = escHtml($a['TituloAviso']);
+        $avisoId   = (int)$a['AvisoId'];
+
+        $desc = strip_tags($a['DescripcionAviso']);
+        if (mb_strlen($desc) > 150) {
+            $desc = mb_substr($desc, 0, 150) . '…';
+        }
+        $desc = escHtml($desc);
+
+        $descFull  = escHtml($a['DescripcionAviso']);
+        $srcEsc    = escHtml($src);
+
+        $html .= <<<HTML
+<div class="col-md-4 mb-4">
+  <div class="card" data-animation="true">
+    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+      <a class="d-block blur-shadow-image stretched-link">
+        <img src="{$srcEsc}" alt="aviso" class="img-fluid shadow border-radius-lg">
+      </a>
+      <div class="colored-shadow" style="background-image: url('{$srcEsc}');"></div>
+    </div>
+    <div class="card-body text-center">
+      <div class="d-flex mt-n6 mx-auto">
+        <a class="btn btn-link text-primary ms-auto border-0"
+           data-bs-toggle="modal"
+           href="../pages/campania_ext.php?avisoId={$avisoId}"
+           data-aviso-name="{$titulo}"
+           data-aviso-id="{$avisoId}"
+           data-bs-target="#modal-notification">
+          <i class="material-symbols-rounded text-lg">delete</i>
+        </a>
+        <button class="btn btn-link text-info me-auto border-0"
+                data-bs-toggle="modal"
+                data-aviso-id="{$avisoId}"
+                data-aviso-title="{$titulo}"
+                data-aviso-desc="{$descFull}"
+                data-aviso-src="{$srcEsc}"
+                data-bs-target="#modal-edit">
+          <i class="material-symbols-rounded text-lg">edit</i>
+        </button>
+      </div>
+      <h5 class="font-weight-normal mt-3">{$titulo}</h5>
+      <p class="mb-0">{$desc}</p>
+    </div>
+  </div>
+</div>
+HTML;
     }
-    $html .= '</div>
-  </div>';
-  }
-  return $html;
+
+    return $html;
 }
 
 function getAvisosDash(PDO $pdo): string
@@ -715,9 +699,9 @@ HTML;
 function editarAviso(array $post, PDO $pdo): string
 {
   // 1) Sanitizar y validar
-  $avisoId = filter_var($post['avisoId'] ?? null, FILTER_VALIDATE_INT);
-  $titulo = trim(filter_var($post['avisoTitulo'] ?? '', FILTER_SANITIZE_STRING));
-  $descrip = trim(filter_var($post['avisoDesc'] ?? '', FILTER_SANITIZE_STRING));
+  $avisoId = sanitizeString($post['avisoId'] ?? null, FILTER_VALIDATE_INT);
+  $titulo = trim(sanitizeString($post['avisoTitulo'] ?? '', 500));
+  $descrip = trim(sanitizeString($post['avisoDesc'] ?? '', 500));
 
   if (!$avisoId || !$titulo || !$descrip) {
     return alertScript('Error', 'Faltan datos para editar.', 'error');
@@ -957,8 +941,8 @@ HTML;
 function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
 {
 
-  $password1 = filter_var($password1, FILTER_SANITIZE_STRING);
-  $password2 = filter_var($password2, FILTER_SANITIZE_STRING);
+  $password1 = sanitizeString($password1, 500);
+  $password2 = sanitizeString($password2, 500);
 
   if ($password1 !== $password2) {
     $error = "

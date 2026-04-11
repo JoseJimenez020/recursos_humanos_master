@@ -761,6 +761,7 @@ require '../controllers/dashboard.php';
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST">
+                    <?= csrfField() ?>
                     <div class="modal-body">
                         <p>Estás a punto de cerrar sesión.</p>
                         <p>¿Seguro que quieres continuar?</p>
@@ -785,6 +786,7 @@ require '../controllers/dashboard.php';
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form role="form text-left" method="post">
+                    <?= csrfField() ?>
                     <div class="modal-body">
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Nueva contraseña</label>

@@ -77,6 +77,7 @@ require_once '../controllers/handle_login.php';
 
                 <div class="card-body tab-pane fade show active" id="profile-tabs-icons">
                   <form role="form" class="text-start" method="POST">
+                    <?= csrfField() ?>
                     <div class="input-group input-group-outline my-3">
                       <label class="form-label">Usuario</label>
                       <input type="text" name="username" class="form-control">
@@ -98,6 +99,7 @@ require_once '../controllers/handle_login.php';
 
                 <div class="card-body tab-pane fade" id="dashboard-tabs-icons">
                   <form role="form" class="text-start" method="POST">
+                    <?= csrfField() ?>
                     <div class="input-group input-group-outline my-3">
                       <label class="form-label">Nombre completo</label>
                       <input type="text" name="fullname" class="form-control">

@@ -4,6 +4,7 @@ require '../controllers/dashboard.php';
 $alertHtml = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  csrfVerify();
   // Registro de usuario (formulario principal flotante) 
   if (isset($_POST['mandarMensaje'])) {
     $alertHtml = registrarQueja($_POST, $pdo);
@@ -547,8 +548,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <hr class="horizontal dark my-1">
       <div class="card-body pt-sm-3 pt-0">
-        <form method="POST">
-         <input type="hidden" name="UsuarioId" id="mensaje-UsuarioId" value="' . $_SESSION['user_id'] . '">
+        <form method="POST">';
+        csrfField();
+         '<input type="hidden" name="UsuarioId" id="mensaje-UsuarioId" value="' . $_SESSION['user_id'] . '">
         <div>
           <h6 class="mb-0">Deja tu comentario aquí</h6>
         </div>
@@ -633,6 +635,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form method="POST">
+          <?= csrfField() ?>
           <div class="modal-body">
             <p>Estás a punto de cerrar sesión.</p>
             <p>¿Seguro que quieres continuar?</p>
@@ -696,6 +699,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="modal-footer">
           <form id="deleteForm" method="POST">
+            <?= csrfField() ?>
             <input type="hidden" name="QuejaId" id="delete-quejaid" value="">
             <button type="submit" name="borrarQueja" class="btn bg-gradient-primary">Sí, continuar</button>
           </form>
@@ -778,6 +782,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form role="form text-left" method="post">
+          <?= csrfField() ?>
           <div class="modal-body">
             <div class="input-group input-group-outline my-3">
               <label class="form-label">Nueva contraseña</label>

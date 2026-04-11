@@ -17,11 +17,11 @@ if (empty($_SESSION['user_id'])) {
 }
 
 $usuarioId = $_SESSION['user_id'];
-$telefono = filter_input(INPUT_POST, 'NumeroTelefono', FILTER_SANITIZE_STRING);
-$email = filter_input(INPUT_POST, 'Email', FILTER_VALIDATE_EMAIL);
-$nombreCE = filter_input(INPUT_POST, 'NombreContacto', FILTER_SANITIZE_STRING);
-$parentesco = filter_input(INPUT_POST, 'Parentezco', FILTER_SANITIZE_STRING);
-$numeroCE = filter_input(INPUT_POST, 'NumeroEmergencia', FILTER_SANITIZE_STRING);
+$telefono = sanitizeString($_POST['NumeroTelefono'] ?? '', 500);
+$email = sanitizeString($_POST['Email'] ?? '', 500);
+$nombreCE = sanitizeString($_POST['NombreContacto'] ?? '', 500);
+$parentesco = sanitizeString($_POST['Parentezco'] ?? '', 500);
+$numeroCE = sanitizeString($_POST['NumeroEmergencia'] ?? '', 500);
 
 try {
   $pdo->beginTransaction();

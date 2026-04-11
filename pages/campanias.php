@@ -2,6 +2,7 @@
 require '../controllers/dashboard.php';
 $alertHtml = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  csrfVerify();
   if (isset($_POST['regAviso'])) {
     $alertHtml = registrarAviso($_POST, $pdo);
   }
@@ -379,6 +380,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="card-body p-3">
               <form method="POST" enctype="multipart/form-data">
+                <?= csrfField() ?>
                 <div class="input-group input-group-outline my-3">
                   <label class="form-label">Título</label>
                   <input type="text" name="avisoTitulo" class="form-control">
@@ -414,6 +416,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
               <form method="POST" enctype="multipart/form-data">
+                <?= csrfField() ?>
                 <div class="modal-body">
                   <!-- Campo oculto para el ID -->
                   <input type="hidden" name="avisoId" id="edit-aviso-id">
@@ -480,6 +483,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </div>
               <div class="modal-footer">
                 <form method="POST">
+                  <?= csrfField() ?>
                   <input type="hidden" name="AvisoId" id="aviso-id">
                   <button type="submit" name="borrarAviso" class="btn bg-gradient-primary" data-bs-dismiss="modal"
                     data-target="warningToast">
@@ -547,6 +551,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form method="POST">
+          <?= csrfField() ?>
           <div class="modal-body">
             <p>Estás a punto de cerrar sesión.</p>
             <p>¿Seguro que quieres continuar?</p>
@@ -613,6 +618,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form role="form text-left" method="post">
+                  <?= csrfField() ?>
                     <div class="modal-body">
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Nueva contraseña</label>

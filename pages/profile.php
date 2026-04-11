@@ -582,6 +582,7 @@ require_once '../controllers/logica_usuario.php';
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form method="POST">
+          <?= csrfField() ?>
           <div class="modal-body">
             <p>Estás a punto de cerrar sesión.</p>
             <p>¿Seguro que quieres continuar?</p>
@@ -606,6 +607,7 @@ require_once '../controllers/logica_usuario.php';
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form role="form text-left" method="post">
+          <?= csrfField() ?>
           <div class="modal-body">
             <div class="input-group input-group-outline my-3">
               <label class="form-label">Nueva contraseña</label>
@@ -689,6 +691,7 @@ require_once '../controllers/logica_usuario.php';
 
           <!-- Formulario actualizado -->
           <form id="foto_perfil_usuario" action="" method="POST" enctype="multipart/form-data">
+            <?= csrfField() ?>
             <input type="hidden" name="UsuarioId" value="<?php echo $sesion['UsuarioId']; ?>">
 
             <p class="text-sm"><em>(JPEG, JPG). Tamaño máximo: 1 MB.</em></p>

@@ -1,0 +1,91 @@
+# ════════════════════════════════════════════════════════════════════════
+# .htaccess — Seguridad para el sistema RH
+# Colocar en la RAÍZ del proyecto (donde está index.php)
+# ════════════════════════════════════════════════════════════════════════
+
+# ── Habilitar módulo rewrite ─────────────────────────────────────────────
+Options -Indexes          # CRÍTICO: deshabilita listado de directorios
+Options -ExecCGI
+Options +FollowSymLinks
+
+# ── Bloquear acceso directo a controllers/ desde el navegador ────────────
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloquear acceso directo a cualquier .php en controllers/
+    RewriteRule ^controllers/(?!usuario_foto\.php|ver_manual\.php).*\.php$ - [F,L]
+
+    # Bloquear acceso directo a la carpeta uploads/
+    RewriteRule ^uploads/ - [F,L]
+</IfModule>
+
+# ── Bloquear archivos sensibles directamente ─────────────────────────────
+<FilesMatch "(conn\.php|security\.php|sesion\.php|logout\.php|\.env|composer\.json|composer\.lock|\.git)">
+    Require all denied
+</FilesMatch>
+
+# ── Deshabilitar ejecución de PHP en uploads/ ────────────────────────────
+<IfModule mod_php.c>
+    <DirectoryMatch "uploads/">
+        php_flag engine off
+    </DirectoryMatch>
+</IfModule>
+
+# ── Limitar métodos HTTP permitidos ──────────────────────────────────────
+<LimitExcept GET POST HEAD>
+    Require all denied
+</LimitExcept>
+
+# ── Bloquear extensiones peligrosas en uploads ───────────────────────────
+<FilesMatch "\.(php[0-9]?|phtml|phar|shtml|cgi|pl|py|sh|bash|exe|com|bat|cmd|vbs|js|jsx|ts|asp|aspx|cfm|htaccess)$">
+    <IfModule mod_rewrite.c>
+        RewriteRule .* - [F,L]
+    </IfModule>
+</FilesMatch>
+
+# ── Cabeceras de seguridad HTTP ───────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+    # Activar HSTS cuando tengas SSL:
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+    # Eliminar cabeceras que revelan tecnología del servidor
+    Header unset X-Powered-By
+    Header unset Server
+</IfModule>
+
+# ── Ocultar versión de PHP ────────────────────────────────────────────────
+<IfModule mod_php.c>
+    php_flag expose_php off
+    php_flag display_errors off
+    php_flag log_errors on
+    php_value error_log "/var/log/php_errors.log"
+
+    # Deshabilitar funciones peligrosas
+    php_value disable_functions "exec,passthru,shell_exec,system,proc_open,popen,curl_exec,curl_multi_exec,parse_ini_file,show_source,phpinfo"
+</IfModule>
+
+# ── Protección contra inyección en la URL ────────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} base64_encode.*\(.*\) [OR]
+    RewriteCond %{QUERY_STRING} (<|%3C)([^s]*s)+cript.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (\.\./|\.\.%2F|%2E%2E%2F) [OR]
+    RewriteCond %{QUERY_STRING} (union|select|insert|delete|update|drop|alter|create|exec|declare|cast|convert|char|nchar|varchar|nvarchar|table|sysobjects|syscolumns|sys\.) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ── Limitar tamaño del body (POST) — 10 MB máximo ────────────────────────
+LimitRequestBody 10485760
+
+# ── Caché controlada para assets estáticos ───────────────────────────────
+<FilesMatch "\.(css|js|jpg|jpeg|png|gif|ico|woff2?)$">
+    Header set Cache-Control "max-age=604800, public"
+</FilesMatch>
