@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['cerrarSesion'])) {
                   icon: 'success',
                   draggable: true
                 }).then(() => {
-                    window.location.href = '../pages/sign-in.php';
+                    window.location.href = 'http://rhfastnet.fast-net.net/';
                 });
             });
         </script>";

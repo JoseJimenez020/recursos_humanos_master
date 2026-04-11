@@ -456,12 +456,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </div>
         </div>
-        <div class="col-lg-4 col-md-6">
+
+        <div class="col-lg-4 col-md-5">
           <div class="card h-100">
             <div class="card-header pb-0">
               <h6>Campañas</h6>
             </div>
-            <div class="card-body p-3">
+            <div class="card-body p-2">
               <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner mb-4">
                   <?= getCarouselAvisos($pdo, "1") ?>
@@ -470,6 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </div>
         </div>
+
       </div>
 
       <!-- FOOTER -->

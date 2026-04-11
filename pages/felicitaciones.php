@@ -1,20 +1,20 @@
 <?php
-    require '../controllers/logica_usuario.php';
+require '../controllers/logica_usuario.php';
 
-    $alertHtml = '';
+$alertHtml = '';
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // ALERTAS PARA REGISTRO-EDICIÓN-BORRADO
-        if (isset($_POST['subirFelicitación'])) {
-            $alertHtml = RegistrarFelicitacion($_POST, $pdo);
-        }
-        if (isset($_POST['eliminarFelicitacion'])) {
-            $alertHtml = borrarFelicitacion($_POST, $pdo);
-        }
-        if (isset($_POST['editarFelicitacion'])) {
-            $alertHtml = editarFelicitacion($_POST, $pdo);
-        }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // ALERTAS PARA REGISTRO-EDICIÓN-BORRADO
+    if (isset($_POST['subirFelicitación'])) {
+        $alertHtml = RegistrarFelicitacion($_POST, $pdo);
     }
+    if (isset($_POST['eliminarFelicitacion'])) {
+        $alertHtml = borrarFelicitacion($_POST, $pdo);
+    }
+    if (isset($_POST['editarFelicitacion'])) {
+        $alertHtml = editarFelicitacion($_POST, $pdo);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -24,6 +24,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="../assets/img/favicon.ico">
+    <style>
+        /* Asegura que el buscador sea visible y tenga espacio */
+        .select2-container--open .select2-dropdown {
+            z-index: 9999;
+            /* Para que quede por encima de todo */
+        }
+
+        .select2-search__field {
+            display: block !important;
+            width: 100% !important;
+            padding: 8px !important;
+            border: 1px solid #d2d6da !important;
+            /* Estilo similar al de tu plantilla */
+            border-radius: 4px !important;
+        }
+    </style>
     <title>
         RH | Panel de Felicitaciones
     </title>
@@ -36,6 +52,9 @@
     <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <!-- Material Icons -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -367,7 +386,9 @@
                     </div>
                 </div>
             </footer>
+
         </div>
+
         <div class="fixed-plugin">
             <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
                 <i class="material-symbols-rounded py-2">cake_add</i>
@@ -394,17 +415,10 @@
 
                     <!-- Navbar Fixed -->
                     <form method="POST">
-                        <div class="input-group input-group-static mb-4 ">
-                            <label for="exampleFormControlSelect1" class="ms-0">Departamento</label>
-                            <select class="form-control" name="DepartamentoId" id="departamento-felicitacion">
-                                <option>Seleccionar</option>
-                                <?= GetListaDepartamentos($departamentos) ?>
-                            </select>
-                        </div>
-                        <div class="input-group input-group-static mb-4 ">
-                            <label for="exampleFormControlSelect1" class="ms-0">Nombre del empleado</label>
-                            <select name="UsuarioId" id="usuario-felicitado" class="form-control">
-                                <option value="">Seleccionar</option>
+                        <div class="input-group input-group-static mb-4">
+                            <label for="usuario-felicitado" class="ms-0">Nombre del empleado</label>
+                            <select name="UsuarioId" id="usuario-felicitado" class="form-control" style="width: 100%">
+                                <option value="">Buscar por nombre...</option>
                             </select>
                         </div>
                         <div class="input-group input-group-dynamic ">
@@ -420,6 +434,7 @@
                 </div>
             </div>
         </div>
+
         <!--   Core JS Files   -->
         <script src="../assets/js/core/popper.min.js"></script>
         <script src="../assets/js/core/bootstrap.min.js"></script>
@@ -460,38 +475,10 @@
             </div>
         </div>
         <!--End logout modal-->
-        <!--CARGAR usuarioS FORMULARIO DE REGISTRO-->
+
+        <!--CARGAR usuarios FORMULARIO DE REGISTRO-->
         <script>
-            document.getElementById('departamento-felicitacion').addEventListener('change', function () {
-                const departamentoId = this.value;
-                const usuarioSelect = document.getElementById('usuario-felicitado');
 
-                // Limpia opciones anteriores
-                usuarioSelect.innerHTML = '<option value="">Cargando usuarios...</option>';
-
-                if (!departamentoId) {
-                    usuarioSelect.innerHTML = '<option value="">Seleccione el usuario</option>';
-                    return;
-                }
-
-                fetch(`../controllers/logica_usuario.php?DepartamentoUsuId=${departamentoId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        usuarioSelect.innerHTML = '<option value="">Seleccione el usuario</option>';
-                        data.forEach(usuario => {
-                            const option = document.createElement('option');
-                            option.value = usuario.UsuarioId;
-                            option.textContent = usuario.NombreCompleto;
-                            usuarioSelect.appendChild(option);
-                        });
-                    })
-                    .catch(error => {
-                        usuarioSelect.innerHTML = '<option value="">Error al cargar</option>';
-                        console.error('Error:', error);
-                    });
-            });
-        </script>
-        <script>
             // Captura el modal y escucha cuando se abre
             var deleteModal = document.getElementById('modal-notification');
             deleteModal.addEventListener('show.bs.modal', function (event) {
@@ -507,9 +494,7 @@
                 // Asignamos el ID al campo oculto del formulario
                 document.getElementById('delete-feliid').value = feliId;
             });
-        </script>
 
-        <script>
             const editModal = document.getElementById('modal-edit');
             editModal.addEventListener('show.bs.modal', event => {
                 const btn = event.relatedTarget;
@@ -518,6 +503,29 @@
 
                 document.getElementById('edit-feli-id').value = id;
                 document.getElementById('edit-mensaje').value = desc;
+            });
+
+            $(document).ready(function () {
+                $('#usuario-felicitado').select2({
+                    placeholder: 'Escribe el nombre...',
+                    minimumInputLength: 2,
+                    // ESTA LÍNEA ES LA CLAVE:
+                    dropdownParent: $('.fixed-plugin .card-body'),
+                    ajax: {
+                        url: '../controllers/logica_usuario.php',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (params) {
+                            return {
+                                q: params.term,
+                                buscar_empleado: 1
+                            };
+                        },
+                        processResults: function (data) {
+                            return { results: data.results };
+                        }
+                    }
+                });
             });
         </script>
 

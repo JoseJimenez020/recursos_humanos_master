@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
                     text: 'Inicia Sesion para continuar.',
                     icon: 'error'
                 }).then(() => {
-                    window.location.href = '../pages/sign-in.php';
+                    window.location.href = '../';
                 });
             });
         </script>";
@@ -823,18 +823,27 @@ function mostrarContador($pdo): string
     return $html;
 }
 
-function GetUsuariosPorDepartamento($pdo, $departamentoId)
-{
-    $query = "SELECT UsuarioId, CONCAT(NombreUsuario, ' ', ApellidoPaterno, ' ', ApellidoMaterno) AS NombreCompleto FROM usuarios WHERE DepartamentoId = :departamentoId";
+// Función para buscar usuarios globalmente
+function BuscarUsuarios($pdo, $termino = '') {
+    $query = "SELECT UsuarioId as id, 
+              CONCAT(NombreUsuario, ' ', ApellidoPaterno, ' ', ApellidoMaterno) AS text 
+              FROM usuarios 
+              WHERE CONCAT(NombreUsuario, ' ', ApellidoPaterno) LIKE :busqueda 
+              ORDER BY ApellidoPaterno";
+
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':departamentoId', $departamentoId, PDO::PARAM_INT);
+    $term = "%$termino%";
+    $stmt->bindParam(':busqueda', $term, PDO::PARAM_STR);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-if (isset($_GET['DepartamentoUsuId'])) {
+
+// Endpoint para la respuesta JSON
+if (isset($_GET['buscar_empleado'])) {
     header('Content-Type: application/json');
-    $puestos = GetUsuariosPorDepartamento($pdo, $_GET['DepartamentoUsuId']);
-    echo json_encode($puestos);
+    $busqueda = $_GET['q'] ?? '';
+    $resultados = BuscarUsuarios($pdo, $busqueda);
+    echo json_encode(['results' => $resultados]);
     exit;
 }
 

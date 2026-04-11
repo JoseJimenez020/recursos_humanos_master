@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
                     text: 'Inicia Sesion para continuar.',
                     icon: 'error'
                 }).then(() => {
-                    window.location.href = '../pages/sign-in.php';
+                    window.location.href = '../';
                 });
             });
         </script>";

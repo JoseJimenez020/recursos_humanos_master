@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'conn.php';
-require '../controllers/sesion.php';
+require __DIR__ . '/sesion.php';
 
 if (isset($_SESSION['user_id'])) {
     echo "
