@@ -3,23 +3,23 @@ declare(strict_types=1);
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
-require_once __DIR__ . '/security.php';   // ← NUEVO
+require_once __DIR__ . '/security.php';   // ← 
 
 if (session_status() === PHP_SESSION_NONE) {
-    secureSessionConfig();                // ← NUEVO
-    session_start();
+  secureSessionConfig();                // ← 
+  session_start();
 }
 
 require_once 'conn.php';
 
 if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    // No revelar la URL interna en el redirect
-    header('Location: /');
-    exit;
+  http_response_code(401);
+  // No revelar la URL interna en el redirect
+  header('Location: /');
+  exit;
 }
 
-sessionIntegrityCheck();  // ← NUEVO: verifica que no haya session hijacking
+sessionIntegrityCheck();  // ← : verifica que no haya session hijacking
 
 require 'sesion.php';
 require 'logout.php';
@@ -56,7 +56,7 @@ HTML;
  *
  * @param PDO $pdo Conexión PDO a la base de datos
  * @return string  Bloques HTML o mensaje de ausencia de vacaciones
- */
+ **/
 function GetTimelineVacaciones(PDO $pdo): string
 {
   // 1) Fecha de hoy para filtro
@@ -140,30 +140,30 @@ function mostrarContador($pdo): string
 
 function registrarQueja(array $data, PDO $pdo): string
 {
-    // Verifica CSRF (ya debe haberse llamado csrfVerify() en el dispatcher,
-    // pero lo dejamos aquí como segunda capa)
-    $userId  = sanitizeInt($data['UsuarioId'] ?? null);
-    $mensaje = sanitizeString($data['mensajeContenido'] ?? '', 2000);
+  // Verifica CSRF (ya debe haberse llamado csrfVerify() en el dispatcher,
+  // pero lo dejamos aquí como segunda capa)
+  $userId = sanitizeInt($data['UsuarioId'] ?? null);
+  $mensaje = sanitizeString($data['mensajeContenido'] ?? '', 2000);
 
-    if (!$userId || $mensaje === '') {
-        return alertScript('Error', 'Datos incompletos.', 'error');
-    }
+  if (!$userId || $mensaje === '') {
+    return alertScript('Error', 'Datos incompletos.', 'error');
+  }
 
-    try {
-        $pdo->beginTransaction();
-        $stmt = $pdo->prepare(
-            "INSERT INTO quejas (UsuarioId, FechaMensaje, Mensaje)
+  try {
+    $pdo->beginTransaction();
+    $stmt = $pdo->prepare(
+      "INSERT INTO quejas (UsuarioId, FechaMensaje, Mensaje)
              VALUES (:usuario, CURDATE(), :mensaje)"
-        );
-        $stmt->execute([':usuario' => $userId, ':mensaje' => $mensaje]);
-        $pdo->commit();
+    );
+    $stmt->execute([':usuario' => $userId, ':mensaje' => $mensaje]);
+    $pdo->commit();
 
-        return alertScript('¡Éxito!', 'Mensaje enviado correctamente.', 'success', '../pages/dashboard.php');
-    } catch (PDOException $e) {
-        $pdo->rollBack();
-        error_log('[registrarQueja] ' . $e->getMessage()); // log interno, no al usuario
-        return alertScript('Error', 'No se pudo registrar el mensaje.', 'error');
-    }
+    return alertScript('¡Éxito!', 'Mensaje enviado correctamente.', 'success', '../pages/dashboard.php');
+  } catch (PDOException $e) {
+    $pdo->rollBack();
+    error_log('[registrarQueja] ' . $e->getMessage()); // log interno, no al usuario
+    return alertScript('Error', 'No se pudo registrar el mensaje.', 'error');
+  }
 }
 
 function GetBuzonQuejas($pdo): string
@@ -381,8 +381,8 @@ function registrarAviso(array $post, PDO $pdo): string
 
 function getAvisosPanel(PDO $pdo, int $tipo): string
 {
-    // $tipo ahora es int, no string — NO hay concatenación en la query
-    $sql = "SELECT
+  // $tipo ahora es int, no string — NO hay concatenación en la query
+  $sql = "SELECT
                 a.AvisoId, a.TituloAviso, a.Fecha, a.DescripcionAviso,
                 a.EsCampana, f.FotoContenido, u.NombreUsuario, u.ApellidoPaterno
             FROM avisos a
@@ -391,12 +391,12 @@ function getAvisosPanel(PDO $pdo, int $tipo): string
                                AND f.EntidadId   = a.AvisoId
             WHERE a.EsCampana = :tipo";
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([':tipo' => $tipo]);     // parametrizado ✔
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute([':tipo' => $tipo]);     // parametrizado ✔
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (empty($rows)) {
-        return '<div class="col-md-4 mb-4">
+  if (empty($rows)) {
+    return '<div class="col-md-4 mb-4">
                   <div class="card" data-animation="false">
                     <div class="card-body text-center">
                       <h5 class="font-weight-normal mt-3">Sin registros</h5>
@@ -404,28 +404,28 @@ function getAvisosPanel(PDO $pdo, int $tipo): string
                     </div>
                   </div>
                 </div>';
+  }
+
+  $html = '';
+  foreach ($rows as $a) {
+    $src = !empty($a['FotoContenido'])
+      ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
+      : '../assets/img/small-logos/alerta.png';
+
+    $full = escHtml("{$a['NombreUsuario']} {$a['ApellidoPaterno']}");
+    $titulo = escHtml($a['TituloAviso']);
+    $avisoId = (int) $a['AvisoId'];
+
+    $desc = strip_tags($a['DescripcionAviso']);
+    if (mb_strlen($desc) > 150) {
+      $desc = mb_substr($desc, 0, 150) . '…';
     }
+    $desc = escHtml($desc);
 
-    $html = '';
-    foreach ($rows as $a) {
-        $src = !empty($a['FotoContenido'])
-            ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
-            : '../assets/img/small-logos/alerta.png';
+    $descFull = escHtml($a['DescripcionAviso']);
+    $srcEsc = escHtml($src);
 
-        $full      = escHtml("{$a['NombreUsuario']} {$a['ApellidoPaterno']}");
-        $titulo    = escHtml($a['TituloAviso']);
-        $avisoId   = (int)$a['AvisoId'];
-
-        $desc = strip_tags($a['DescripcionAviso']);
-        if (mb_strlen($desc) > 150) {
-            $desc = mb_substr($desc, 0, 150) . '…';
-        }
-        $desc = escHtml($desc);
-
-        $descFull  = escHtml($a['DescripcionAviso']);
-        $srcEsc    = escHtml($src);
-
-        $html .= <<<HTML
+    $html .= <<<HTML
 <div class="col-md-4 mb-4">
   <div class="card" data-animation="true">
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -460,9 +460,9 @@ function getAvisosPanel(PDO $pdo, int $tipo): string
   </div>
 </div>
 HTML;
-    }
+  }
 
-    return $html;
+  return $html;
 }
 
 function getAvisosDash(PDO $pdo): string
@@ -751,14 +751,14 @@ function editarAviso(array $post, PDO $pdo): string
       ]);
       $newFotoId = $pdo->lastInsertId();
 
-      // 6) Actualizar Avisos.FotoId al nuevo
+      // 6) Actualizar Avisos.FotoId al 
       $pdo->prepare("
                 UPDATE avisos
                 SET FotoId = :f
                 WHERE AvisoId = :id
             ")->execute([':f' => $newFotoId, ':id' => $avisoId]);
 
-      // 7) Borrar foto anterior (FK en avisos ya apunta al nuevo)
+      // 7) Borrar foto anterior (FK en avisos ya apunta al )
       $old = $pdo->prepare("
                 SELECT FotoId
                 FROM fotos
@@ -1044,62 +1044,62 @@ function getContenedorPuesto(int $id, PDO $pdo): string
 
 function getTableACargo(array $puestos, array $bases, PDO $pdo): string
 {
-    // Normalizar arrays
-    $puestos = array_values(array_map('intval', array_filter($puestos, 'strlen')));
-    $bases = array_values(array_map('trim', array_filter($bases, 'strlen')));
+  // Normalizar arrays
+  $puestos = array_values(array_map('intval', array_filter($puestos, 'strlen')));
+  $bases = array_values(array_map('trim', array_filter($bases, 'strlen')));
 
-    $whereParts = [];
-    $params = [];
+  $whereParts = [];
+  $params = [];
 
-    if (!empty($puestos)) {
-        $ph = [];
-        foreach ($puestos as $i => $p) {
-            $key = ":p{$i}";
-            $ph[] = $key;
-            $params[$key] = $p;
-        }
-        $whereParts[] = 'u.PuestoId IN (' . implode(',', $ph) . ')';
+  if (!empty($puestos)) {
+    $ph = [];
+    foreach ($puestos as $i => $p) {
+      $key = ":p{$i}";
+      $ph[] = $key;
+      $params[$key] = $p;
     }
+    $whereParts[] = 'u.PuestoId IN (' . implode(',', $ph) . ')';
+  }
 
-    if (!empty($bases)) {
-        $phb = [];
-        foreach ($bases as $i => $b) {
-            $key = ":b{$i}";
-            $phb[] = $key;
-            $params[$key] = $b;
-        }
-        $whereParts[] = 'u.Base IN (' . implode(',', $phb) . ')';
+  if (!empty($bases)) {
+    $phb = [];
+    foreach ($bases as $i => $b) {
+      $key = ":b{$i}";
+      $phb[] = $key;
+      $params[$key] = $b;
     }
+    $whereParts[] = 'u.Base IN (' . implode(',', $phb) . ')';
+  }
 
-    if (empty($whereParts)) {
-        return '<tr><td colspan="2" class="text-center">Sin registros</td></tr>';
-    }
+  if (empty($whereParts)) {
+    return '<tr><td colspan="2" class="text-center">Sin registros</td></tr>';
+  }
 
-    $where = implode(' AND ', $whereParts);
+  $where = implode(' AND ', $whereParts);
 
-    $sql = "SELECT u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, p.PuestoNombre, u.Base, f.FotoContenido
+  $sql = "SELECT u.UsuarioId, u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno, p.PuestoNombre, u.Base, f.FotoContenido
             FROM usuarios u
             LEFT JOIN puesto p ON u.PuestoId = p.PuestoId
             LEFT JOIN fotos f ON f.EntidadTipo = 'usuario' AND f.EntidadId = u.UsuarioId
             WHERE ($where) 
             ORDER BY p.PuestoNombre ASC";
 
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute($params);
+  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (empty($rows)) {
-        return '<tr><td colspan="2" class="text-center">Sin registros</td></tr>';
-    }
+  if (empty($rows)) {
+    return '<tr><td colspan="2" class="text-center">Sin registros</td></tr>';
+  }
 
-    $html = '';
-    foreach ($rows as $u) {
-        $src = '../controllers/usuario_foto.php?id=' . $u['UsuarioId'] . '';
+  $html = '';
+  foreach ($rows as $u) {
+    $src = '../controllers/usuario_foto.php?id=' . $u['UsuarioId'] . '';
 
-        $full = htmlspecialchars("{$u['NombreUsuario']} {$u['ApellidoPaterno']} {$u['ApellidoMaterno']}", ENT_QUOTES, 'UTF-8');
-        $puesto = htmlspecialchars($u['PuestoNombre'] ?? 'Sin registros', ENT_QUOTES, 'UTF-8');
+    $full = htmlspecialchars("{$u['NombreUsuario']} {$u['ApellidoPaterno']} {$u['ApellidoMaterno']}", ENT_QUOTES, 'UTF-8');
+    $puesto = htmlspecialchars($u['PuestoNombre'] ?? 'Sin registros', ENT_QUOTES, 'UTF-8');
 
-        $html .= '<tr>
+    $html .= '<tr>
                     <td>
                       <div class="d-flex px-2 py-1">
                         <img src="' . $src . '" class="avatar avatar-sm me-3 border-radius-lg" alt="' . $full . '">
@@ -1113,48 +1113,48 @@ function getTableACargo(array $puestos, array $bases, PDO $pdo): string
                       <p class="text-xs font-weight-bold mb-0">' . $puesto . '</p>
                     </td>
                   </tr>';
-    }
+  }
 
-    return $html;
+  return $html;
 }
 
 function getModalSubordinados(string $modalId, array $puestos, array $bases, PDO $pdo): void
 {
-    // Normalizar inputs para usar en atributos y en la consulta
-    $puestosClean = array_values(array_map('intval', array_filter($puestos, 'strlen')));
-    $basesClean = array_values(array_map('trim', array_filter($bases, 'strlen')));
-  
-    // Generar filas ya en servidor
-    $rowsHtml = getTableACargo($puestosClean, $basesClean, $pdo);
+  // Normalizar inputs para usar en atributos y en la consulta
+  $puestosClean = array_values(array_map('intval', array_filter($puestos, 'strlen')));
+  $basesClean = array_values(array_map('trim', array_filter($bases, 'strlen')));
 
-    // Imprimir modal (Bootstrap 5)
-    echo '<div class="modal fade" id="' .$modalId . '" tabindex="-1" aria-labelledby="' . htmlspecialchars($modalId, ENT_QUOTES, 'UTF-8') . 'Label" aria-hidden="true">';
-    echo '  <div class="modal-dialog modal-lg" role="document">';
-    echo '    <div class="modal-content">';
-    echo '      <div class="modal-header">';
-    echo '        <h5 class="modal-title" id="' . htmlspecialchars($modalId, ENT_QUOTES, 'UTF-8') . 'Label">Gente a cargo</h5>';
-    echo '        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
-    echo '      </div>';
-    echo '      <div class="modal-body">';
-    echo '        <div class="table-responsive p-0">';
-    echo '          <table class="table align-items-center mb-0">';
-    echo '            <thead>';
-    echo '              <tr>';
-    echo '                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre completo</th>';
-    echo '                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Puesto</th>';
-    echo '              </tr>';
-    echo '            </thead>';
-    echo '            <tbody>';
-    echo                $rowsHtml;
-    echo '            </tbody>';
-    echo '          </table>';
-    echo '        </div>';
-    echo '      </div>';
-    echo '      <div class="modal-footer">';
-    echo '        <button type="button" class="btn bg-gradient-primary" data-bs-dismiss="modal">Cerrar</button>';
-    echo '      </div>';
-    echo '    </div>';
-    echo '  </div>';
-    echo '</div>';
+  // Generar filas ya en servidor
+  $rowsHtml = getTableACargo($puestosClean, $basesClean, $pdo);
+
+  // Imprimir modal (Bootstrap 5)
+  echo '<div class="modal fade" id="' . $modalId . '" tabindex="-1" aria-labelledby="' . htmlspecialchars($modalId, ENT_QUOTES, 'UTF-8') . 'Label" aria-hidden="true">';
+  echo '  <div class="modal-dialog modal-lg" role="document">';
+  echo '    <div class="modal-content">';
+  echo '      <div class="modal-header">';
+  echo '        <h5 class="modal-title" id="' . htmlspecialchars($modalId, ENT_QUOTES, 'UTF-8') . 'Label">Gente a cargo</h5>';
+  echo '        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
+  echo '      </div>';
+  echo '      <div class="modal-body">';
+  echo '        <div class="table-responsive p-0">';
+  echo '          <table class="table align-items-center mb-0">';
+  echo '            <thead>';
+  echo '              <tr>';
+  echo '                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nombre completo</th>';
+  echo '                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Puesto</th>';
+  echo '              </tr>';
+  echo '            </thead>';
+  echo '            <tbody>';
+  echo $rowsHtml;
+  echo '            </tbody>';
+  echo '          </table>';
+  echo '        </div>';
+  echo '      </div>';
+  echo '      <div class="modal-footer">';
+  echo '        <button type="button" class="btn bg-gradient-primary" data-bs-dismiss="modal">Cerrar</button>';
+  echo '      </div>';
+  echo '    </div>';
+  echo '  </div>';
+  echo '</div>';
 
 }
