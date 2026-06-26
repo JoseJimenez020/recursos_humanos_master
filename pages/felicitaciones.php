@@ -4,7 +4,6 @@ require '../controllers/logica_usuario.php';
 $alertHtml = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    csrfVerify();
     // ALERTAS PARA REGISTRO-EDICIÓN-BORRADO
     if (isset($_POST['subirFelicitación'])) {
         $alertHtml = RegistrarFelicitacion($_POST, $pdo);
@@ -299,7 +298,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                     <div class="modal-body">
                                         <form role="form text-left" method="POST">
-                                            <?= csrfField() ?>
                                             <input type="hidden" name="feliId" id="edit-feli-id">
                                             <div class="input-group input-group-dynamic">
                                                 <textarea class="form-control" rows="5"
@@ -353,7 +351,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                     <div class="modal-footer">
                                         <form id="deleteForm" method="POST">
-                                            <?= csrfField() ?>
                                             <input type="hidden" name="FelicitacionId" id="delete-feliid" value="">
                                             <button type="submit" name="eliminarFelicitacion"
                                                 class="btn bg-gradient-primary">Sí,
@@ -418,7 +415,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <!-- Navbar Fixed -->
                     <form method="POST">
-                        <?= csrfField() ?>
                         <div class="input-group input-group-static mb-4">
                             <label for="usuario-felicitado" class="ms-0">Nombre del empleado</label>
                             <select name="UsuarioId" id="usuario-felicitado" class="form-control" style="width: 100%">
@@ -465,7 +461,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form method="POST">
-                        <?= csrfField() ?>
                         <div class="modal-body">
                             <p>Estás a punto de cerrar sesión.</p>
                             <p>¿Seguro que quieres continuar?</p>
@@ -544,7 +539,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form role="form text-left" method="post">
-                    <?= csrfField() ?>
                     <div class="modal-body">
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Nueva contraseña</label>

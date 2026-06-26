@@ -5,7 +5,6 @@ $alertHtml = '';
 
 // 2) Si viene un POST, determinamos si es registro o actualización
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    csrfVerify();
 
     // Registro de usuario (formulario principal flotante)
     if (isset($_POST['registrarU'])) {
@@ -643,7 +642,6 @@ $departamentos = GetDepartamento($pdo);
             <div class="card-body pt-sm-3 pt-0" style="max-height: 80vh; overflow-y: auto;">
                 <div class="mt-3 d-flex">
                     <form method="POST">
-                        <?= csrfField() ?>
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Nombre</label>
                             <input name="nombre" type="text" class="form-control">
@@ -1071,7 +1069,6 @@ $departamentos = GetDepartamento($pdo);
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST">
-                    <?= csrfField() ?>
                     <div class="modal-body">
                         <p>Estás a punto de cerrar sesión.</p>
                         <p>¿Seguro que quieres continuar?</p>
@@ -1103,7 +1100,6 @@ $departamentos = GetDepartamento($pdo);
 
                     <!-- Formulario actualizado -->
                     <form id="foto_perfil_usuario" action="" method="POST" enctype="multipart/form-data">
-                        <?= csrfField() ?>
                         <input type="hidden" name="UsuarioId" value="">
                         <p class="text-sm"><em>(JPEG, JPG). Tamaño máximo: 1 MB.</em></p>
                         <div class="input-group input-group-outline mb-4">
@@ -1152,7 +1148,6 @@ $departamentos = GetDepartamento($pdo);
                 </div>
                 <div class="modal-body">
                     <form method="POST">
-                        <?= csrfField() ?>
                         <input type="hidden" name="usuarioId">
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Fecha de Inicio</label>
@@ -1206,7 +1201,6 @@ $departamentos = GetDepartamento($pdo);
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form role="form text-left" method="post">
-                    <?= csrfField() ?>
                     <div class="modal-body">
                         <div class="input-group input-group-outline my-3">
                             <label class="form-label">Nueva contraseña</label>

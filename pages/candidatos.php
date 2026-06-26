@@ -132,7 +132,6 @@ $alertHtml = '';
                             onclick="window.location.href='../docs/PruebaC.xlsx'">Descargar documento</button>
 
                         <form action="../controllers/logica_candidato.php" method="post" enctype="multipart/form-data">
-                            <?= csrfField() ?>
                             <p class="mb-0 font-weight-normal text-sm">Subir el documento rellenado</p>
                             <div class="row">
                                 <div class="col-md-6">
@@ -188,7 +187,6 @@ $alertHtml = '';
                             onclick="window.location.href='../docs/resultadosZAVIC.xls'">Descargar Cuadernillo de
                             respuestas</button>
                         <form action="../controllers/logica_candidato.php" method="post" enctype="multipart/form-data">
-                            <?= csrfField() ?>
                             <p class="mb-0 font-weight-normal text-sm">Subir el cuadernillo rellenado</p>
                             <div class="row">
                                 <div class="col-md-6">
@@ -231,7 +229,6 @@ $alertHtml = '';
                             onclick="window.location.href='../docs/FORMATOMEDICO.docx'">Descargar Formato
                             Médico</button>
                         <form action="../controllers/logica_candidato.php" method="post" enctype="multipart/form-data">
-                            <?= csrfField() ?>
                             <div class="row">
                                 <div class="col-md-6">
                                     <p>Estudio socioeconómico</p>
@@ -303,7 +300,6 @@ $alertHtml = '';
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="POST">
-                    <?= csrfField() ?>
                     <div class="modal-body">
                         <p>Estás a punto de cerrar sesión.</p>
                         <p>¿Seguro que quieres continuar?</p>

@@ -227,15 +227,19 @@ function validateUploadedFile(array $file, array $allowedMimes, array $allowedEx
  */
 function secureSessionConfig(): void
 {
-    ini_set('session.cookie_httponly', '1');   // JS no puede leer la cookie
-    ini_set('session.cookie_secure', '1');     // Solo HTTPS
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+               || (int)($_SERVER['SERVER_PORT'] ?? 80) === 443;
+
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.cookie_secure', $isHttps ? '1' : '0');  // Solo HTTPS en producción
     ini_set('session.cookie_samesite', 'Strict');
-    ini_set('session.use_strict_mode', '1');   // Rechaza IDs de sesión externos
-    ini_set('session.gc_maxlifetime', '3600'); // 1 hora
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.gc_maxlifetime', '3600');
+
     session_set_cookie_params([
         'lifetime' => 3600,
         'path'     => '/',
-        'secure'   => true,
+        'secure'   => $isHttps,
         'httponly' => true,
         'samesite' => 'Strict',
     ]);

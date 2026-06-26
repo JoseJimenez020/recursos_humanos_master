@@ -1,13 +1,22 @@
 <?php
-declare(strict_types=1);
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
+session_start();
+require_once 'conn.php';
 
-require_once __DIR__ . '/security.php';   // ← NUEVO
-
-if (session_status() === PHP_SESSION_NONE) {
-    secureSessionConfig();
-    session_start();
+if (!isset($_SESSION['user_id'])) {
+    echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Inicia Sesion para continuar.',
+                    icon: 'error'
+                }).then(() => {
+                    window.location.href = '../';
+                });
+            });
+        </script>";
 }
 
 require 'sesion.php';
@@ -64,8 +73,8 @@ function GetListaDepartamentos($departamentos)
 function RegistrarVacante(array $post, PDO $pdo): string
 {
     $puestoId = filter_var($post['PuestoId'], FILTER_VALIDATE_INT);
-    $descripcion = sanitizeString($post['descripcionVacante'], 500);
-    $fechaIng = sanitizeString($post['fechaIngreso'], 500);
+    $descripcion = filter_var($post['descripcionVacante'], FILTER_SANITIZE_STRING);
+    $fechaIng = filter_var($post['fechaIngreso'], FILTER_SANITIZE_STRING);
 
     try {
         $pdo->beginTransaction();
@@ -284,8 +293,8 @@ function registrarRecomendacion(PDO $pdo, array $post, array $file): string
     // 1) Sanitizar y validar
     $vacanteId = filter_var($post['VacanteId'] ?? null, FILTER_VALIDATE_INT);
     $usuarioId = filter_var($post['UsuarioId'] ?? null, FILTER_VALIDATE_INT);
-    $nombreRec = trim(sanitizeString($post['nombreRecomendado'] ?? '', 500));
-    $telefonoRec = trim(sanitizeString($post['telefonoRecomendado'] ?? '', 500));
+    $nombreRec = trim(filter_var($post['nombreRecomendado'] ?? '', FILTER_SANITIZE_STRING));
+    $telefonoRec = trim(filter_var($post['telefonoRecomendado'] ?? '', FILTER_SANITIZE_STRING));
     $emailRec = filter_var($post['emailRecomendado'] ?? '', FILTER_VALIDATE_EMAIL);
     $nombreDoc = $file['name'];
     $binario = file_get_contents($file['tmp_name']);
@@ -434,8 +443,8 @@ function GetTableRecomendaciones(PDO $pdo, int $vacanteId): string
 function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
 {
 
-    $password1 = sanitizeString($password1, 500);
-    $password2 = sanitizeString($password2, 500);
+    $password1 = filter_var($password1, FILTER_SANITIZE_STRING);
+    $password2 = filter_var($password2, FILTER_SANITIZE_STRING);
 
     if ($password1 !== $password2) {
         $error = "

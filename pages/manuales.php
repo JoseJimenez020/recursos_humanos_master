@@ -4,7 +4,6 @@ require '../controllers/logica_usuario.php';
 $alertHtml = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['download'])) {
-  csrfVerify();
   // Asegúrate de usar el nombre correcto del input: manualId
   $manualId = (int) ($_POST['manualId'] ?? 0);
   if ($manualId > 0) {
@@ -539,7 +538,6 @@ $departamentos = GetDepartamento($pdo);
           <!-- Navbar Fixed -->
           <div class="mt-3 d-flex">
             <form method="POST" enctype="multipart/form-data" id="user_profile_documento_form">
-              <?= csrfField() ?>
               <div class="input-group input-group-outline my-3">
                 <label class="form-label">Nombre</label>
                 <input type="text" name="nombreDocumento" class="form-control">
@@ -599,7 +597,6 @@ $departamentos = GetDepartamento($pdo);
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form method="POST">
-          <?= csrfField() ?>
           <div class="modal-body">
             <p>Estás a punto de cerrar sesión.</p>
             <p>¿Seguro que quieres continuar?</p>
@@ -658,7 +655,6 @@ $departamentos = GetDepartamento($pdo);
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form role="form text-left" method="post">
-          <?= csrfField() ?>
           <div class="modal-body">
             <div class="input-group input-group-outline my-3">
               <label class="form-label">Nueva contraseña</label>

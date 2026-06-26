@@ -1,13 +1,22 @@
 <?php
-declare(strict_types=1);
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
+session_start();
+require_once 'conn.php';
 
-require_once __DIR__ . '/security.php';   // ← NUEVO
-
-if (session_status() === PHP_SESSION_NONE) {
-    secureSessionConfig();
-    session_start();
+if (!isset($_SESSION['user_id'])) {
+    echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Inicia Sesion para continuar.',
+                    icon: 'error'
+                }).then(() => {
+                    window.location.href = '../';
+                });
+            });
+        </script>";
 }
 
 require 'sesion.php';
@@ -71,22 +80,22 @@ function UsuarioExiste($usuario, $pdo)
 function RegistrarUsuarioCompleto(array $post, PDO $pdo): string
 {
     // 1) Sanitizar y validar inputs
-    $nombre = sanitizeString($post['nombre'], 500);
-    $apellidoP = sanitizeString($post['apellidoPaterno'], 500);
-    $apellidoM = sanitizeString($post['apellidoMaterno'], 500);
+    $nombre = filter_var($post['nombre'], FILTER_SANITIZE_STRING);
+    $apellidoP = filter_var($post['apellidoPaterno'], FILTER_SANITIZE_STRING);
+    $apellidoM = filter_var($post['apellidoMaterno'], FILTER_SANITIZE_STRING);
     $email = filter_var($post['correo'], FILTER_VALIDATE_EMAIL);
-    $fechaNac = sanitizeString($post['fechaNacimiento'], 500);
-    $tipoSangre = sanitizeString($post['tipoSangre'], 500);
+    $fechaNac = filter_var($post['fechaNacimiento'], FILTER_SANITIZE_STRING);
+    $tipoSangre = filter_var($post['tipoSangre'], FILTER_SANITIZE_STRING);
     $departamentoId = filter_var($post['DepartamentoId'], FILTER_VALIDATE_INT);
     $puestoId = filter_var($post['PuestoId'], FILTER_VALIDATE_INT);
-    $base = sanitizeString($post['Base'], 500);
-    $celular = sanitizeString($post['celular'], 500);
-    $username = sanitizeString($post['username'], 500);
+    $base = filter_var($post['Base'], FILTER_SANITIZE_STRING);
+    $celular = filter_var($post['celular'], FILTER_SANITIZE_STRING);
+    $username = filter_var($post['username'], FILTER_SANITIZE_STRING);
     $password = $post['password'] ?? '';
     $esAdmin = isset($post['admin']) ? 1 : 0;
-    $nombreCont = trim(sanitizeString($post['NombreContacto'], 500));
-    $parentesco = trim(sanitizeString($post['Parentezco'], 500));
-    $numEmergencia = trim(sanitizeString($post['NumeroEmergencia'], 500));
+    $nombreCont = trim(filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING));
+    $parentesco = trim(filter_var($post['Parentezco'], FILTER_SANITIZE_STRING));
+    $numEmergencia = trim(filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING));
 
     // 2) Validaciones mínimas obligatorias
     if (
@@ -207,18 +216,18 @@ HTML;
 function actualizarUsuario(array $post, PDO $pdo): array
 {
     $usuarioId = filter_var($post['UsuarioId'], FILTER_VALIDATE_INT);
-    $nombreUsuario = sanitizeString($post['NombreUsuario'], 500);
-    $apellidoPaterno = sanitizeString($post['ApellidoPaterno'], 500);
-    $apellidoMaterno = sanitizeString($post['ApellidoMaterno'], 500);
+    $nombreUsuario = filter_var($post['NombreUsuario'], FILTER_SANITIZE_STRING);
+    $apellidoPaterno = filter_var($post['ApellidoPaterno'], FILTER_SANITIZE_STRING);
+    $apellidoMaterno = filter_var($post['ApellidoMaterno'], FILTER_SANITIZE_STRING);
     $email = filter_var($post['Email'], FILTER_VALIDATE_EMAIL);
-    $numeroTelefono = sanitizeString($post['NumeroTelefono'], 500);
+    $numeroTelefono = filter_var($post['NumeroTelefono'], FILTER_SANITIZE_STRING);
     $departamentoId = filter_var($post['DepartamentoId'], FILTER_VALIDATE_INT);
     $puestoId = filter_var($post['PuestoId'], FILTER_VALIDATE_INT);
-    $nombreContacto = sanitizeString($post['NombreContacto'], 500);
-    $parentezco = sanitizeString($post['Parentezco'], 500);
-    $numeroEmergencia = sanitizeString($post['NumeroEmergencia'], 500);
+    $nombreContacto = filter_var($post['NombreContacto'], FILTER_SANITIZE_STRING);
+    $parentezco = filter_var($post['Parentezco'], FILTER_SANITIZE_STRING);
+    $numeroEmergencia = filter_var($post['NumeroEmergencia'], FILTER_SANITIZE_STRING);
     $tiposValidos = ['O-', 'O+', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'];
-    $tipoSangre = sanitizeString($post['TipoSangre'], 500);
+    $tipoSangre = filter_var($post['TipoSangre'], FILTER_SANITIZE_STRING);
     $esAdmin = !empty($post['EsAdmin']) ? 1 : 0;
     if (!in_array($tipoSangre, $tiposValidos, true)) {
         throw new Exception('Tipo de sangre inválido.');
@@ -368,7 +377,6 @@ function updateUsuarioFoto($fotoContenido, $usuarioId, $pdo)
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarFoto'])) {
-    csrfVerify();
     // Validación subida
     if (
         isset($_FILES['foto']) &&
@@ -421,8 +429,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarFoto'])) {
 function ActualizarPassword($password1, $password2, $UsuarioId, $pdo)
 {
 
-    $password1 = sanitizeString($password1, 500);
-    $password2 = sanitizeString($password2, 500);
+    $password1 = filter_var($password1, FILTER_SANITIZE_STRING);
+    $password2 = filter_var($password2, FILTER_SANITIZE_STRING);
 
     if ($password1 !== $password2) {
         $error = "
@@ -590,7 +598,6 @@ function InsertDocumentacion($nombreDocumento, $contenidoArchivo, $departamentoI
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardarDocumentos'])) {
-    csrfVerify();
     $nombreDocumento = trim($_POST['nombreDocumento']);
     $departamentoId = (int) $_POST['DepartamentoId'];
 
@@ -842,8 +849,8 @@ if (isset($_GET['buscar_empleado'])) {
 
 function RegistrarFelicitacion(array $post, PDO $pdo): string
 {
-    $usuarioId = sanitizeString($post['UsuarioId'], 11);
-    $mensaje = sanitizeString($post['MensajeFelicitacion'], 255);
+    $usuarioId = filter_var($post['UsuarioId'], FILTER_VALIDATE_INT);
+    $mensaje = filter_var($post['MensajeFelicitacion'], FILTER_SANITIZE_STRING);
 
     if (
         !$usuarioId || !$mensaje
@@ -973,8 +980,8 @@ function borrarFelicitacion(array $post, PDO $pdo): string
 }
 function editarFelicitacion(array $post, PDO $pdo): string
 {
-    $feliId = sanitizeString($post['feliId'] ?? null, 500);
-    $mensaje = sanitizeString($post['mensajeFeli'] ?? '', 500);
+    $feliId = filter_var($post['feliId'] ?? null, FILTER_VALIDATE_INT);
+    $mensaje = filter_var($post['mensajeFeli'] ?? '', FILTER_SANITIZE_STRING);
 
     try {
         $pdo->beginTransaction();
@@ -1258,7 +1265,6 @@ function DeleteCandidato(PDO $pdo, int $candidatoId): string
 }
 // BORRADO DE CANDIDATO
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete_candidato'])) {
-    csrfVerify();
     $deleteId = isset($_POST['delete_candidato_id']) ? (int) $_POST['delete_candidato_id'] : 0;
     if ($deleteId > 0) {
         $alertHtml = DeleteCandidato($pdo, $deleteId);

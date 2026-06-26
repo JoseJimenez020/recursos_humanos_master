@@ -5,7 +5,6 @@ $alertHtml = '';
 
 // 2) Si viene un POST, determinamos si es registro o actualización
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  csrfVerify();
 
   // Registro de usuario (formulario principal flotante)
   if (isset($_POST['registrarU'])) {
@@ -633,7 +632,6 @@ $departamentos = GetDepartamento($pdo);
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form method="POST">
-          <?= csrfField() ?>
           <div class="modal-body">
             <p>Estás a punto de cerrar sesión.</p>
             <p>¿Seguro que quieres continuar?</p>
@@ -658,7 +656,6 @@ $departamentos = GetDepartamento($pdo);
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form role="form text-left" method="post">
-          <?= csrfField() ?>
           <div class="modal-body">
             <div class="input-group input-group-outline my-3">
               <label class="form-label">Nueva contraseña</label>
@@ -691,7 +688,6 @@ $departamentos = GetDepartamento($pdo);
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <form id="form-delete-user" method="post" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
-          <?= csrfField() ?>
           <div class="modal-body text-center">
             <i class="material-symbols-rounded h1 text-secondary">Eliminar Candidato</i>
             <h4 class="text-gradient text-danger mt-4">Atención</h4>

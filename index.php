@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/controllers/login_secure.php';
+require_once __DIR__ . '/controllers/login.php';
+require_once  __DIR__ . '/controllers/handle_login.php';
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +24,6 @@ require_once __DIR__ . '/controllers/login_secure.php';
   <!-- Material Icons -->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- CSS Files -->
   <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
 </head>
@@ -77,10 +77,8 @@ require_once __DIR__ . '/controllers/login_secure.php';
 
                 <div class="card-body tab-pane fade show active" id="profile-tabs-icons">
                   <form role="form" class="text-start" method="POST">
-                    <?= csrfField() ?>
                     <div class="input-group input-group-outline my-3">
                       <label class="form-label">Usuario</label>
-                      <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
                       <input type="text" name="username" class="form-control">
                     </div>
                     <div class="input-group input-group-outline mb-3">
@@ -100,8 +98,6 @@ require_once __DIR__ . '/controllers/login_secure.php';
 
                 <div class="card-body tab-pane fade" id="dashboard-tabs-icons">
                   <form role="form" class="text-start" method="POST">
-                    <?= csrfField() ?>
-                    <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
                     <div class="input-group input-group-outline my-3">
                       <label class="form-label">Nombre completo</label>
                       <input type="text" name="fullname" class="form-control">
@@ -198,20 +194,6 @@ require_once __DIR__ . '/controllers/login_secure.php';
       </footer>
     </div>
   </main>
-  <?php if (!empty($_SESSION['login_error'])): ?>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        Swal.fire({
-          title: 'Error al iniciar sesión',
-          text: <?= json_encode($_SESSION['login_error'], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>,
-          icon: 'error'
-        });
-      });
-    </script>
-    <?php
-    unset($_SESSION['login_error']);
-  endif;
-  ?>
   <!--   Core JS Files   -->
   <script src="../assets/js/core/popper.min.js"></script>
   <script src="../assets/js/core/bootstrap.min.js"></script>
@@ -228,38 +210,36 @@ require_once __DIR__ . '/controllers/login_secure.php';
   </script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    (function () {
-      const usernameInput = document.querySelector('input[name="username"]');
-      const rememberCheckbox = document.getElementById('rememberMe');
-      // NOTA: NO guardamos la contraseña, solo el username
+    // IDs: inputs must tener name/ID username, password y checkbox rememberMe
+    const usernameInput = document.querySelector('input[name="username"]');
+    const passwordInput = document.querySelector('input[name="password"]');
+    const rememberCheckbox = document.getElementById('rememberMe');
 
-      document.addEventListener('DOMContentLoaded', () => {
-        const savedUser = localStorage.getItem('rh_username');
-        if (savedUser && usernameInput) usernameInput.value = savedUser;
+    // Al cargar, rellena si existe
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedUser = localStorage.getItem('rh_username');
+      if (savedUser) usernameInput.value = savedUser;
+      const savedPass = localStorage.getItem('rh_password');
+      if (savedPass) passwordInput.value = savedPass;
+      const remember = localStorage.getItem('rh_remember') === '1';
+      rememberCheckbox.checked = remember;
+    });
 
-        const remember = localStorage.getItem('rh_remember') === '1';
-        if (rememberCheckbox) rememberCheckbox.checked = remember;
-      });
-
-      // Solo el primer formulario (empleados)
-      const loginForm = document.querySelector('#profile-tabs-icons form');
-      if (loginForm) {
-        loginForm.addEventListener('submit', () => {
-          if (rememberCheckbox && rememberCheckbox.checked) {
-            localStorage.setItem('rh_username', usernameInput ? usernameInput.value : '');
-            localStorage.setItem('rh_remember', '1');
-          } else {
-            localStorage.removeItem('rh_username');
-            localStorage.setItem('rh_remember', '0');
-          }
-          // NUNCA: localStorage.setItem('rh_password', ...)
-        });
+    // Al enviar el formulario
+    document.querySelector('form').addEventListener('submit', () => {
+      if (rememberCheckbox.checked) {
+        localStorage.setItem('rh_username', usernameInput.value);
+        localStorage.setItem('rh_password', passwordInput.value);
+        localStorage.setItem('rh_remember', '1');
+      } else {
+        localStorage.removeItem('rh_username');
+        localStorage.removeItem('rh_password');
+        localStorage.setItem('rh_remember', '0');
       }
-    })();
+    });
   </script>
-
 </body>
 
 </html>
