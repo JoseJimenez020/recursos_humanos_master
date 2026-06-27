@@ -505,54 +505,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizarPass'])) {
 
 function RegistrarVacaciones(array $post, PDO $pdo): string
 {
-    // 1) Sanitizar fechas
     $usuarioId = filter_var($post['usuarioId'], FILTER_VALIDATE_INT);
-    $fechaInicio = trim(strip_tags($post['fechaInicio']));
-    $fechaFin = trim(strip_tags($post['fechaFin']));
+    $esSoloDia = !empty($post['esSoloDia']) && $post['esSoloDia'] === '1';
+    $fechaInicio = trim(strip_tags($post['fechaInicio'] ?? ''));
+    $fechaFin = $esSoloDia
+        ? $fechaInicio
+        : trim(strip_tags($post['fechaFin'] ?? $fechaInicio));
 
-    if (strtotime($fechaFin) <= strtotime($fechaInicio)) {
-        return alertScript('Error', 'La fecha de regreso debe ser mayor.', 'error');
+    if (!$usuarioId || !$fechaInicio) {
+        return alertScript('Error', 'Faltan datos obligatorios.', 'error');
+    }
+
+    if (!$esSoloDia && strtotime($fechaFin) < strtotime($fechaInicio)) {
+        return alertScript('Error', 'La fecha de regreso debe ser mayor o igual a la de inicio.', 'error');
     }
 
     try {
         $pdo->beginTransaction();
 
-        // 2) Insertar en vacaciones
+        // Insertar la vacación primero
         $stmt = $pdo->prepare(
             "INSERT INTO vacaciones (FechaInicio, FechaFin, UsuarioId)
-           VALUES (:ini, :fin, :usrid)"
+     VALUES (:ini, :fin, :usrid)"
         );
-        $stmt->execute([
-            'ini' => $fechaInicio,
-            'fin' => $fechaFin,
-            'usrid' => $usuarioId
-        ]);
+        $stmt->execute(['ini' => $fechaInicio, 'fin' => $fechaFin, 'usrid' => $usuarioId]);
 
-        // 3) Marcar al usuario como inactivo
-        $upd = $pdo->prepare(
-            "UPDATE usuarios
-              SET UsuarioActivo = 0
-            WHERE UsuarioId     = :usrid"
-        );
-        $upd->execute(['usrid' => $usuarioId]);
+        $hoy = date('Y-m-d');
+
+        // Solo desactivar al usuario si la vacación YA empezó y sigue vigente
+        if ($fechaInicio <= $hoy && $fechaFin >= $hoy) {
+            $upd = $pdo->prepare("UPDATE usuarios SET UsuarioActivo = 0 WHERE UsuarioId = :usrid");
+            $upd->execute(['usrid' => $usuarioId]);
+        }
 
         $pdo->commit();
 
-        return alertScript(
-            '¡Éxito!',
-            'Vacaciones registradas y usuario desactivado correctamente.',
-            'success',
-        );
+        return alertScript('¡Éxito!', 'Vacaciones registradas correctamente.', 'success');
 
     } catch (PDOException $e) {
         $pdo->rollBack();
-        return alertScript(
-            'Error',
-            'No se pudo registrar: ' . $e->getMessage(),
-            'error'
-        );
+        return alertScript('Error', 'No se pudo registrar: ' . $e->getMessage(), 'error');
     }
 }
+
 
 function InsertDocumentacion($nombreDocumento, $contenidoArchivo, $departamentoId, PDO $pdo)
 {
@@ -824,7 +819,8 @@ function mostrarContador($pdo): string
 }
 
 // Función para buscar usuarios globalmente
-function BuscarUsuarios($pdo, $termino = '') {
+function BuscarUsuarios($pdo, $termino = '')
+{
     $query = "SELECT UsuarioId as id, 
               CONCAT(NombreUsuario, ' ', ApellidoPaterno, ' ', ApellidoMaterno) AS text 
               FROM usuarios 
@@ -1013,7 +1009,7 @@ function editarFelicitacion(array $post, PDO $pdo): string
 }
 function getAvisosDash(PDO $pdo): string
 {
-  $sql = "SELECT 
+    $sql = "SELECT 
         a.AvisoId, a.TituloAviso, a.Fecha, a.DescripcionAviso, 
         a.EsCampana, f.FotoContenido, u.NombreUsuario, u.ApellidoPaterno
         FROM avisos a
@@ -1022,15 +1018,15 @@ function getAvisosDash(PDO $pdo): string
                          AND f.EntidadId = a.AvisoId
         WHERE EsCampana = 0";
 
-  $params = [];
+    $params = [];
 
-  // Preparar y ejecutar
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute($params);
-  $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Preparar y ejecutar
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  if (empty($rows)) {
-    return '<div class="col-md-4 mb-4">
+    if (empty($rows)) {
+        return '<div class="col-md-4 mb-4">
           <div class="card" data-animation="false">
               <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                   <a class="d-block blur-shadow-image">
@@ -1048,21 +1044,21 @@ function getAvisosDash(PDO $pdo): string
               </div>
           </div>
       </div>';
-  }
-
-  $html = '';
-  foreach ($rows as $a) {
-    $src = $a['FotoContenido']
-      ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
-      : '../assets/img/small-logos/alerta.png';
-
-    // truncate to 152 chars
-    $desc = strip_tags($a['DescripcionAviso']);
-    if (mb_strlen($desc) > 150) {
-      $desc = mb_substr($desc, 0, 150) . '…';
     }
 
-    $html .= '<div class="card" data-animation="true">     
+    $html = '';
+    foreach ($rows as $a) {
+        $src = $a['FotoContenido']
+            ? 'data:image/jpeg;base64,' . base64_encode($a['FotoContenido'])
+            : '../assets/img/small-logos/alerta.png';
+
+        // truncate to 152 chars
+        $desc = strip_tags($a['DescripcionAviso']);
+        if (mb_strlen($desc) > 150) {
+            $desc = mb_substr($desc, 0, 150) . '…';
+        }
+
+        $html .= '<div class="card" data-animation="true">     
     <a href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '">
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
         <div class="d-block blur-shadow-image">
@@ -1095,8 +1091,8 @@ function getAvisosDash(PDO $pdo): string
     </div> </a>
     <a href="../pages/campania_ext.php?avisoId=' . $a['AvisoId'] . '" class="stretched-link"></a>
 </div> ';
-  }
-  return $html;
+    }
+    return $html;
 }
 function GetUsuariosPagina(PDO $pdo, string $nombre, string $departamento, int $limit, int $offset): array
 {
@@ -1226,12 +1222,12 @@ function GetCandidatosPagina(PDO $pdo, string $nombre, int $limit, int $offset):
     // agrupar pruebas por candidatoId
     $mapPruebas = [];
     foreach ($pruebas as $p) {
-        $mapPruebas[(int)$p['CandidatoId']][] = $p;
+        $mapPruebas[(int) $p['CandidatoId']][] = $p;
     }
 
     // añadir la lista de pruebas a cada candidato
     foreach ($candidatos as &$c) {
-        $cid = (int)$c['CandidatoId'];
+        $cid = (int) $c['CandidatoId'];
         $c['pruebas'] = $mapPruebas[$cid] ?? [];
     }
     unset($c);
@@ -1271,5 +1267,143 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_delete_candid
     } else {
         // respuesta rápida en caso de id inválido
         $alertHtml = "<script>Swal.fire('Error','ID de candidato inválido','error');</script>";
+    }
+}
+
+function getPanelVacaciones(PDO $pdo): string
+{
+    $hoy = date('Y-m-d');
+
+    $sql = "SELECT 
+        u.NombreUsuario, u.ApellidoPaterno, u.ApellidoMaterno,
+        v.FechaInicio, v.FechaFin
+      FROM vacaciones v
+      JOIN usuarios   u ON u.UsuarioId = v.UsuarioId
+      WHERE v.FechaFin >= :hoy
+      ORDER BY v.FechaInicio ASC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([':hoy' => $hoy]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (empty($rows)) {
+        return '<li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                    <div class="d-flex flex-column">
+                        <h6 class="mb-3 text-sm">Sin resultados</h6>
+                        <span class="mb-2 text-xs">No hay registros de vacaciones por el momento.</span>
+                    </div>
+                </li>';
+    }
+
+    $html = '';
+    foreach ($rows as $v) {
+        $src = $v['FotoContenido']
+            ? 'data:image/jpeg;base64,' . base64_encode($v['FotoContenido'])
+            : '../assets/img/small-logos/user.png';
+
+        $full = htmlspecialchars("{$v['NombreUsuario']} {$v['ApellidoPaterno']} {$v['ApellidoMaterno']}", ENT_QUOTES);
+        $inicio = date('d/m/Y', strtotime($v['FechaInicio']));
+        $fin = date('d/m/Y', strtotime($v['FechaFin']));
+        $esSoloDia = $v['FechaInicio'] === $v['FechaFin'];
+        $periodo = $esSoloDia ? "Día: {$inicio}" : "Del {$inicio} al {$fin}";
+
+        if ($v['FechaFin'] < $hoy) {
+            $badge = '<span class="badge bg-gradient-secondary">Concluidas</span>';
+        } elseif ($v['FechaInicio'] <= $hoy && $v['FechaFin'] >= $hoy) {
+            $badge = '<span class="badge bg-gradient-success">En curso</span>';
+        } else {
+            $badge = '<span class="badge bg-gradient-info">Próximas</span>';
+        }
+
+        $dataInicio = htmlspecialchars($v['FechaInicio'], ENT_QUOTES);
+        $dataFin = htmlspecialchars($v['FechaFin'], ENT_QUOTES);
+
+        $html .= '<li class="list-group-item border-0 d-flex align-items-center p-4 mb-2 bg-gray-100 border-radius-lg">
+            <div class="me-3 flex-shrink-0">
+                <img src="' . $src . '" alt="' . $full . '" class="avatar avatar-sm border-radius-lg">
+            </div>
+            <div class="d-flex flex-column flex-grow-1">
+                <h6 class="mb-1 text-sm">' . $full . '</h6>
+                <span class="text-xs text-secondary mb-1">
+                    <i class="material-symbols-rounded text-xs me-1">event</i>' . $periodo . '
+                </span>
+                ' . $badge . '
+            </div>
+        </li>';
+    }
+
+    return $html;
+}
+
+function borrarVacacion(array $post, PDO $pdo): string
+{
+    $vacacionId = filter_var($post['VacacionId'] ?? null, FILTER_VALIDATE_INT);
+    if (!$vacacionId) {
+        return alertScript('Error', 'ID de vacación inválido.', 'error');
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        // Obtener el UsuarioId antes de borrar
+        $stmt = $pdo->prepare("SELECT UsuarioId FROM vacaciones WHERE VacacionId = :id");
+        $stmt->execute([':id' => $vacacionId]);
+        $usuarioId = $stmt->fetchColumn();
+
+        // Eliminar la vacación
+        $pdo->prepare("DELETE FROM vacaciones WHERE VacacionId = :id")
+            ->execute([':id' => $vacacionId]);
+
+        // Si el usuario no tiene más vacaciones activas o futuras, reactivarlo
+        $hoy = date('Y-m-d');
+        $checkStmt = $pdo->prepare(
+            "SELECT COUNT(*) FROM vacaciones WHERE UsuarioId = :uid AND FechaFin >= :hoy"
+        );
+        $checkStmt->execute([':uid' => $usuarioId, ':hoy' => $hoy]);
+        if ((int) $checkStmt->fetchColumn() === 0) {
+            $pdo->prepare("UPDATE usuarios SET UsuarioActivo = 1 WHERE UsuarioId = :uid")
+                ->execute([':uid' => $usuarioId]);
+        }
+
+        $pdo->commit();
+
+        return alertScript('¡Éxito!', 'Registro eliminado correctamente.', 'success');
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        return alertScript('Error', 'No se pudo eliminar: ' . $e->getMessage(), 'error');
+    }
+}
+
+function editarVacacion(array $post, PDO $pdo): string
+{
+    $vacacionId = filter_var($post['vacacionId'] ?? null, FILTER_VALIDATE_INT);
+    $esSoloDia = !empty($post['esSoloDia']) && $post['esSoloDia'] === '1';
+    $fechaInicio = trim(strip_tags($post['fechaInicio'] ?? ''));
+    $fechaFin = $esSoloDia
+        ? $fechaInicio
+        : trim(strip_tags($post['fechaFin'] ?? $fechaInicio));
+
+    if (!$vacacionId || !$fechaInicio) {
+        return alertScript('Error', 'Faltan datos obligatorios.', 'error');
+    }
+
+    if (!$esSoloDia && strtotime($fechaFin) < strtotime($fechaInicio)) {
+        return alertScript('Error', 'La fecha de fin debe ser mayor o igual a la de inicio.', 'error');
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        $pdo->prepare("UPDATE vacaciones SET FechaInicio = :ini, FechaFin = :fin WHERE VacacionId = :id")
+            ->execute([':ini' => $fechaInicio, ':fin' => $fechaFin, ':id' => $vacacionId]);
+
+        $pdo->commit();
+
+        return alertScript('¡Éxito!', 'Vacaciones actualizadas correctamente.', 'success');
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        return alertScript('Error', 'No se pudo actualizar: ' . $e->getMessage(), 'error');
     }
 }

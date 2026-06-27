@@ -259,6 +259,12 @@ require '../controllers/dashboard.php';
                     <i class="material-symbols-rounded opacity-5">explore</i>
                     <span class="nav-link-text ms-1">Vacantes</span>
                 </a>
+                </li>                
+                <li class="nav-item">
+                    <a class="nav-link text-primary" href="../pages/vacaciones.php">
+                        <i class="material-symbols-rounded opacity-5">beach_access</i>
+                        <span class="nav-link-text ms-1">Vacaciones</span>
+                    </a>
                 </li>
                 <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Contenido
