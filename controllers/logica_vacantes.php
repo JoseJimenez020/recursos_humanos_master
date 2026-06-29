@@ -173,6 +173,13 @@ function GetTableVacantes(PDO $pdo): string
                         data-bs-target="#exampleModalLong">
                         Recomendaciones
                     </a>
+                    <a href="" class="text-danger font-weight-bold text-xs"
+                        data-vacante-id="' . $v['VacanteId'] . '"
+                        data-vacante-name="' . htmlspecialchars($v['PuestoNombre']) . '"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal-delete-vacante">
+                        Eliminar
+                    </a>
                 </td>
                 </tr>';
     }
@@ -515,4 +522,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizarPass'])) {
 
     echo ActualizarPassword($password1, $password2, $_SESSION['user_id'], $pdo);
 
+}
+
+function eliminarVacante(array $data, PDO $pdo): string
+{
+    $vacanteId = filter_var($data['VacanteId'] ?? null, FILTER_VALIDATE_INT);
+
+    if (!$vacanteId) {
+        return alertScript('Error', 'ID de vacante inválido.', 'error');
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        $stmt = $pdo->prepare("DELETE FROM vacantes WHERE VacanteId = :id");
+        $stmt->execute([':id' => $vacanteId]);
+
+        $pdo->commit();
+
+        return alertScript(
+            '¡Éxito!',
+            'Vacante eliminada correctamente.',
+            'success',
+            'panel_vacantes.php'
+        );
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        return alertScript(
+            'Error',
+            'No se pudo eliminar: ' . $e->getMessage(),
+            'error'
+        );
+    }
 }

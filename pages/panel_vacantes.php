@@ -8,6 +8,9 @@ if (isset($_POST['registrarVacante'])) {
 if (isset($_POST['editarVacante'])) {
     $alertHtml = actualizarVacante($_POST, $pdo);
 }
+if (isset($_POST['borrarVacante'])) {
+    $alertHtml = eliminarVacante($_POST, $pdo);
+}
 $vacanteId = isset($_GET['vacante_id'])
     ? (int) $_GET['vacante_id']
     : 0;
@@ -658,6 +661,54 @@ $departamentos = GetDepartamento($pdo);
             </div>
         </div>
         <!--FIN DEL MODAL PARA CAMBIAR CONTRASEÑA-->
+        <!-- MODAL CONFIRMACIÓN BORRADO VACANTE -->
+        <div class="modal fade" id="modal-delete-vacante" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-danger modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <i class="material-symbols-rounded text-danger me-2">warning</i>
+                        <h6 class="modal-title font-weight-normal">Confirmación</h6>
+                        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="py-3 text-center">
+                            <i class="material-symbols-rounded h1 text-secondary">¡Cuidado!</i>
+                            <h4 class="text-gradient text-danger mt-4">Atención</h4>
+                            <p>Estás a punto de eliminar la vacante
+                                "<strong><span id="delete-vacante-name"></span></strong>".
+                                Esta acción no se puede deshacer. ¿Deseas continuar?
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <form method="POST">
+                            <input type="hidden" name="VacanteId" id="delete-vacante-id">
+                            <button type="submit" name="borrarVacante" class="btn bg-gradient-danger">
+                                Sí, eliminar
+                            </button>
+                            <?= $alertHtml ?>
+                        </form>
+                        <button type="button" class="btn btn-link text-primary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FIN MODAL BORRADO VACANTE -->
+        <script>
+            const deleteVacanteModal = document.getElementById('modal-delete-vacante');
+            deleteVacanteModal.addEventListener('show.bs.modal', function (event) {
+                const btn = event.relatedTarget;
+                const vacanteId = btn.getAttribute('data-vacante-id');
+                const vacanteName = btn.getAttribute('data-vacante-name');
+
+                document.getElementById('delete-vacante-id').textContent = '';
+                document.getElementById('delete-vacante-name').textContent = vacanteName;
+                document.getElementById('delete-vacante-id').value = vacanteId;
+            });
+        </script>
 </body>
 
 </html>
